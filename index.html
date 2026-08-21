@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guinée Web</title>
+    <!-- Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --fb-blue: #1877f2;
+            --fb-bg: #f0f2f5;
+            --fb-card: #ffffff;
+            --fb-text: #050505;
+            --fb-secondary: #65676b;
+            --fb-border: #ced0d4;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Segoe UI, Helvetica, Arial, sans-serif; }
+        body { background-color: var(--fb-bg); color: var(--fb-text); padding-bottom: 30px; }
+
+        /* Navbar Header */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: var(--fb-card);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 16px; height: 56px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .logo { font-size: 22px; font-weight: bold; color: var(--fb-blue); }
+        .nav-btn {
+            background: #e4e6eb; border: none; padding: 8px 12px;
+            border-radius: 20px; font-weight: 600; cursor: pointer;
+        }
+
+        /* Layout Main Container */
+        .container { max-width: 680px; margin: 20px auto; padding: 0 10px; }
+
+        /* Card Component */
+        .card {
+            background: var(--fb-card); border-radius: 8px;
+            padding: 12px; margin-bottom: 16px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        /* Profile & Edit Panel */
+        .profile-header { text-align: center; padding: 10px 0; }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; background: #ccc; }
+        .avatar-sm { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .profile-name { font-size: 20px; font-weight: bold; margin-top: 8px; }
+        
+        /* Post Box Input */
+        .create-post textarea {
+            width: 100%; border: none; outline: none; resize: none;
+            font-size: 16px; padding: 8px 0;
+        }
+        .file-input-label {
+            display: inline-block; padding: 8px 12px; background: #e4e6eb;
+            border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600;
+        }
+        .btn-primary {
+            background: var(--fb-blue); color: white; border: none;
+            padding: 8px 16px; border-radius: 6px; font-weight: bold;
+            cursor: pointer; width: 100%; margin-top: 10px;
+        }
+
+        /* Feed Post Layout */
+        .post-author { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .post-author-info { display: flex; flex-direction: column; }
+        .post-author-name { font-weight: bold; font-size: 15px; }
+        .post-time { font-size: 12px; color: var(--fb-secondary); }
+        .post-caption { margin-bottom: 10px; font-size: 15px; line-height: 1.4; }
+        .post-media { width: 100%; max-height: 500px; object-fit: cover; border-radius: 6px; }
+
+        /* Action Buttons */
+        .post-actions {
+            display: flex; justify-content: space-around;
+            border-top: 1px solid var(--fb-border); border-bottom: 1px solid var(--fb-border);
+            padding: 6px 0; margin-top: 10px;
+        }
+        .action-btn {
+            background: none; border: none; color: var(--fb-secondary);
+            font-weight: 600; font-size: 14px; cursor: pointer; width: 48%; padding: 6px;
+            border-radius: 4px;
+        }
+        .action-btn:hover { background: #f2f2f2; }
+        .action-btn.liked { color: var(--fb-blue); }
+
+        /* Comments Box */
+        .comments-container { margin-top: 10px; display: none; }
+        .comment-item { background: #f0f2f5; padding: 8px 12px; border-radius: 12px; margin-bottom: 6px; font-size: 13px; }
+        .comment-user { font-weight: bold; margin-right: 5px; }
+        .comment-input-box { display: flex; gap: 8px; margin-top: 8px; }
+        .comment-input-box input {
+            flex: 1; border: 1px solid var(--fb-border); border-radius: 18px;
+            padding: 6px 12px; outline: none;
+        }
+
+        .hidden { display: none !important; }
+        .tab-btn { background: none; border: none; font-size: 16px; font-weight: bold; cursor: pointer; padding: 10px; }
+        .tab-btn.active { color: var(--fb-blue); border-bottom: 3px solid var(--fb-blue); }
+    </style>
+</head>
+<body>
+
+    <!-- Barres de navigation -->
+    <header>
+        <div class="logo">Guinée Web</div>
+        <div>
+            <button class="nav-btn" onclick="showView('feed')">Fil d'actualité</button>
+            <button class="nav-btn" onclick="showView('profile')">Mon Profil</button>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- SECTION PROFIL -->
+        <div id="profile-view" class="card hidden">
+            <div class="profile-header">
+                <img id="profile-avatar" class="avatar" src="https://via.placeholder.com/80" alt="Avatar">
+                <div id="profile-name" class="profile-name">Chargement...</div>
+                <p id="profile-bio" style="color: var(--fb-secondary); margin-top:4px;"></p>
+                <button class="nav-btn" style="margin-top:10px;" onclick="toggleEditProfile()">Modifier le profil</button>
+            </div>
+
+            <!-- Formulaire d'édition de profil -->
+            <div id="edit-profile-form" class="hidden" style="margin-top: 15px; border-top: 1px solid var(--fb-border); padding-top: 15px;">
+                <input type="text" id="edit-prenom" placeholder="Prénom" style="width: 49%; padding: 8px; margin-bottom: 8px;">
+                <input type="text" id="edit-nom" placeholder="Nom" style="width: 49%; padding: 8px; margin-bottom: 8px;">
+                <textarea id="edit-bio" placeholder="Ajouter une bio..." style="width: 100%; padding: 8px; margin-bottom: 8px;"></textarea>
+                <button class="btn-primary" onclick="saveProfile()">Enregistrer les modifications</button>
+            </div>
+        </div>
+
+        <!-- ZONE DE CRÉATION DE PUBLICATION -->
+        <div class="card create-post">
+            <textarea id="post-caption" rows="3" placeholder="Exprimez-vous sur Guinée Web..."></textarea>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <label class="file-input-label">
+                    📷 Photo/Vidéo
+                    <input type="file" id="post-file" accept="image/*,video/*" style="display:none;">
+                </label>
+                <span id="file-name-display" style="font-size: 12px; color: var(--fb-secondary);"></span>
+                <button class="btn-primary" style="width:auto; margin-top:0;" onclick="createPost()">Publier</button>
+            </div>
+        </div>
+
+        <!-- FIL D'ACTUALITÉ / LISTE DES POSTS -->
+        <div id="posts-feed">
+            <!-- Les posts s'afficheront dynamiquement ici -->
+        </div>
+
+    </div>
+
+    <script>
+        // CONFIGURATION SUPABASE (Remplace avec tes accès réels)
+        const SUPABASE_URL = "https://TON-PROJET.supabase.co";
+        const SUPABASE_KEY = "TA-CLE-ANON-PUBLIC";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        let currentUser = null;
+        let currentProfile = null;
+        let activeView = 'feed'; // 'feed' ou 'profile'
+
+        // Initialisation de l'application
+        window.addEventListener('DOMContentLoaded', async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) {
+                alert("Veuillez vous connecter pour accéder à Guinée Web.");
+                return;
+            }
+            currentUser = user;
+            await loadUserProfile();
+            loadPosts();
+
+            document.getElementById('post-file').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                document.getElementById('file-name-display').innerText = file ? file.name : '';
+            });
+        });
+
+        // Gestion de la navigation d'affichage
+        function showView(view) {
+            activeView = view;
+            const profileView = document.getElementById('profile-view');
+            if (view === 'profile') {
+                profileView.classList.remove('hidden');
+            } else {
+                profileView.classList.add('hidden');
+            }
+            loadPosts();
+        }
+
+        // Charger les informations du Profil
+        async function loadUserProfile() {
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', currentUser.id)
+                .single();
+
+            if (profile) {
+                currentProfile = profile;
+                document.getElementById('profile-name').innerText = `${profile.prenom || ''} ${profile.nom || ''}`;
+                document.getElementById('profile-bio').innerText = profile.bio || "Aucune bio renseignée.";
+                if (profile.avatar_url) {
+                    document.getElementById('profile-avatar').src = profile.avatar_url;
+                }
+            }
+        }
+
+        // Modifier & Enregistrer le Profil
+        function toggleEditProfile() {
+            const form = document.getElementById('edit-profile-form');
+            form.classList.toggle('hidden');
+            if (currentProfile) {
+                document.getElementById('edit-prenom').value = currentProfile.prenom || '';
+                document.getElementById('edit-nom').value = currentProfile.nom || '';
+                document.getElementById('edit-bio').value = currentProfile.bio || '';
+            }
+        }
+
+        async function saveProfile() {
+            const prenom = document.getElementById('edit-prenom').value;
+            const nom = document.getElementById('edit-nom').value;
+            const bio = document.getElementById('edit-bio').value;
+
+            const { error } = await supabase
+                .from('profiles')
+                .upsert({ id: currentUser.id, prenom, nom, bio });
+
+            if (!error) {
+                alert("Profil mis à jour !");
+                toggleEditProfile();
+                loadUserProfile();
+            } else {
+                alert("Erreur lors de la mise à jour : " + error.message);
+            }
+        }
+
+        // Créer une nouvelle publication avec Média (Image/Vidéo)
+        async function createPost() {
+            const caption = document.getElementById('post-caption').value;
+            const fileInput = document.getElementById('post-file');
+            const file = fileInput.files[0];
+
+            if (!caption && !file) {
+                alert("Veuillez écrire du texte ou sélectionner un fichier.");
+                return;
+            }
+
+            let mediaUrl = null;
+            let contentType = 'text';
+
+            if (file) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}.${fileExt}`;
+                
+                // Upload dans le bucket public 'media'
+                const { error: uploadError } = await supabase.storage
+                    .from('media')
+                    .upload(fileName, file);
+
+                if (uploadError) {
+                    alert("Erreur d'envoi du fichier.");
+                    return;
+                }
+
+                const { data } = supabase.storage.from('media').getPublicUrl(fileName);
+                mediaUrl = data.publicUrl;
+                contentType = file.type.startsWith('video') ? 'video' : 'image';
+            }
+
+            // Insertion dans la table posts
+            const { error } = await supabase.from('posts').insert([{
+                user_id: currentUser.id,
+                caption: caption,
+                media_url: mediaUrl,
+                content_type: contentType
+            }]);
+
+            if (!error) {
+                document.getElementById('post-caption').value = '';
+                fileInput.value = '';
+                document.getElementById('file-name-display').innerText = '';
+                loadPosts();
+            } else {
+                alert("Erreur de publication.");
+            }
+        }
+
+        // Charger le Fil d'actualité (Fil global ou Filtre Profil)
+        async function loadPosts() {
+            const feedContainer = document.getElementById('posts-feed');
+            feedContainer.innerHTML = '<p style="text-align:center;">Chargement des publications...</p>';
+
+            let query = supabase.from('posts').select('*, profiles(*), likes(*), comments(*)').order('created_at', { ascending: false });
+
+            // Si on est sur l'onglet profil, charger uniquement les posts de l'utilisateur
+            if (activeView === 'profile') {
+                query = query.eq('user_id', currentUser.id);
+            }
+
+            const { data: posts, error } = await query;
+
+            if (error) {
+                feedContainer.innerHTML = '<p style="text-align:center;">Impossible de charger les publications.</p>';
+                return;
+            }
+
+            feedContainer.innerHTML = '';
+            posts.forEach(post => renderPostCard(post, feedContainer));
+        }
+
+        // Afficher chaque carte de publication (Style Facebook)
+        function renderPostCard(post, container) {
+            const card = document.createElement('div');
+            card.className = 'card';
+
+            const isLiked = post.likes.some(l => l.user_id === currentUser.id);
+            const authorName = post.profiles ? `${post.profiles.prenom || ''} ${post.profiles.nom || ''}` : "Utilisateur";
+            const avatarUrl = (post.profiles && post.profiles.avatar_url) ? post.profiles.avatar_url : "https://via.placeholder.com/40";
+
+            let mediaTag = '';
+            if (post.media_url) {
+                if (post.content_type === 'video') {
+                    mediaTag = `<video src="${post.media_url}" controls class="post-media"></video>`;
+                } else {
+                    mediaTag = `<img src="${post.media_url}" class="post-media" alt="Media">`;
+                }
+            }
+
+            card.innerHTML = `
+                <div class="post-author">
+                    <img src="${avatarUrl}" class="avatar-sm" alt="User">
+                    <div class="post-author-info">
+                        <span class="post-author-name">${authorName}</span>
+                        <span class="post-time">${new Date(post.created_at).toLocaleDateString('fr-FR')}</span>
+                    </div>
+                </div>
+                <div class="post-caption">${post.caption || ''}</div>
+                ${mediaTag}
+                
+                <div class="post-actions">
+                    <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike(${post.id}, ${isLiked})">
+                        👍 J'aime (${post.likes.length})
+                    </button>
+                    <button class="action-btn" onclick="toggleCommentsSection(${post.id})">
+                        💬 Commenter (${post.comments.length})
+                    </button>
+                </div>
+
+                <div id="comments-section-${post.id}" class="comments-container">
+                    <div id="comments-list-${post.id}">
+                        ${post.comments.map(c => `
+                            <div class="comment-item">
+                                <span class="comment-user">Auteur:</span> ${c.content}
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="comment-input-box">
+                        <input type="text" id="comment-input-${post.id}" placeholder="Écrire un commentaire...">
+                        <button class="btn-primary" style="width:auto; margin-top:0;" onclick="addComment(${post.id})">Envoyer</button>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(card);
+        }
+
+        // Ajouter / Supprimer un Like
+        async function toggleLike(postId, isLiked) {
+            if (isLiked) {
+                await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', currentUser.id);
+            } else {
+                await supabase.from('likes').insert([{ post_id: postId, user_id: currentUser.id }]);
+            }
+            loadPosts();
+        }
+
+        // Afficher / Masquer la section commentaires
+        function toggleCommentsSection(postId) {
+            const section = document.getElementById(`comments-section-${postId}`);
+            section.style.display = section.style.display === 'block' ? 'none' : 'block';
+        }
+
+        // Ajouter un commentaire
+        async function addComment(postId) {
+            const input = document.getElementById(`comment-input-${postId}`);
+            const text = input.value;
+            if (!text) return;
+
+            const { error } = await supabase.from('comments').insert([{
+                post_id: postId,
+                user_id: currentUser.id,
+                content: text
+            }]);
+
+            if (!error) {
+                input.value = '';
+                loadPosts();
+            } else {
+                alert("Erreur lors de l'envoi du commentaire.");
+            }
+        }
+    </script>
+</body>
+</html>
