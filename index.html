@@ -1,765 +1,490 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b63ce">
   <title>Guinée Web 🇬🇳</title>
-
-  <meta
-    name="description"
-    content="Guinée Web — réseau social guinéen."
-  >
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root {
-      --green: #078b50;
-      --green-dark: #056b3d;
-      --green-light: #e7f8ef;
-      --red: #d93645;
-      --yellow: #f3c33b;
-      --dark: #14231c;
-      --muted: #69766f;
-      --bg: #f4f7f5;
-      --white: #ffffff;
-      --border: #e1e9e4;
-      --shadow: 0 10px 30px rgba(20, 35, 28, .08);
-      --radius: 18px;
+    :root{
+      --blue:#0b63ce;
+      --blue2:#0751aa;
+      --bg:#f3f6fa;
+      --card:#fff;
+      --text:#172033;
+      --muted:#687386;
+      --line:#e4e8ef;
+      --danger:#d92d20;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      margin: 0;
-      font-family:
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-      background: var(--bg);
-      color: var(--dark);
-      padding-bottom: 80px;
-    }
-
-    button,
-    input,
-    textarea,
-    select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-      border: 0;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .container {
-      width: min(1100px, 100%);
-      margin: auto;
-      padding: 0 16px;
-    }
-
-    /* HEADER */
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(255,255,255,.96);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .navbar {
-      min-height: 68px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      font-size: 20px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .flag {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      width: 32px;
-      height: 32px;
-      overflow: hidden;
-      border-radius: 9px;
-    }
-
-    .flag span:nth-child(1) {
-      background: var(--red);
-    }
-
-    .flag span:nth-child(2) {
-      background: var(--yellow);
-    }
-
-    .flag span:nth-child(3) {
-      background: var(--green);
-    }
-
-    .nav-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    /* BUTTONS */
-
-    .btn {
-      padding: 10px 14px;
-      border-radius: 12px;
-      font-weight: 800;
-    }
-
-    .btn-primary {
-      background: var(--green);
-      color: white;
-    }
-
-    .btn-primary:hover {
-      background: var(--green-dark);
-    }
-
-    .btn-secondary {
-      background: #edf3ef;
-      color: var(--dark);
-    }
-
-    .btn-danger {
-      background: #fff0f1;
-      color: var(--red);
-    }
-
-    .btn-small {
-      padding: 7px 10px;
-      border-radius: 9px;
-      font-size: 13px;
-    }
-
-    /* APP */
-
-    .app-view {
-      display: none;
-    }
-
-    .app-view.active {
-      display: block;
-    }
-
-    /* HERO */
+    *{box-sizing:border-box}
 
-    .hero {
-      padding: 48px 0;
-      display: grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 30px;
-      align-items: center;
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
     }
 
-    .badge {
-      display: inline-block;
-      padding: 7px 11px;
-      border-radius: 999px;
-      background: var(--green-light);
-      color: var(--green);
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .hero h1 {
-      margin: 15px 0;
-      font-size: clamp(40px, 7vw, 66px);
-      line-height: .98;
-    }
-
-    .hero p {
-      color: var(--muted);
-      line-height: 1.7;
-      font-size: 17px;
-    }
+    button,input,textarea,select{font:inherit}
 
-    .search-box {
-      display: flex;
-      background: white;
-      padding: 6px;
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      box-shadow: var(--shadow);
+    button{
+      cursor:pointer;
+      border:0
     }
 
-    .search-box input {
-      flex: 1;
-      border: 0;
-      outline: 0;
-      padding: 12px;
-      min-width: 0;
+    img,video{
+      max-width:100%
     }
-
-    /* PHONE */
 
-    .phone {
-      max-width: 330px;
-      margin: auto;
-      background: #101712;
-      padding: 9px;
-      border-radius: 31px;
-      box-shadow: 0 25px 60px rgba(0,0,0,.25);
+    .hidden{
+      display:none!important
     }
 
-    .phone-screen {
-      min-height: 480px;
-      padding: 17px;
-      border-radius: 24px;
-      background: #f7faf8;
+    .center{
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      padding:20px
     }
 
-    .mini-box {
-      padding: 12px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
+    .welcome{
+      min-height:100vh;
+      display:grid;
+      place-content:center;
+      text-align:center;
+      padding:24px;
+      max-width:620px;
+      margin:auto
     }
 
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin: 14px 0;
+    .logo{
+      width:76px;
+      height:76px;
+      border-radius:24px;
+      background:var(--blue);
+      color:#fff;
+      display:grid;
+      place-items:center;
+      font-weight:900;
+      font-size:28px;
+      margin:0 auto 16px
     }
 
-    .category {
-      padding: 11px 5px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 13px;
-      text-align: center;
-      font-size: 11px;
-      font-weight: 800;
+    .logo.sm{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      font-size:19px
     }
 
-    .category strong {
-      display: block;
-      font-size: 22px;
+    h1,h2,h3{
+      margin:0 0 10px
     }
 
-    /* SECTIONS */
-
-    section {
-      padding: 25px 0;
+    .muted,small{
+      color:var(--muted)
     }
 
-    section h2 {
-      margin-top: 0;
+    .tag{
+      font-size:19px
     }
 
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 15px;
+    .features{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      justify-content:center;
+      margin:24px 0
     }
 
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+    .features span{
+      background:#eaf2ff;
+      padding:9px 12px;
+      border-radius:999px
     }
 
-    .card {
-      padding: 17px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:0 3px 14px #0b1f3a0b;
+      margin-bottom:12px
     }
 
-    .muted {
-      color: var(--muted);
+    .auth{
+      width:min(440px,100%)
     }
 
-    /* POSTS */
-
-    .post-card {
-      margin-bottom: 15px;
+    form{
+      display:grid;
+      gap:12px
     }
 
-    .post-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    label{
+      display:grid;
+      gap:6px;
+      font-weight:650;
+      text-align:left
     }
 
-    .post-user {
-      flex: 1;
+    input,textarea,select{
+      width:100%;
+      border:1px solid #ccd4df;
+      border-radius:12px;
+      padding:12px;
+      background:#fff;
+      outline:none
     }
 
-    .avatar {
-      width: 44px;
-      height: 44px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--green-light);
-      color: var(--green);
-      font-size: 18px;
-      font-weight: 900;
-      overflow: hidden;
+    input:focus,
+    textarea:focus,
+    select:focus{
+      border-color:var(--blue);
+      box-shadow:0 0 0 3px #0b63ce18
     }
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .primary,
+    .secondary,
+    .danger,
+    .link{
+      padding:11px 15px;
+      border-radius:12px;
+      font-weight:750
     }
 
-    .post-content {
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-break: break-word;
+    .primary{
+      background:var(--blue);
+      color:#fff
     }
 
-    .post-image {
-      width: 100%;
-      max-height: 500px;
-      object-fit: cover;
-      border-radius: 15px;
-      margin: 13px 0;
+    .primary:hover{
+      background:var(--blue2)
     }
 
-    .post-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      border-top: 1px solid var(--border);
-      padding-top: 10px;
+    .secondary{
+      background:#eaf2ff;
+      color:var(--blue)
     }
 
-    .post-actions button {
-      padding: 9px 11px;
-      border-radius: 10px;
-      background: #eef3f0;
+    .danger{
+      background:#fff0ee;
+      color:var(--danger)
     }
 
-    .post-actions button.active {
-      background: var(--green-light);
-      color: var(--green);
+    .link{
+      background:transparent;
+      color:var(--blue);
+      padding:6px
     }
-
-    /* CREATE POST */
 
-    .create-post {
-      margin-bottom: 18px;
+    .wide{
+      width:100%;
+      margin-top:8px
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 110px;
+    .small{
+      padding:8px 11px;
+      font-size:14px
     }
 
-    .create-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
+    .shell{
+      min-height:100vh;
+      padding-bottom:78px
     }
 
-    /* COMMENTS */
-
-    .comments {
-      margin-top: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 12px;
+    .top{
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:#ffffffee;
+      backdrop-filter:blur(12px);
+      border-bottom:1px solid var(--line);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:10px max(14px,calc((100vw - 900px)/2));
     }
 
-    .comment {
-      padding: 9px 0;
-      border-bottom: 1px solid #eef2ef;
+    .brand{
+      background:transparent;
+      font-weight:900;
+      font-size:20px;
+      color:var(--blue)
     }
 
-    .comment:last-child {
-      border-bottom: 0;
+    .brand span{
+      color:var(--text)
     }
 
-    .comment-form {
-      display: flex;
-      gap: 8px;
-      margin-top: 10px;
+    .top-right{
+      display:flex;
+      gap:8px;
+      align-items:center
     }
 
-    .comment-form input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      outline: none;
+    .icon{
+      background:#eef3f9;
+      border-radius:12px;
+      padding:9px;
+      position:relative
     }
-
-    /* SHORTS */
 
-    .shorts-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 15px;
+    .badge{
+      position:absolute;
+      right:-3px;
+      top:-5px;
+      background:#e5484d;
+      color:#fff;
+      font-size:10px;
+      border-radius:99px;
+      padding:2px 5px
     }
 
-    .short {
-      position: relative;
-      height: 500px;
-      padding: 18px;
-      display: flex;
-      align-items: end;
-      overflow: hidden;
-      color: white;
-      border-radius: 20px;
-      background: #17251f;
+    main{
+      width:min(900px,100%);
+      margin:0 auto;
+      padding:14px
     }
 
-    .short video,
-    .short img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .composer{
+      display:flex;
+      gap:10px;
+      align-items:center
     }
 
-    .short-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        transparent 35%,
-        rgba(0,0,0,.75)
-      );
+    .composer button{
+      flex:1;
+      text-align:left;
+      background:#f0f3f7;
+      color:var(--muted);
+      padding:13px;
+      border-radius:999px
     }
 
-    .short-content {
-      position: relative;
-      z-index: 2;
-      text-shadow: 0 2px 8px rgba(0,0,0,.6);
-      padding-right: 60px;
+    .avatar{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#dce9fb;
+      color:var(--blue);
+      display:grid;
+      place-items:center;
+      font-weight:850;
+      overflow:hidden;
+      flex:0 0 auto
     }
 
-    .short-content p {
-      color: white;
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover
     }
 
-    .short-actions {
-      position: absolute;
-      z-index: 3;
-      right: 12px;
-      bottom: 17px;
-      display: grid;
-      gap: 9px;
+    .avatar.sm{
+      width:34px;
+      height:34px
     }
 
-    .short-actions button {
-      width: 46px;
-      min-height: 46px;
-      border-radius: 50%;
-      background: rgba(0,0,0,.55);
-      color: white;
+    .avatar.lg{
+      width:92px;
+      height:92px;
+      font-size:30px;
+      margin:auto
     }
 
-    /* PROFILE */
-
-    .cover {
-      height: 180px;
-      border-radius: 20px;
-      background:
-        linear-gradient(
-          135deg,
-          var(--green),
-          var(--yellow),
-          var(--red)
-        );
+    .head,
+    .person,
+    .row{
+      display:flex;
+      align-items:center;
+      gap:10px
     }
 
-    .profile-row {
-      display: flex;
-      gap: 18px;
-      align-items: center;
-      margin-top: -55px;
-      padding: 0 20px;
+    .head>div:nth-child(2),
+    .person>div{
+      display:grid
     }
 
-    .profile-photo {
-      width: 110px;
-      height: 110px;
-      display: grid;
-      place-items: center;
-      border: 5px solid white;
-      border-radius: 50%;
-      background: #e7f5ed;
-      font-size: 45px;
-      overflow: hidden;
-      flex-shrink: 0;
+    .head small{
+      display:block
     }
 
-    .profile-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .post p{
+      white-space:pre-wrap;
+      line-height:1.5
     }
-
-    /* SEARCH */
 
-    .search-result {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
+    .media{
+      display:block;
+      width:100%;
+      max-height:560px;
+      object-fit:cover;
+      border-radius:14px;
+      margin-top:10px;
+      background:#111
     }
 
-    .search-result:last-child {
-      border-bottom: 0;
+    .actions{
+      display:flex;
+      gap:6px;
+      border-top:1px solid var(--line);
+      margin-top:12px;
+      padding-top:10px;
+      flex-wrap:wrap
     }
 
-    /* EMPTY */
-
-    .empty {
-      padding: 45px 20px;
-      text-align: center;
-      color: var(--muted);
-      background: white;
-      border: 1px dashed var(--border);
-      border-radius: var(--radius);
+    .actions button{
+      background:#f4f6f9;
+      padding:9px 11px;
+      border-radius:10px
     }
-
-    /* MODAL */
 
-    .modal {
-      position: fixed;
-      z-index: 100;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      background: rgba(0,0,0,.65);
+    .title{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin:8px 0 12px
     }
 
-    .modal.open {
-      display: flex;
+    .empty{
+      text-align:center;
+      padding:35px 18px
     }
 
-    .modal-box {
-      width: min(500px, 100%);
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 23px;
-      border-radius: 22px;
-      background: white;
+    .error{
+      color:var(--danger)
     }
 
-    .close {
-      float: right;
-      width: 33px;
-      height: 33px;
-      border-radius: 50%;
-      background: #edf2ef;
+    .people{
+      display:grid;
+      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
+      gap:10px
     }
 
-    .tabs {
-      display: flex;
-      gap: 7px;
-      margin: 15px 0;
+    .person{
+      padding:12px
     }
 
-    .tabs button {
-      flex: 1;
-      padding: 10px;
-      border-radius: 11px;
-      background: #edf2ef;
+    .person button{
+      margin-left:auto
     }
 
-    .tabs button.active {
-      color: white;
-      background: var(--green);
+    .shorts{
+      display:grid;
+      gap:14px
     }
 
-    .field {
-      display: block;
-      margin: 11px 0;
-      font-weight: 700;
+    .short{
+      background:#000;
+      border-radius:18px;
+      overflow:hidden;
+      color:#fff;
+      position:relative
     }
 
-    .field input,
-    .field select,
-    .field textarea {
-      width: 100%;
-      margin-top: 5px;
-      padding: 12px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      outline: none;
+    .short video{
+      width:100%;
+      height:min(78vh,650px);
+      object-fit:cover;
+      background:#000
     }
 
-    .row {
-      display: flex;
-      gap: 8px;
+    .short .caption{
+      padding:12px
     }
 
-    .row > * {
-      flex: 1;
+    .tabs{
+      position:fixed;
+      bottom:0;
+      left:0;
+      right:0;
+      background:#fff;
+      border-top:1px solid var(--line);
+      z-index:20;
+      display:flex;
+      justify-content:center
     }
 
-    .notice,
-    .success,
-    .error {
-      margin: 10px 0;
-      padding: 11px;
-      border-radius: 12px;
+    .tabs button{
+      background:transparent;
+      color:var(--muted);
+      padding:9px 10px;
+      min-width:68px
     }
 
-    .notice {
-      color: #66510a;
-      background: #fff7dc;
+    .tabs button.active{
+      color:var(--blue);
+      font-weight:800
     }
 
-    .success {
-      color: #08683e;
-      background: #e7f8ee;
+    .tabs small{
+      display:block;
+      font-size:11px
     }
 
-    .error {
-      color: #a21e2c;
-      background: #fff0f1;
+    .chat{
+      max-height:55vh;
+      overflow:auto;
+      display:grid;
+      gap:8px
     }
 
-    /* TOAST */
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      bottom: 85px;
-      transform: translateX(-50%);
-      z-index: 999;
-      padding: 12px 17px;
-      color: white;
-      background: #14231c;
-      border-radius: 13px;
-      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    .bubble{
+      max-width:78%;
+      padding:9px 12px;
+      border-radius:14px;
+      background:#edf1f6
     }
 
-    /* BOTTOM NAV */
-
-    .bottom-nav {
-      position: fixed;
-      z-index: 40;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      padding: 7px;
-      background: white;
-      border-top: 1px solid var(--border);
+    .mine{
+      justify-self:end;
+      background:#dceaff
     }
 
-    .bottom-nav button {
-      padding: 8px 11px;
-      border-radius: 11px;
-      background: white;
-      font-size: 12px;
+    .payment-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+      gap:10px
     }
 
-    .bottom-nav button.active {
-      background: var(--green-light);
-      color: var(--green);
+    .pay-option{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      background:#fff;
+      text-align:left
     }
-
-    /* LOADING */
 
-    .loading {
-      padding: 30px;
-      text-align: center;
-      color: var(--muted);
+    .pay-option.active{
+      border:2px solid var(--blue);
+      background:#eef5ff
     }
 
-    footer {
-      padding: 40px 0;
-      text-align: center;
-      color: var(--muted);
+    .notice{
+      background:#fff8df;
+      border:1px solid #f1df9b;
+      padding:12px;
+      border-radius:12px;
+      color:#735b00
     }
 
-    @media (max-width: 800px) {
-      .hero {
-        grid-template-columns: 1fr;
+    @media(min-width:760px){
+      .tabs{
+        position:sticky;
+        bottom:0;
+        width:min(900px,100%);
+        margin:auto;
+        border:1px solid var(--line);
+        border-radius:16px 16px 0 0
       }
 
-      .grid,
-      .shorts-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .phone {
-        max-width: 300px;
-      }
-    }
-
-    @media (max-width: 600px) {
-      .brand {
-        font-size: 17px;
-      }
-
-      .nav-actions .btn-secondary {
-        display: none;
-      }
-
-      .row {
-        flex-direction: column;
-      }
-
-      .bottom-nav {
-        overflow-x: auto;
-        justify-content: flex-start;
-      }
-
-      .bottom-nav button {
-        white-space: nowrap;
-      }
-
-      .profile-row {
-        padding: 0 8px;
-        align-items: flex-end;
-      }
-
-      .profile-photo {
-        width: 85px;
-        height: 85px;
+      .shell{
+        padding-bottom:0
       }
     }
   </style>
@@ -767,3074 +492,2321 @@
 
 <body>
 
-<header>
-  <div class="container navbar">
-
-    <div class="brand">
-      <span class="flag">
-        <span></span>
-        <span></span>
-        <span></span>
-      </span>
-      Guinée Web
-    </div>
-
-    <div class="nav-actions" id="authButtons"></div>
-
-  </div>
-</header>
-
-<main class="container">
-
-  <!-- ACCUEIL -->
-
-  <div id="homeView" class="app-view active">
-
-    <section class="hero">
-
-      <div>
-
-        <span class="badge">
-          🇬🇳 RÉSEAU SOCIAL GUINÉEN
-        </span>
-
-        <h1>
-          La vie quotidienne,
-          <br>
-          connectée.
-        </h1>
-
-        <p>
-          Connectez-vous, partagez vos publications,
-          découvrez des personnes et échangez avec
-          la communauté guinéenne.
-        </p>
-
-        <div class="search-box">
-
-          <input
-            id="homeSearch"
-            placeholder="Rechercher un utilisateur..."
-          >
-
-          <button
-            class="btn btn-primary"
-            onclick="performSearch()"
-          >
-            Rechercher
-          </button>
-
-        </div>
-
-        <div style="margin-top:12px">
-
-          <button
-            class="btn btn-primary"
-            onclick="openAuth('signup')"
-          >
-            Créer mon compte
-          </button>
-
-          <button
-            class="btn btn-secondary"
-            onclick="navigate('feed')"
-          >
-            Voir le fil
-          </button>
-
-        </div>
-
-      </div>
-
-      <div class="phone">
-
-        <div class="phone-screen">
-
-          <small>Bonjour 👋</small>
-
-          <h3>
-            Bienvenue sur Guinée Web
-          </h3>
-
-          <div class="mini-box">
-            🔎 Découvrez la communauté
-          </div>
-
-          <div class="category-grid">
-
-            <div class="category">
-              <strong>📰</strong>
-              Fil
-            </div>
-
-            <div class="category">
-              <strong>🎬</strong>
-              Shorts
-            </div>
-
-            <div class="category">
-              <strong>🤝</strong>
-              Amis
-            </div>
-
-            <div class="category">
-              <strong>💬</strong>
-              Messages
-            </div>
-
-            <div class="category">
-              <strong>🔔</strong>
-              Alertes
-            </div>
-
-            <div class="category">
-              <strong>👤</strong>
-              Profil
-            </div>
-
-          </div>
-
-          <div class="card">
-
-            <strong>
-              🇬🇳 Guinée Web
-            </strong>
-
-            <p style="font-size:13px">
-              Créez votre compte pour rejoindre
-              la communauté.
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- FIL -->
-
-  <div id="feedView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-
-        <h2>📰 Fil d'actualité</h2>
-
-        <button
-          class="btn btn-primary"
-          onclick="openCreatePost()"
-        >
-          ➕ Publier
-        </button>
-
-      </div>
-
-      <div
-        id="createPostContainer"
-        class="create-post"
-      ></div>
-
-      <div id="feedContainer">
-        <div class="loading">
-          Chargement des publications...
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- SHORTS -->
-
-  <div id="shortsView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-
-        <h2>🎬 Shorts</h2>
-
-        <button
-          class="btn btn-primary"
-          onclick="requireAuth('créer un Short')"
-        >
-          🎥 Créer un Short
-        </button>
-
-      </div>
-
-      <div
-        id="shortsContainer"
-        class="shorts-grid"
-      >
-        <div class="loading">
-          Chargement...
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- AMIS -->
-
-  <div id="friendsView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-        <h2>🤝 Amis</h2>
-      </div>
-
-      <div class="card">
-
-        <label class="field">
-
-          Rechercher des utilisateurs
-
-          <input
-            id="friendSearch"
-            placeholder="@nomutilisateur"
-            oninput="searchFriends()"
-          >
-
-        </label>
-
-        <div id="friendResults">
-          <div class="empty">
-            Recherchez des personnes pour les ajouter.
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- MESSAGES -->
-
-  <div id="messagesView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-        <h2>💬 Messages</h2>
-      </div>
-
-      <div class="card">
-
-        <div id="messagesContainer">
-          <div class="empty">
-            Connectez-vous pour accéder à vos messages.
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- NOTIFICATIONS -->
-
-  <div id="notificationsView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-        <h2>🔔 Notifications</h2>
-      </div>
-
-      <div
-        id="notificationsContainer"
-        class="card"
-      >
-        <div class="loading">
-          Chargement...
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- PROFIL -->
-
-  <div id="profileView" class="app-view">
-
-    <section>
-
-      <div id="profileContainer">
-        <div class="loading">
-          Chargement du profil...
-        </div>
-      </div>
-
-    </section>
-
-  </div>
-
-  <!-- RECHERCHE -->
-
-  <div id="searchView" class="app-view">
-
-    <section>
-
-      <div class="section-header">
-        <h2>🔎 Recherche</h2>
-      </div>
-
-      <div class="card">
-
-        <div class="search-box">
-
-          <input
-            id="globalSearch"
-            placeholder="Nom ou nom d'utilisateur..."
-          >
-
-          <button
-            class="btn btn-primary"
-            onclick="performGlobalSearch()"
-          >
-            Rechercher
-          </button>
-
-        </div>
-
-        <div id="searchResults">
-          <div class="empty">
-            Entrez une recherche.
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
-
-</main>
-
-<!-- NAVIGATION -->
-
-<nav class="bottom-nav">
-
-  <button
-    data-nav="home"
-    onclick="navigate('home')"
-  >
-    🏠 Accueil
-  </button>
-
-  <button
-    data-nav="feed"
-    onclick="navigate('feed')"
-  >
-    📰 Fil
-  </button>
-
-  <button
-    data-nav="shorts"
-    onclick="navigate('shorts')"
-  >
-    🎬 Shorts
-  </button>
-
-  <button
-    data-nav="friends"
-    onclick="navigate('friends')"
-  >
-    🤝 Amis
-  </button>
-
-  <button
-    data-nav="messages"
-    onclick="requireAuth('accéder aux messages')"
-  >
-    💬 Messages
-  </button>
-
-  <button
-    data-nav="notifications"
-    onclick="requireAuth('voir les notifications')"
-  >
-    🔔
-  </button>
-
-  <button
-    data-nav="profile"
-    onclick="requireAuth('voir votre profil')"
-  >
-    👤 Profil
-  </button>
-
-</nav>
-
-<!-- AUTH -->
-
-<div
-  class="modal"
-  id="authModal"
->
-
-  <div class="modal-box">
-
-    <button
-      class="close"
-      onclick="closeModal('authModal')"
-    >
-      ×
-    </button>
-
-    <h2 id="authTitle">
-      Créer un compte
-    </h2>
-
-    <div class="tabs">
-
-      <button
-        id="signupTab"
-        class="active"
-        onclick="setAuthMode('signup')"
-      >
-        Inscription
-      </button>
-
-      <button
-        id="loginTab"
-        onclick="setAuthMode('login')"
-      >
-        Connexion
-      </button>
-
-    </div>
-
-    <div id="signupFields">
-
-      <div class="row">
-
-        <label class="field">
-          Prénom
-          <input id="firstName">
-        </label>
-
-        <label class="field">
-          Nom
-          <input id="lastName">
-        </label>
-
-      </div>
-
-      <label class="field">
-
-        Nom d'utilisateur
-
-        <input
-          id="username"
-          placeholder="monpseudo"
-        >
-
-      </label>
-
-      <label class="field">
-
-        Ville
-
-        <select id="city">
-
-          <option>Conakry</option>
-          <option>Kindia</option>
-          <option>Labé</option>
-          <option>Kankan</option>
-          <option>Nzérékoré</option>
-          <option>Faranah</option>
-          <option>Mamou</option>
-          <option>Boké</option>
-          <option>Guéckédou</option>
-          <option>Autre</option>
-
-        </select>
-
-      </label>
-
-    </div>
-
-    <label class="field">
-
-      Email
-
-      <input
-        id="identifier"
-        type="email"
-        placeholder="vous@example.com"
-      >
-
-    </label>
-
-    <label class="field">
-
-      Mot de passe
-
-      <input
-        id="password"
-        type="password"
-        placeholder="Votre mot de passe"
-      >
-
-    </label>
-
-    <div id="authMessage"></div>
-
-    <button
-      class="btn btn-primary"
-      style="width:100%"
-      onclick="submitAuth()"
-    >
-      Continuer
-    </button>
-
-  </div>
-
-</div>
-
-<!-- CREATE POST -->
-
-<div
-  class="modal"
-  id="postModal"
->
-
-  <div class="modal-box">
-
-    <button
-      class="close"
-      onclick="closeModal('postModal')"
-    >
-      ×
-    </button>
-
-    <h2>Créer une publication</h2>
-
-    <label class="field">
-
-      Que voulez-vous partager ?
-
-      <textarea
-        id="postContent"
-        placeholder="Écrivez quelque chose..."
-      ></textarea>
-
-    </label>
-
-    <label class="field">
-
-      URL d'une image (optionnel)
-
-      <input
-        id="postImage"
-        type="url"
-        placeholder="https://..."
-      >
-
-    </label>
-
-    <div id="postMessage"></div>
-
-    <button
-      class="btn btn-primary"
-      style="width:100%"
-      onclick="createPost()"
-    >
-      Publier
-    </button>
-
-  </div>
-
-</div>
-
-<footer>
-
-  <strong>
-    🇬🇳 Guinée Web
-  </strong>
-
-  <p>
-    Une plateforme numérique pensée pour la Guinée.
-  </p>
-
-  © 2026 Guinée Web
-
-</footer>
+<div id="app"></div>
 
 <script>
-  /*
-   * =========================================================
-   * SUPABASE
-   * =========================================================
-   */
 
-  const SUPABASE_URL =
-    "https://llmftxuasvysawaazedm.supabase.co";
+const SUPABASE_URL =
+  "https://llmftxuasvysawaazedm.supabase.co";
 
-  /*
-   * Utilise ici TA clé publishable/anon.
-   * Ne mets jamais la service_role key.
-   */
-  const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
-  const supabaseClient =
-    window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_PUBLISHABLE_KEY
-    );
+const SUPABASE_KEY =
+  "sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
 
-  let currentUser = null;
-  let currentProfile = null;
-  let authMode = "signup";
+const { createClient } = supabase;
 
-  /*
-   * =========================================================
-   * INITIALISATION
-   * =========================================================
-   */
+const sb = createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-  document.addEventListener(
-    "DOMContentLoaded",
-    async () => {
+const app = document.getElementById("app");
 
-      await checkSession();
+let user = null;
+let profile = null;
+let tab = "home";
+let selectedChat = null;
 
-      navigate("home");
 
+/* =========================
+   UTILITAIRES
+========================= */
+
+const esc = s =>
+  String(s ?? "").replace(
+    /[&<>"']/g,
+    c => ({
+      "&":"&amp;",
+      "<":"&lt;",
+      ">":"&gt;",
+      '"':"&quot;",
+      "'":"&#039;"
+    }[c])
+  );
+
+const initials = p =>
+  (p?.full_name || "U")
+    .trim()
+    .charAt(0)
+    .toUpperCase();
+
+const avatar = p =>
+  p?.avatar_url
+    ? `
+      <div class="avatar">
+        <img src="${esc(p.avatar_url)}" alt="">
+      </div>
+    `
+    : `
+      <div class="avatar">
+        ${esc(initials(p))}
+      </div>
+    `;
+
+const fmt = d =>
+  new Date(d).toLocaleString(
+    "fr-FR",
+    {
+      dateStyle:"short",
+      timeStyle:"short"
     }
   );
 
-  supabaseClient.auth.onAuthStateChange(
-    async (_event, session) => {
+const msg = e => {
+  const el = document.getElementById("msg");
 
-      currentUser =
-        session?.user || null;
-
-      await loadCurrentProfile();
-
-      updateAuthButtons();
-
-    }
-  );
-
-  /*
-   * =========================================================
-   * AUTH
-   * =========================================================
-   */
-
-  async function checkSession() {
-
-    const {
-      data,
-      error
-    } = await supabaseClient.auth.getSession();
-
-    if (error) {
-
-      console.error(error);
-
-      return;
-
-    }
-
-    currentUser =
-      data.session?.user || null;
-
-    await loadCurrentProfile();
-
-    updateAuthButtons();
-
+  if(el){
+    el.textContent =
+      e?.message ||
+      String(e);
   }
-
-  async function loadCurrentProfile() {
-
-    if (!currentUser) {
-
-      currentProfile = null;
-
-      return;
-
-    }
-
-    const {
-      data,
-      error
-    } = await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id", currentUser.id)
-      .maybeSingle();
-
-    if (error) {
-
-      console.error(error);
-
-      return;
-
-    }
-
-    currentProfile = data;
-
-  }
-
-  function openAuth(mode = "signup") {
-
-    setAuthMode(mode);
-
-    document
-      .getElementById("authModal")
-      .classList.add("open");
-
-  }
-
-  function setAuthMode(mode) {
-
-    authMode = mode;
-
-    document
-      .getElementById("signupFields")
-      .style.display =
-      mode === "signup"
-        ? "block"
-        : "none";
-
-    document
-      .getElementById("signupTab")
-      .classList.toggle(
-        "active",
-        mode === "signup"
-      );
-
-    document
-      .getElementById("loginTab")
-      .classList.toggle(
-        "active",
-        mode === "login"
-      );
-
-    document
-      .getElementById("authTitle")
-      .textContent =
-      mode === "signup"
-        ? "Créer un compte"
-        : "Se connecter";
-
-    document
-      .getElementById("authMessage")
-      .innerHTML = "";
-
-  }
-
-  async function submitAuth() {
-
-    const email =
-      document
-        .getElementById("identifier")
-        .value
-        .trim()
-        .toLowerCase();
-
-    const password =
-      document
-        .getElementById("password")
-        .value;
-
-    const message =
-      document.getElementById(
-        "authMessage"
-      );
-
-    message.innerHTML = "";
-
-    if (!email || !password) {
-
-      message.innerHTML =
-        `<div class="error">
-          Veuillez remplir tous les champs.
-        </div>`;
-
-      return;
-
-    }
-
-    try {
-
-      if (authMode === "signup") {
-
-        const firstName =
-          document
-            .getElementById("firstName")
-            .value
-            .trim();
-
-        const lastName =
-          document
-            .getElementById("lastName")
-            .value
-            .trim();
-
-        const username =
-          document
-            .getElementById("username")
-            .value
-            .trim()
-            .toLowerCase()
-            .replace(/^@/, "");
-
-        const city =
-          document
-            .getElementById("city")
-            .value;
-
-        if (!firstName || !username) {
-
-          message.innerHTML =
-            `<div class="error">
-              Le prénom et le nom d'utilisateur
-              sont obligatoires.
-            </div>`;
-
-          return;
-
-        }
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signUp({
-
-            email,
-            password,
-
-            options: {
-              data: {
-                first_name: firstName,
-                last_name: lastName,
-                username,
-                city
-              }
-            }
-
-          });
-
-        if (error) {
-          throw error;
-        }
-
-        if (data.session) {
-
-          currentUser =
-            data.session.user;
-
-          await loadCurrentProfile();
-
-          closeModal("authModal");
-
-          updateAuthButtons();
-
-          navigate("feed");
-
-          showToast(
-            "Compte créé avec succès ✅"
-          );
-
-        } else {
-
-          message.innerHTML =
-            `<div class="success">
-              Compte créé. Vérifiez votre
-              adresse email si la confirmation
-              email est activée dans Supabase.
-            </div>`;
-
-        }
-
-      } else {
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth
-            .signInWithPassword({
-              email,
-              password
-            });
-
-        if (error) {
-          throw error;
-        }
-
-        currentUser =
-          data.user;
-
-        await loadCurrentProfile();
-
-        closeModal("authModal");
-
-        updateAuthButtons();
-
-        navigate("feed");
-
-        showToast(
-          "Connexion réussie ✅"
-        );
-
-      }
-
-    } catch (error) {
-
-      message.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-    }
-
-  }
-
-  async function logout() {
-
-    const {
-      error
-    } =
-      await supabaseClient.auth.signOut();
-
-    if (error) {
-
-      showToast(
-        error.message
-      );
-
-      return;
-
-    }
-
-    currentUser = null;
-    currentProfile = null;
-
-    updateAuthButtons();
-
-    navigate("home");
-
-    showToast(
-      "Vous êtes déconnecté."
-    );
-
-  }
-
-  function updateAuthButtons() {
-
-    const container =
-      document.getElementById(
-        "authButtons"
-      );
-
-    if (currentUser) {
-
-      const name =
-        currentProfile?.first_name ||
-        currentUser.email?.split("@")[0] ||
-        "Profil";
-
-      container.innerHTML = `
-
-        <button
-          class="btn btn-secondary"
-          onclick="navigate('profile')"
-        >
-          👤 ${escapeHTML(name)}
-        </button>
-
-        <button
-          class="btn btn-danger"
-          onclick="logout()"
-        >
-          Déconnexion
-        </button>
-
-      `;
-
-    } else {
-
-      container.innerHTML = `
-
-        <button
-          class="btn btn-secondary"
-          onclick="openAuth('login')"
-        >
-          Connexion
-        </button>
-
-        <button
-          class="btn btn-primary"
-          onclick="openAuth('signup')"
-        >
-          Inscription
-        </button>
-
-      `;
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * NAVIGATION
-   * =========================================================
-   */
-
-  async function navigate(view) {
-
-    const views = [
-      "home",
-      "feed",
-      "shorts",
-      "friends",
-      "messages",
-      "notifications",
-      "profile",
-      "search"
-    ];
-
-    views.forEach(
-      name => {
-
-        const element =
-          document.getElementById(
-            name + "View"
-          );
-
-        if (element) {
-
-          element.classList.toggle(
-            "active",
-            name === view
-          );
-
-        }
-
-      }
-    );
-
-    document
-      .querySelectorAll(
-        "[data-nav]"
-      )
-      .forEach(button => {
-
-        button.classList.toggle(
-          "active",
-          button.dataset.nav === view
-        );
-
-      });
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-
-    if (view === "feed") {
-
-      await loadFeed();
-
-    }
-
-    if (view === "shorts") {
-
-      await loadShorts();
-
-    }
-
-    if (view === "friends") {
-
-      await searchFriends();
-
-    }
-
-    if (view === "notifications") {
-
-      await loadNotifications();
-
-    }
-
-    if (view === "profile") {
-
-      await loadProfile();
-
-    }
-
-    if (view === "messages") {
-
-      await loadMessages();
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * AUTHORIZATION
-   * =========================================================
-   */
-
-  function requireAuth(action) {
-
-    if (!currentUser) {
-
-      openAuth("signup");
-
-      document
-        .getElementById("authMessage")
-        .innerHTML =
-        `<div class="notice">
-          🔐 Vous devez créer un compte
-          ou vous connecter pour ${escapeHTML(action)}.
-        </div>`;
-
-      return false;
-
-    }
-
-    return true;
-
-  }
-
-  /*
-   * =========================================================
-   * PUBLICATIONS
-   * =========================================================
-   */
-
-  async function loadFeed() {
-
-    const container =
-      document.getElementById(
-        "feedContainer"
-      );
-
-    container.innerHTML =
-      `<div class="loading">
-        Chargement des publications...
-      </div>`;
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("posts")
-        .select(`
-          *,
-          profiles:author_id (
-            id,
-            username,
-            first_name,
-            last_name,
-            avatar_url
-          )
-        `)
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        );
-
-    if (error) {
-
-      console.error(error);
-
-      container.innerHTML =
-        `<div class="error">
-          Impossible de charger les publications.
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data || data.length === 0) {
-
-      container.innerHTML =
-        `<div class="empty">
-
-          <h3>
-            📰 Aucune publication
-          </h3>
-
-          <p>
-            Il n'y a encore aucune publication.
-            Soyez le premier à partager quelque chose.
-          </p>
-
-          <button
-            class="btn btn-primary"
-            onclick="openCreatePost()"
-          >
-            ➕ Publier
-          </button>
-
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data
-        .map(renderPost)
-        .join("");
-
-    await refreshLikeStates(data);
-
-  }
-
-  function renderPost(post) {
-
-    const profile =
-      post.profiles || {};
-
-    const name =
-      [profile.first_name, profile.last_name]
-        .filter(Boolean)
-        .join(" ") ||
-      profile.username ||
-      "Utilisateur";
-
-    const initial =
-      (
-        profile.first_name ||
-        profile.username ||
-        "U"
-      )
-      .charAt(0)
-      .toUpperCase();
-
-    const isOwner =
-      currentUser &&
-      currentUser.id === post.author_id;
-
-    return `
-
-      <article
-        class="card post-card"
-        id="post-${post.id}"
+};
+
+
+/* =========================
+   PAGE D'ACCUEIL
+========================= */
+
+function welcome(){
+
+  app.innerHTML = `
+    <section class="welcome">
+
+      <div class="logo">
+        GW
+      </div>
+
+      <h1>
+        Guinée Web 🇬🇳
+      </h1>
+
+      <p class="tag">
+        Le réseau social guinéen.
+      </p>
+
+      <p class="muted">
+        Application vierge : aucune publication
+        de démonstration. Le contenu vient uniquement
+        des utilisateurs inscrits.
+      </p>
+
+      <div class="features">
+        <span>📰 Fil</span>
+        <span>🎬 Shorts</span>
+        <span>👥 Amis</span>
+        <span>💬 Messages</span>
+        <span>🔔 Notifications</span>
+        <span>💳 Paiement physique</span>
+      </div>
+
+      <button
+        class="primary wide"
+        onclick="auth('signup')"
       >
+        Créer un compte
+      </button>
 
-        <div class="post-header">
+      <button
+        class="secondary wide"
+        onclick="auth('login')"
+      >
+        Se connecter
+      </button>
 
-          <div class="avatar">
+    </section>
+  `;
+}
 
-            ${
-              profile.avatar_url
-                ? `
-                  <img
-                    src="${escapeAttribute(profile.avatar_url)}"
-                    alt=""
-                  >
-                `
-                : escapeHTML(initial)
-            }
 
-          </div>
+/* =========================
+   AUTHENTIFICATION
+========================= */
 
-          <div class="post-user">
+function auth(mode){
 
-            <strong>
-              ${escapeHTML(name)}
-            </strong>
+  app.innerHTML = `
+    <section class="center">
 
-            <br>
+      <div class="card auth">
 
-            <small class="muted">
-              ${
-                profile.username
-                  ? "@" + escapeHTML(profile.username)
-                  : ""
-              }
-              •
-              ${formatDate(post.created_at)}
-            </small>
+        <div class="logo sm">
+          GW
+        </div>
 
-          </div>
+        <h2>
+          ${
+            mode === "login"
+              ? "Se connecter"
+              : "Créer mon compte"
+          }
+        </h2>
+
+        <form id="authForm">
 
           ${
-            isOwner
+            mode === "signup"
               ? `
-                <button
-                  class="btn btn-danger btn-small"
-                  onclick="deletePost('${post.id}')"
-                >
-                  🗑️
-                </button>
+                <label>
+                  Nom complet
+                  <input
+                    id="name"
+                    required
+                    maxlength="100"
+                  >
+                </label>
+
+                <label>
+                  Ville
+                  <input
+                    id="city"
+                    required
+                    placeholder="Conakry"
+                  >
+                </label>
               `
               : ""
           }
 
-        </div>
+          <label>
+            Email
+            <input
+              id="email"
+              type="email"
+              required
+            >
+          </label>
 
-        ${
-          post.content
-            ? `
-              <p class="post-content">
-                ${escapeHTML(post.content)}
-              </p>
-            `
-            : ""
-        }
+          <label>
+            Mot de passe
+            <input
+              id="pass"
+              type="password"
+              minlength="6"
+              required
+            >
+          </label>
 
-        ${
-          post.image_url
-            ? `
-              <img
-                class="post-image"
-                src="${escapeAttribute(post.image_url)}"
-                alt="Publication"
-                loading="lazy"
-              >
-            `
-            : ""
-        }
-
-        <div class="post-actions">
-
-          <button
-            id="like-${post.id}"
-            onclick="toggleLike('${post.id}')"
-          >
-            ❤️
-            <span id="likes-${post.id}">
-              ${post.likes_count || 0}
-            </span>
+          <button class="primary">
+            ${
+              mode === "login"
+                ? "Se connecter"
+                : "Créer le compte"
+            }
           </button>
 
-          <button
-            onclick="toggleComments('${post.id}')"
-          >
-            💬
-            <span id="comments-count-${post.id}">
-              ${post.comments_count || 0}
-            </span>
-          </button>
+        </form>
 
-          <button
-            onclick="sharePost('${post.id}')"
-          >
-            ↗️ Partager
-          </button>
+        <p id="msg" class="muted"></p>
 
-        </div>
-
-        <div
-          id="comments-${post.id}"
-          class="comments"
-          style="display:none"
+        <button
+          class="link"
+          onclick="auth('${
+            mode === "login"
+              ? "signup"
+              : "login"
+          }')"
         >
-
-          <div
-            id="comments-list-${post.id}"
-          >
-            Chargement...
-          </div>
-
           ${
-            currentUser
-              ? `
-                <div class="comment-form">
-
-                  <input
-                    id="comment-input-${post.id}"
-                    placeholder="Écrire un commentaire..."
-                  >
-
-                  <button
-                    class="btn btn-primary"
-                    onclick="addComment('${post.id}')"
-                  >
-                    Envoyer
-                  </button>
-
-                </div>
-              `
-              : `
-                <p class="muted">
-                  Connectez-vous pour commenter.
-                </p>
-              `
+            mode === "login"
+              ? "Créer un compte"
+              : "J'ai déjà un compte"
           }
+        </button>
+
+        <button
+          class="link"
+          onclick="welcome()"
+        >
+          ← Retour
+        </button>
+
+      </div>
+
+    </section>
+  `;
+
+
+  document.getElementById("authForm").onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      msg("Patiente...");
+
+      try{
+
+        if(mode === "login"){
+
+          const r =
+            await sb.auth.signInWithPassword({
+              email:email.value,
+              password:pass.value
+            });
+
+          if(r.error)
+            throw r.error;
+
+        }else{
+
+          const r =
+            await sb.auth.signUp({
+              email:email.value,
+              password:pass.value,
+              options:{
+                data:{
+                  full_name:name.value,
+                  city:city.value
+                }
+              }
+            });
+
+          if(r.error)
+            throw r.error;
+
+          if(!r.data.session){
+
+            msg(
+              "Compte créé. Vérifie ton email pour confirmer ton adresse."
+            );
+
+            return;
+          }
+        }
+
+      }catch(e){
+
+        msg(e);
+
+      }
+
+    };
+}
+
+
+/* =========================
+   PROFIL
+========================= */
+
+async function loadProfile(){
+
+  const r =
+    await sb
+      .from("profiles")
+      .select("*")
+      .eq("id",user.id)
+      .maybeSingle();
+
+  if(r.error)
+    throw r.error;
+
+  profile =
+    r.data ||
+    {
+      id:user.id,
+      full_name:
+        user.email?.split("@")[0] ||
+        "Utilisateur",
+      city:"Guinée"
+    };
+}
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+async function counts(){
+
+  const r =
+    await sb
+      .from("notifications")
+      .select(
+        "id",
+        {
+          count:"exact",
+          head:true
+        }
+      )
+      .eq("user_id",user.id)
+      .eq("read",false);
+
+  return r.count || 0;
+}
+
+
+/* =========================
+   INTERFACE PRINCIPALE
+========================= */
+
+function shell(){
+
+  app.innerHTML = `
+
+    <div class="shell">
+
+      <header class="top">
+
+        <button
+          class="brand"
+          onclick="go('home')"
+        >
+          🇬🇳
+          <span>Guinée Web</span>
+        </button>
+
+        <div class="top-right">
+
+          <button
+            class="icon"
+            onclick="go('notifications')"
+          >
+            🔔
+            <span
+              id="badge"
+              class="badge hidden"
+            ></span>
+          </button>
+
+          ${avatar(profile)}
 
         </div>
 
-      </article>
+      </header>
 
+      <main id="view"></main>
+
+      <nav class="tabs">
+
+        <button
+          id="tab-home"
+          onclick="go('home')"
+        >
+          🏠
+          <small>Accueil</small>
+        </button>
+
+        <button
+          id="tab-shorts"
+          onclick="go('shorts')"
+        >
+          🎬
+          <small>Shorts</small>
+        </button>
+
+        <button
+          id="tab-friends"
+          onclick="go('friends')"
+        >
+          👥
+          <small>Amis</small>
+        </button>
+
+        <button
+          id="tab-messages"
+          onclick="go('messages')"
+        >
+          💬
+          <small>Messages</small>
+        </button>
+
+        <button
+          id="tab-profile"
+          onclick="go('profile')"
+        >
+          👤
+          <small>Profil</small>
+        </button>
+
+        <button
+          id="tab-payments"
+          onclick="go('payments')"
+        >
+          💳
+          <small>Paiement</small>
+        </button>
+
+      </nav>
+
+    </div>
+  `;
+
+  updateBadge();
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+async function go(t){
+
+  tab = t;
+
+  document
+    .querySelectorAll(".tabs button")
+    .forEach(
+      b => b.classList.remove("active")
+    );
+
+  document
+    .getElementById("tab-"+t)
+    ?.classList.add("active");
+
+  const v =
+    document.getElementById("view");
+
+  if(!v)
+    return;
+
+  try{
+
+    if(t === "home")
+      await home();
+
+    else if(t === "shorts")
+      await shorts();
+
+    else if(t === "friends")
+      await friends();
+
+    else if(t === "messages")
+      await messages();
+
+    else if(t === "profile")
+      await profilePage();
+
+    else if(t === "notifications")
+      await notifications();
+
+    else if(t === "payments")
+      await payments();
+
+  }catch(e){
+
+    v.innerHTML = `
+      <div class="card error">
+        ${esc(e.message)}
+      </div>
     `;
 
   }
+}
 
-  function openCreatePost() {
 
-    if (!requireAuth("publier")) {
-      return;
-    }
+/* =========================
+   BADGE NOTIFICATIONS
+========================= */
 
-    document
-      .getElementById("postModal")
-      .classList.add("open");
+async function updateBadge(){
 
-  }
+  const n = await counts();
 
-  async function createPost() {
+  const b =
+    document.getElementById("badge");
 
-    if (!requireAuth("publier")) {
-      return;
-    }
+  if(!b)
+    return;
 
-    const content =
-      document
-        .getElementById("postContent")
-        .value
-        .trim();
+  b.textContent =
+    n > 99
+      ? "99+"
+      : n;
 
-    const image =
-      document
-        .getElementById("postImage")
-        .value
-        .trim();
+  b.classList.toggle(
+    "hidden",
+    !n
+  );
+}
 
-    const message =
-      document.getElementById(
-        "postMessage"
-      );
 
-    message.innerHTML = "";
+/* =========================
+   FIL D'ACTUALITÉ
+========================= */
 
-    if (!content && !image) {
+async function home(){
 
-      message.innerHTML =
-        `<div class="error">
-          Ajoutez du texte ou une image.
-        </div>`;
+  const v =
+    document.getElementById("view");
 
-      return;
+  v.innerHTML = `
+    <div class="card">
+      Chargement du fil...
+    </div>
+  `;
 
-    }
-
-    try {
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("posts")
-          .insert({
-
-            author_id:
-              currentUser.id,
-
-            content:
-              content || null,
-
-            image_url:
-              image || null
-
-          });
-
-      if (error) {
-        throw error;
-      }
-
-      document
-        .getElementById("postContent")
-        .value = "";
-
-      document
-        .getElementById("postImage")
-        .value = "";
-
-      closeModal("postModal");
-
-      await loadFeed();
-
-      showToast(
-        "Publication créée ✅"
-      );
-
-    } catch (error) {
-
-      message.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-    }
-
-  }
-
-  async function deletePost(postId) {
-
-    if (!requireAuth("supprimer cette publication")) {
-      return;
-    }
-
-    if (
-      !confirm(
-        "Voulez-vous vraiment supprimer cette publication ?"
+  const r =
+    await sb
+      .from("posts")
+      .select(
+        "*,profiles!posts_author_id_fkey(id,full_name,avatar_url,city)"
       )
-    ) {
-      return;
-    }
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("posts")
-        .delete()
-        .eq("id", postId)
-        .eq("author_id", currentUser.id);
-
-    if (error) {
-
-      showToast(
-        error.message
-      );
-
-      return;
-
-    }
-
-    document
-      .getElementById(
-        "post-" + postId
+      .order(
+        "created_at",
+        {ascending:false}
       )
-      ?.remove();
+      .limit(50);
 
-    showToast(
-      "Publication supprimée."
-    );
+  if(r.error)
+    throw r.error;
 
-  }
+  const posts =
+    r.data || [];
 
-  /*
-   * =========================================================
-   * LIKES
-   * =========================================================
-   */
+  v.innerHTML = `
 
-  async function toggleLike(postId) {
+    <div class="card composer">
 
-    if (!requireAuth("aimer une publication")) {
-      return;
-    }
+      ${avatar(profile)}
 
-    const {
-      data: existing,
-      error: checkError
-    } =
-      await supabaseClient
-        .from("post_likes")
-        .select("id")
-        .eq("post_id", postId)
-        .eq("user_id", currentUser.id)
-        .maybeSingle();
+      <button onclick="compose()">
+        Quoi de neuf ?
+      </button>
 
-    if (checkError) {
+    </div>
 
-      showToast(
-        checkError.message
-      );
+    ${
+      posts.length
 
-      return;
+      ? posts
+          .map(postCard)
+          .join("")
 
-    }
+      : `
+        <div class="card empty">
 
-    if (existing) {
+          <h2>
+            Ton fil est vide
+          </h2>
 
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("post_likes")
-          .delete()
-          .eq("id", existing.id);
+          <p class="muted">
+            Aucune publication pour le moment.
+          </p>
 
-      if (error) {
-
-        showToast(error.message);
-
-        return;
-
-      }
-
-    } else {
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("post_likes")
-          .insert({
-
-            post_id: postId,
-            user_id: currentUser.id
-
-          });
-
-      if (error) {
-
-        showToast(error.message);
-
-        return;
-
-      }
-
-    }
-
-    await updateLikeUI(postId);
-
-  }
-
-  async function updateLikeUI(postId) {
-
-    const {
-      count
-    } =
-      await supabaseClient
-        .from("post_likes")
-        .select(
-          "*",
-          {
-            count: "exact",
-            head: true
-          }
-        )
-        .eq("post_id", postId);
-
-    const countElement =
-      document.getElementById(
-        "likes-" + postId
-      );
-
-    if (countElement) {
-
-      countElement.textContent =
-        count || 0;
-
-    }
-
-    if (currentUser) {
-
-      const {
-        data
-      } =
-        await supabaseClient
-          .from("post_likes")
-          .select("id")
-          .eq("post_id", postId)
-          .eq("user_id", currentUser.id)
-          .maybeSingle();
-
-      const button =
-        document.getElementById(
-          "like-" + postId
-        );
-
-      if (button) {
-
-        button.classList.toggle(
-          "active",
-          !!data
-        );
-
-      }
-
-    }
-
-  }
-
-  async function refreshLikeStates(posts) {
-
-    for (const post of posts) {
-
-      await updateLikeUI(post.id);
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * COMMENTAIRES
-   * =========================================================
-   */
-
-  async function toggleComments(postId) {
-
-    const box =
-      document.getElementById(
-        "comments-" + postId
-      );
-
-    if (!box) {
-      return;
-    }
-
-    const visible =
-      box.style.display !== "none";
-
-    box.style.display =
-      visible ? "none" : "block";
-
-    if (!visible) {
-
-      await loadComments(postId);
-
-    }
-
-  }
-
-  async function loadComments(postId) {
-
-    const container =
-      document.getElementById(
-        "comments-list-" + postId
-      );
-
-    if (!container) {
-      return;
-    }
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("comments")
-        .select(`
-          *,
-          profiles:user_id (
-            username,
-            first_name,
-            last_name,
-            avatar_url
-          )
-        `)
-        .eq("post_id", postId)
-        .order(
-          "created_at",
-          {
-            ascending: true
-          }
-        );
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<p class="muted">
-          Aucun commentaire.
-        </p>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(comment => {
-
-        const profile =
-          comment.profiles || {};
-
-        const name =
-          [profile.first_name, profile.last_name]
-            .filter(Boolean)
-            .join(" ") ||
-          profile.username ||
-          "Utilisateur";
-
-        return `
-          <div class="comment">
-
-            <strong>
-              ${escapeHTML(name)}
-            </strong>
-
-            <p style="margin:3px 0">
-              ${escapeHTML(comment.content)}
-            </p>
-
-            <small class="muted">
-              ${formatDate(comment.created_at)}
-            </small>
-
-          </div>
-        `;
-
-      }).join("");
-
-  }
-
-  async function addComment(postId) {
-
-    if (!requireAuth("commenter")) {
-      return;
-    }
-
-    const input =
-      document.getElementById(
-        "comment-input-" + postId
-      );
-
-    const content =
-      input.value.trim();
-
-    if (!content) {
-      return;
-    }
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("comments")
-        .insert({
-
-          post_id: postId,
-          user_id: currentUser.id,
-          content
-
-        });
-
-    if (error) {
-
-      showToast(
-        error.message
-      );
-
-      return;
-
-    }
-
-    input.value = "";
-
-    await loadComments(postId);
-
-    const count =
-      document.getElementById(
-        "comments-count-" + postId
-      );
-
-    if (count) {
-
-      const {
-        count: total
-      } =
-        await supabaseClient
-          .from("comments")
-          .select(
-            "*",
-            {
-              count: "exact",
-              head: true
-            }
-          )
-          .eq("post_id", postId);
-
-      count.textContent =
-        total || 0;
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * PARTAGE
-   * =========================================================
-   */
-
-  async function sharePost(postId) {
-
-    const url =
-      window.location.href.split("#")[0] +
-      "#post-" +
-      postId;
-
-    if (
-      navigator.share
-    ) {
-
-      try {
-
-        await navigator.share({
-          title: "Guinée Web",
-          text: "Découvrez cette publication sur Guinée Web.",
-          url
-        });
-
-      } catch (_) {}
-
-    } else {
-
-      await navigator.clipboard.writeText(url);
-
-      showToast(
-        "Lien copié ✅"
-      );
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * AMIS / SUIVI
-   * =========================================================
-   */
-
-  async function searchFriends() {
-
-    const input =
-      document.getElementById(
-        "friendSearch"
-      );
-
-    const container =
-      document.getElementById(
-        "friendResults"
-      );
-
-    if (!input || !container) {
-      return;
-    }
-
-    const query =
-      input.value
-        .trim()
-        .replace(/^@/, "");
-
-    if (!query) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Recherchez des personnes pour les ajouter.
-        </div>`;
-
-      return;
-
-    }
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select(`
-          id,
-          username,
-          first_name,
-          last_name,
-          avatar_url
-        `)
-        .or(
-          `username.ilike.%${query}%,first_name.ilike.%${query}%,last_name.ilike.%${query}%`
-        )
-        .limit(20);
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Aucun utilisateur trouvé.
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(renderUserResult).join("");
-
-  }
-
-  function renderUserResult(user) {
-
-    const name =
-      [user.first_name, user.last_name]
-        .filter(Boolean)
-        .join(" ") ||
-      user.username ||
-      "Utilisateur";
-
-    const initial =
-      (
-        user.first_name ||
-        user.username ||
-        "U"
-      )
-      .charAt(0)
-      .toUpperCase();
-
-    const self =
-      currentUser &&
-      currentUser.id === user.id;
-
-    return `
-
-      <div class="search-result">
-
-        <div class="avatar">
-
-          ${
-            user.avatar_url
-              ? `
-                <img
-                  src="${escapeAttribute(user.avatar_url)}"
-                  alt=""
-                >
-              `
-              : escapeHTML(initial)
-          }
+          <button
+            class="primary"
+            onclick="compose()"
+          >
+            Créer la première publication
+          </button>
 
         </div>
+      `
+    }
+  `;
 
-        <div style="flex:1">
 
-          <strong>
-            ${escapeHTML(name)}
-          </strong>
+  for(const p of posts){
 
-          <br>
+    const [
+      likes,
+      comments
+    ] = await Promise.all([
 
-          <small class="muted">
-            @${escapeHTML(user.username || "")}
+      sb
+        .from("likes")
+        .select(
+          "id",
+          {
+            count:"exact",
+            head:true
+          }
+        )
+        .eq("post_id",p.id),
+
+      sb
+        .from("comments")
+        .select(
+          "id",
+          {
+            count:"exact",
+            head:true
+          }
+        )
+        .eq("post_id",p.id)
+
+    ]);
+
+    const meta =
+      document.querySelector(
+        `#meta-${p.id}`
+      );
+
+    if(meta){
+
+      meta.textContent =
+        `${likes.count || 0} J’aime · ${
+          comments.count || 0
+        } commentaire(s)`;
+
+    }
+
+
+    const mine =
+      await sb
+        .from("likes")
+        .select("id")
+        .eq("post_id",p.id)
+        .eq("user_id",user.id)
+        .maybeSingle();
+
+    const likeButton =
+      document.querySelector(
+        `[data-like="${p.id}"]`
+      );
+
+    if(likeButton){
+
+      likeButton.textContent =
+        mine.data
+          ? "💙 J’aime"
+          : "❤️ J’aime";
+
+    }
+
+  }
+}
+
+
+/* =========================
+   CARTE PUBLICATION
+========================= */
+
+function postCard(p){
+
+  return `
+
+    <article
+      class="card post"
+      id="post-${p.id}"
+    >
+
+      <div class="head">
+
+        ${avatar(p.profiles)}
+
+        <div>
+
+          <b>
+            ${esc(
+              p.profiles?.full_name ||
+              "Utilisateur"
+            )}
+          </b>
+
+          <small>
+            ${esc(
+              p.profiles?.city ||
+              "Guinée"
+            )}
+            ·
+            ${fmt(p.created_at)}
           </small>
 
         </div>
 
+      </div>
+
+
+      ${
+        p.content
+          ? `<p>${esc(p.content)}</p>`
+          : ""
+      }
+
+
+      ${
+        p.image_url
+          ? `
+            <img
+              class="media"
+              src="${esc(p.image_url)}"
+              alt=""
+            >
+          `
+          : ""
+      }
+
+
+      ${
+        p.video_url
+          ? `
+            <video
+              class="media"
+              src="${esc(p.video_url)}"
+              controls
+              playsinline
+            ></video>
+          `
+          : ""
+      }
+
+
+      <small
+        id="meta-${p.id}"
+        class="muted"
+      ></small>
+
+
+      <div class="actions">
+
+        <button
+          data-like="${p.id}"
+          onclick="toggleLike('${p.id}')"
+        >
+          ❤️ J’aime
+        </button>
+
+        <button
+          onclick="showComments('${p.id}')"
+        >
+          💬 Commenter
+        </button>
+
+        <button
+          onclick="sharePost('${p.id}')"
+        >
+          ↗️ Partager
+        </button>
+
+      </div>
+
+
+      <div
+        id="comments-${p.id}"
+      ></div>
+
+    </article>
+  `;
+}
+
+
+/* =========================
+   LIKE
+========================= */
+
+async function toggleLike(id){
+
+  const r =
+    await sb
+      .from("likes")
+      .select("id")
+      .eq("post_id",id)
+      .eq("user_id",user.id)
+      .maybeSingle();
+
+  if(r.data){
+
+    await sb
+      .from("likes")
+      .delete()
+      .eq("id",r.data.id);
+
+  }else{
+
+    const x =
+      await sb
+        .from("likes")
+        .insert({
+          post_id:id,
+          user_id:user.id
+        });
+
+    if(x.error)
+      throw x.error;
+
+  }
+
+  await home();
+}
+
+
+/* =========================
+   COMMENTAIRES
+========================= */
+
+async function showComments(id){
+
+  const box =
+    document.getElementById(
+      "comments-"+id
+    );
+
+  if(box.innerHTML){
+
+    box.innerHTML = "";
+
+    return;
+  }
+
+  const r =
+    await sb
+      .from("comments")
+      .select(
+        "*,profiles!comments_user_id_fkey(full_name,avatar_url)"
+      )
+      .eq("post_id",id)
+      .order(
+        "created_at",
+        {ascending:true}
+      );
+
+  box.innerHTML = `
+
+    <div
+      class="card"
+      style="margin-top:10px"
+    >
+
+      ${
+        (r.data || [])
+          .map(c => `
+
+            <div
+              class="row"
+              style="margin:8px 0"
+            >
+
+              ${avatar(c.profiles)}
+
+              <div>
+
+                <b>
+                  ${esc(
+                    c.profiles?.full_name ||
+                    "Utilisateur"
+                  )}
+                </b>
+
+                <div>
+                  ${esc(c.content)}
+                </div>
+
+              </div>
+
+            </div>
+
+          `)
+          .join("")
+
+        ||
+
+        "<p class='muted'>Aucun commentaire.</p>"
+      }
+
+
+      <form id="cf-${id}">
+
+        <input
+          id="ci-${id}"
+          placeholder="Écrire un commentaire..."
+          maxlength="500"
+          required
+        >
+
+        <button class="primary">
+          Envoyer
+        </button>
+
+      </form>
+
+    </div>
+  `;
+
+
+  const f =
+    document.getElementById(
+      "cf-"+id
+    );
+
+  if(f){
+
+    f.onsubmit =
+      async e => {
+
+        e.preventDefault();
+
+        const input =
+          document.getElementById(
+            "ci-"+id
+          );
+
+        const x =
+          await sb
+            .from("comments")
+            .insert({
+              post_id:id,
+              user_id:user.id,
+              content:input.value.trim()
+            });
+
+        if(x.error)
+          msg(x.error);
+
+        else
+          showComments(id);
+
+      };
+
+  }
+}
+
+
+/* =========================
+   PARTAGE
+========================= */
+
+async function sharePost(id){
+
+  const url =
+    location.href.split("#")[0] +
+    "#post-" +
+    id;
+
+  if(navigator.share){
+
+    try{
+
+      await navigator.share({
+        title:"Guinée Web",
+        text:
+          "Regarde cette publication sur Guinée Web",
+        url
+      });
+
+    }catch{}
+
+  }else{
+
+    await navigator.clipboard.writeText(url);
+
+    alert("Lien copié.");
+
+  }
+}
+
+
+/* =========================
+   CRÉATION PUBLICATION
+========================= */
+
+function compose(){
+
+  const v =
+    document.getElementById("view");
+
+  v.innerHTML = `
+
+    <div class="card">
+
+      <button
+        class="link"
+        onclick="go('home')"
+      >
+        ← Annuler
+      </button>
+
+      <h2>
+        Créer une publication
+      </h2>
+
+      <form id="postForm">
+
+        <textarea
+          id="content"
+          rows="5"
+          maxlength="5000"
+          placeholder="Quoi de neuf ?"
+        ></textarea>
+
+        <label>
+
+          Photo ou vidéo
+
+          <input
+            id="media"
+            type="file"
+            accept="image/*,video/*"
+          >
+
+        </label>
+
+        <button class="primary">
+          Publier
+        </button>
+
+        <p
+          id="msg"
+          class="muted"
+        ></p>
+
+      </form>
+
+    </div>
+  `;
+
+
+  document.getElementById(
+    "postForm"
+  ).onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      msg("Publication...");
+
+      try{
+
+        let image_url = null;
+        let video_url = null;
+
+        const f =
+          document.getElementById(
+            "media"
+          ).files[0];
+
+        const text =
+          document.getElementById(
+            "content"
+          ).value.trim();
+
+
+        if(!text && !f){
+
+          throw new Error(
+            "Ajoute du texte ou un média."
+          );
+
+        }
+
+
+        if(f){
+
+          const bucket =
+            f.type.startsWith("video/")
+              ? "videos"
+              : "media";
+
+          const path =
+            `${user.id}/${crypto.randomUUID()}-${f.name.replace(
+              /[^a-zA-Z0-9._-]/g,
+              "_"
+            )}`;
+
+
+          const up =
+            await sb
+              .storage
+              .from(bucket)
+              .upload(
+                path,
+                f
+              );
+
+          if(up.error)
+            throw up.error;
+
+
+          const pub =
+            sb
+              .storage
+              .from(bucket)
+              .getPublicUrl(path)
+              .data
+              .publicUrl;
+
+
+          if(
+            f.type.startsWith("video/")
+          )
+            video_url = pub;
+          else
+            image_url = pub;
+
+        }
+
+
+        const r =
+          await sb
+            .from("posts")
+            .insert({
+              author_id:user.id,
+              content:text,
+              image_url,
+              video_url
+            });
+
+
+        if(r.error)
+          throw r.error;
+
+
+        await go("home");
+
+      }catch(e){
+
+        msg(e);
+
+      }
+
+    };
+}
+
+
+/* =========================
+   SHORTS
+========================= */
+
+async function shorts(){
+
+  const v =
+    document.getElementById("view");
+
+  const r =
+    await sb
+      .from("posts")
+      .select(
+        "*,profiles!posts_author_id_fkey(full_name,avatar_url,city)"
+      )
+      .not(
+        "video_url",
+        "is",
+        null
+      )
+      .order(
+        "created_at",
+        {ascending:false}
+      )
+      .limit(30);
+
+
+  v.innerHTML = `
+
+    <div class="title">
+
+      <h2>
+        🎬 Shorts
+      </h2>
+
+      <button
+        class="primary"
+        onclick="compose()"
+      >
+        + Créer
+      </button>
+
+    </div>
+
+
+    ${
+      (r.data || []).length
+
+      ?
+
+      (r.data || [])
+        .map(p => `
+
+          <article class="short">
+
+            <video
+              src="${esc(p.video_url)}"
+              controls
+              playsinline
+              loop
+            ></video>
+
+            <div class="caption">
+
+              ${avatar(p.profiles)}
+
+              <b>
+                ${esc(
+                  p.profiles?.full_name ||
+                  "Utilisateur"
+                )}
+              </b>
+
+              <p>
+                ${esc(p.content || "")}
+              </p>
+
+            </div>
+
+          </article>
+
+        `)
+        .join("")
+
+      :
+
+      `
+        <div class="card empty">
+
+          <h2>
+            Aucun Short
+          </h2>
+
+          <p class="muted">
+            Les vidéos publiées apparaîtront ici.
+          </p>
+
+        </div>
+      `
+    }
+
+  `;
+}
+
+
+/* =========================
+   AMIS
+========================= */
+
+async function friends(){
+
+  const v =
+    document.getElementById("view");
+
+  const r =
+    await sb
+      .from("profiles")
+      .select(
+        "id,full_name,avatar_url,city"
+      )
+      .neq(
+        "id",
+        user.id
+      )
+      .order(
+        "full_name"
+      )
+      .limit(100);
+
+
+  v.innerHTML = `
+
+    <div class="card">
+
+      <h2>
+        👥 Utilisateurs
+      </h2>
+
+      <p class="muted">
+        Ajoute des personnes à ton réseau.
+      </p>
+
+    </div>
+
+
+    <div class="people">
+
+      ${
+        (r.data || [])
+          .map(p => `
+
+            <article class="card person">
+
+              ${avatar(p)}
+
+              <div>
+
+                <b>
+                  ${esc(
+                    p.full_name ||
+                    "Utilisateur"
+                  )}
+                </b>
+
+                <small>
+                  ${esc(
+                    p.city ||
+                    "Guinée"
+                  )}
+                </small>
+
+              </div>
+
+              <button
+                class="primary small"
+                onclick="addFriend('${p.id}',this)"
+              >
+                Ajouter
+              </button>
+
+            </article>
+
+          `)
+          .join("")
+      }
+
+    </div>
+  `;
+}
+
+
+async function addFriend(id,b){
+
+  const r =
+    await sb
+      .from("friendships")
+      .insert({
+        requester_id:user.id,
+        addressee_id:id,
+        status:"pending"
+      });
+
+  if(r.error){
+
+    b.textContent =
+      "Déjà envoyée";
+
+  }else{
+
+    b.textContent =
+      "Envoyée";
+
+    b.disabled = true;
+
+  }
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+async function messages(){
+
+  const v =
+    document.getElementById("view");
+
+
+  const people =
+    await sb
+      .from("profiles")
+      .select(
+        "id,full_name,avatar_url,city"
+      )
+      .neq(
+        "id",
+        user.id
+      )
+      .order(
+        "full_name"
+      )
+      .limit(100);
+
+
+  if(
+    !selectedChat &&
+    people.data?.[0]
+  ){
+
+    selectedChat =
+      people.data[0].id;
+
+  }
+
+
+  let list = [];
+
+
+  if(selectedChat){
+
+    const r =
+      await sb
+        .from("messages")
+        .select(
+          "*,profiles!messages_sender_id_fkey(full_name)"
+        )
+        .or(
+          `and(sender_id.eq.${user.id},receiver_id.eq.${selectedChat}),and(sender_id.eq.${selectedChat},receiver_id.eq.${user.id})`
+        )
+        .order(
+          "created_at",
+          {ascending:true}
+        );
+
+    list =
+      r.data || [];
+
+  }
+
+
+  v.innerHTML = `
+
+    <div class="card">
+
+      <h2>
+        💬 Messages
+      </h2>
+
+      <select
+        id="chatUser"
+        style="
+          width:100%;
+          padding:12px;
+          border-radius:12px;
+          border:1px solid var(--line)
+        "
+      >
+
         ${
-          self
-            ? `
-              <button
-                class="btn btn-secondary btn-small"
-                onclick="navigate('profile')"
+          (people.data || [])
+            .map(p => `
+
+              <option
+                value="${p.id}"
+                ${
+                  p.id === selectedChat
+                    ? "selected"
+                    : ""
+                }
               >
-                Moi
-              </button>
-            `
-            : `
-              <button
-                class="btn btn-primary btn-small"
-                onclick="toggleFollow('${user.id}')"
+                ${esc(
+                  p.full_name ||
+                  "Utilisateur"
+                )}
+              </option>
+
+            `)
+            .join("")
+        }
+
+      </select>
+
+    </div>
+
+
+    <div class="card">
+
+      <div class="chat">
+
+        ${
+          list
+            .map(m => `
+
+              <div
+                class="bubble ${
+                  m.sender_id === user.id
+                    ? "mine"
+                    : ""
+                }"
               >
-                Suivre
-              </button>
-            `
+
+                ${esc(m.content)}
+
+                <br>
+
+                <small>
+                  ${fmt(m.created_at)}
+                </small>
+
+              </div>
+
+            `)
+            .join("")
+
+          ||
+
+          "<p class='muted'>Aucun message.</p>"
         }
 
       </div>
 
-    `;
+
+      <form
+        id="messageForm"
+        style="
+          display:flex;
+          margin-top:10px
+        "
+      >
+
+        <input
+          id="messageText"
+          required
+          maxlength="2000"
+          placeholder="Écrire un message..."
+        >
+
+        <button class="primary">
+          Envoyer
+        </button>
+
+      </form>
+
+    </div>
+  `;
+
+
+  document.getElementById(
+    "chatUser"
+  ).onchange =
+    e => {
+
+      selectedChat =
+        e.target.value;
+
+      messages();
+
+    };
+
+
+  document.getElementById(
+    "messageForm"
+  ).onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+      const input =
+        document.getElementById(
+          "messageText"
+        );
+
+      const x =
+        await sb
+          .from("messages")
+          .insert({
+            sender_id:user.id,
+            receiver_id:selectedChat,
+            content:input.value.trim()
+          });
+
+      if(!x.error){
+
+        input.value = "";
+
+        messages();
+
+      }
+
+    };
+}
+
+
+/* =========================
+   PROFIL
+========================= */
+
+async function profilePage(){
+
+  const r =
+    await sb
+      .from("posts")
+      .select("*")
+      .eq(
+        "author_id",
+        user.id
+      )
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  const v =
+    document.getElementById("view");
+
+
+  v.innerHTML = `
+
+    <div
+      class="card"
+      style="text-align:center"
+    >
+
+      <div>
+        ${avatar(profile)}
+      </div>
+
+      <h2>
+        ${esc(
+          profile?.full_name ||
+          "Utilisateur"
+        )}
+      </h2>
+
+      <p class="muted">
+        ${esc(
+          profile?.city ||
+          "Guinée"
+        )}
+      </p>
+
+
+      <form id="profileForm">
+
+        <label>
+
+          Nom complet
+
+          <input
+            id="pname"
+            value="${esc(
+              profile?.full_name ||
+              ""
+            )}"
+            maxlength="100"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Ville
+
+          <input
+            id="pcity"
+            value="${esc(
+              profile?.city ||
+              ""
+            )}"
+            maxlength="100"
+            required
+          >
+
+        </label>
+
+
+        <label>
+
+          Bio
+
+          <textarea
+            id="pbio"
+            maxlength="500"
+          >${esc(
+            profile?.bio ||
+            ""
+          )}</textarea>
+
+        </label>
+
+
+        <label>
+
+          Photo de profil
+
+          <input
+            id="avatarFile"
+            type="file"
+            accept="image/*"
+          >
+
+        </label>
+
+
+        <button class="primary">
+          Enregistrer
+        </button>
+
+      </form>
+
+
+      <button
+        class="danger wide"
+        onclick="logout()"
+      >
+        Se déconnecter
+      </button>
+
+    </div>
+
+
+    <h3>
+      Mes publications
+    </h3>
+
+
+    ${
+      (r.data || [])
+        .map(
+          p =>
+            postCard({
+              ...p,
+              profiles:profile
+            })
+        )
+        .join("")
+
+      ||
+
+      `
+        <div class="card empty">
+          Tu n'as encore rien publié.
+        </div>
+      `
+    }
+
+  `;
+
+
+  document.getElementById(
+    "profileForm"
+  ).onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+
+      let avatar_url =
+        profile.avatar_url;
+
+
+      const f =
+        document.getElementById(
+          "avatarFile"
+        ).files[0];
+
+
+      if(f){
+
+        const extension =
+          f.name
+            .split(".")
+            .pop();
+
+
+        const path =
+          `${user.id}/avatar-${Date.now()}.${extension}`;
+
+
+        const up =
+          await sb
+            .storage
+            .from("avatars")
+            .upload(
+              path,
+              f,
+              {upsert:true}
+            );
+
+
+        if(up.error)
+          throw up.error;
+
+
+        avatar_url =
+          sb
+            .storage
+            .from("avatars")
+            .getPublicUrl(path)
+            .data
+            .publicUrl;
+
+      }
+
+
+      const x =
+        await sb
+          .from("profiles")
+          .update({
+            full_name:
+              document.getElementById(
+                "pname"
+              ).value.trim(),
+
+            city:
+              document.getElementById(
+                "pcity"
+              ).value.trim(),
+
+            bio:
+              document.getElementById(
+                "pbio"
+              ).value.trim(),
+
+            avatar_url
+          })
+          .eq(
+            "id",
+            user.id
+          );
+
+
+      if(x.error)
+        throw x.error;
+
+
+      await loadProfile();
+
+      shell();
+
+      go("profile");
+
+    };
+}
+
+
+/* =========================
+   NOTIFICATIONS
+========================= */
+
+async function notifications(){
+
+  const v =
+    document.getElementById("view");
+
+
+  const r =
+    await sb
+      .from("notifications")
+      .select("*")
+      .eq(
+        "user_id",
+        user.id
+      )
+      .order(
+        "created_at",
+        {ascending:false}
+      )
+      .limit(100);
+
+
+  await sb
+    .from("notifications")
+    .update({
+      read:true
+    })
+    .eq(
+      "user_id",
+      user.id
+    );
+
+
+  updateBadge();
+
+
+  v.innerHTML = `
+
+    <div class="card">
+
+      <h2>
+        🔔 Notifications
+      </h2>
+
+    </div>
+
+
+    ${
+      (r.data || [])
+        .map(n => `
+
+          <article class="card">
+
+            <b>
+              ${esc(n.title)}
+            </b>
+
+            <p>
+              ${esc(n.body)}
+            </p>
+
+            <small>
+              ${fmt(n.created_at)}
+            </small>
+
+          </article>
+
+        `)
+        .join("")
+
+      ||
+
+      `
+        <div class="card empty">
+          Aucune notification.
+        </div>
+      `
+    }
+
+  `;
+}
+
+
+/* =========================
+   PAIEMENTS
+========================= */
+
+async function payments(){
+
+  const v =
+    document.getElementById("view");
+
+
+  const r =
+    await sb
+      .from("payment_intents")
+      .select("*")
+      .eq(
+        "user_id",
+        user.id
+      )
+      .order(
+        "created_at",
+        {ascending:false}
+      );
+
+
+  v.innerHTML = `
+
+    <div class="card">
+
+      <h2>
+        💳 Paiements
+      </h2>
+
+
+      <div class="notice">
+
+        Pour le moment,
+        Guinée Web utilise uniquement
+        un <b>paiement physique</b>.
+
+        Aucun argent n'est débité
+        automatiquement depuis cette page.
+
+        Une demande est enregistrée
+        et doit être confirmée
+        par l'administrateur.
+
+      </div>
+
+
+      <form id="payForm">
+
+        <label>
+
+          Montant (GNF)
+
+          <input
+            id="amount"
+            type="number"
+            min="1"
+            step="1"
+            required
+            placeholder="Ex. 50000"
+          >
+
+        </label>
+
+
+        <label>
+
+          Mode
+
+          <select
+            id="provider"
+            style="
+              padding:12px;
+              border:1px solid #ccd4df;
+              border-radius:12px
+            "
+          >
+
+            <option value="physical_cash">
+              Espèces / paiement physique
+            </option>
+
+            <option value="physical_mtn">
+              MTN Mobile Money — paiement physique
+            </option>
+
+            <option value="physical_orange">
+              Orange Money — paiement physique
+            </option>
+
+          </select>
+
+        </label>
+
+
+        <button class="primary">
+          Enregistrer ma demande
+        </button>
+
+
+        <p
+          id="payMsg"
+          class="muted"
+        ></p>
+
+      </form>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        Mes demandes
+      </h3>
+
+
+      ${
+        (r.data || [])
+          .map(p => `
+
+            <div
+              class="row"
+              style="
+                justify-content:space-between;
+                padding:10px 0;
+                border-bottom:1px solid var(--line)
+              "
+            >
+
+              <div>
+
+                <b>
+                  ${Number(
+                    p.amount
+                  ).toLocaleString(
+                    "fr-FR"
+                  )}
+                  GNF
+                </b>
+
+                <small>
+                  ${esc(
+                    p.provider
+                  )}
+                  ·
+                  ${fmt(
+                    p.created_at
+                  )}
+                </small>
+
+              </div>
+
+              <span>
+                ${esc(p.status)}
+              </span>
+
+            </div>
+
+          `)
+          .join("")
+
+        ||
+
+        `
+          <p class="muted">
+            Aucune demande.
+          </p>
+        `
+      }
+
+    </div>
+
+  `;
+
+
+  document.getElementById(
+    "payForm"
+  ).onsubmit =
+    async e => {
+
+      e.preventDefault();
+
+
+      const amountValue =
+        Number(
+          document.getElementById(
+            "amount"
+          ).value
+        );
+
+
+      const providerValue =
+        document.getElementById(
+          "provider"
+        ).value;
+
+
+      const x =
+        await sb
+          .from("payment_intents")
+          .insert({
+            user_id:user.id,
+            provider:providerValue,
+            amount:amountValue,
+            currency:"GNF",
+            status:"pending"
+          });
+
+
+      const payMsg =
+        document.getElementById(
+          "payMsg"
+        );
+
+
+      if(x.error){
+
+        payMsg.textContent =
+          x.error.message;
+
+      }else{
+
+        payMsg.textContent =
+          "Demande enregistrée. Présente-toi ensuite au point de paiement prévu.";
+
+        payments();
+
+      }
+
+    };
+}
+
+
+/* =========================
+   DÉCONNEXION
+========================= */
+
+async function logout(){
+
+  await sb.auth.signOut();
+
+}
+
+
+/* =========================
+   DÉMARRAGE
+========================= */
+
+async function start(){
+
+  const s =
+    await sb.auth.getSession();
+
+
+  user =
+    s.data.session?.user;
+
+
+  if(!user){
+
+    welcome();
+
+    return;
 
   }
 
-  async function toggleFollow(targetId) {
 
-    if (!requireAuth("suivre un utilisateur")) {
-      return;
-    }
+  await loadProfile();
 
-    if (targetId === currentUser.id) {
-      return;
-    }
 
-    const {
-      data: existing,
-      error: checkError
-    } =
-      await supabaseClient
-        .from("follows")
-        .select("id")
-        .eq("follower_id", currentUser.id)
-        .eq("following_id", targetId)
-        .maybeSingle();
+  shell();
 
-    if (checkError) {
 
-      showToast(
-        checkError.message
-      );
+  await go("home");
 
-      return;
 
-    }
+  sb.auth.onAuthStateChange(
+    async (_,session) => {
 
-    if (existing) {
+      user =
+        session?.user ||
+        null;
 
-      await supabaseClient
-        .from("follows")
-        .delete()
-        .eq("id", existing.id);
 
-      showToast(
-        "Vous ne suivez plus cet utilisateur."
-      );
+      if(!user){
 
-    } else {
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("follows")
-          .insert({
-
-            follower_id: currentUser.id,
-            following_id: targetId
-
-          });
-
-      if (error) {
-
-        showToast(
-          error.message
-        );
+        welcome();
 
         return;
 
       }
 
-      await createNotification(
-        targetId,
-        "follow",
-        "Vous suit maintenant."
-      );
 
-      showToast(
-        "Utilisateur suivi ✅"
-      );
+      await loadProfile();
+
+      shell();
+
+      go("home");
 
     }
+  );
 
-  }
 
-  /*
-   * =========================================================
-   * NOTIFICATIONS
-   * =========================================================
-   */
+  /* =====================
+     NOTIFICATIONS TEMPS RÉEL
+  ===================== */
 
-  async function createNotification(
-    userId,
-    type,
-    content
-  ) {
+  sb
+    .channel("gw-notifications")
 
-    if (!currentUser) {
-      return;
-    }
-
-    await supabaseClient
-      .from("notifications")
-      .insert({
-
-        user_id: userId,
-        actor_id: currentUser.id,
-        type,
-        content
-
-      });
-
-  }
-
-  async function loadNotifications() {
-
-    if (!requireAuth("voir les notifications")) {
-      return;
-    }
-
-    const container =
-      document.getElementById(
-        "notificationsContainer"
-      );
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("notifications")
-        .select(`
-          *,
-          profiles:actor_id (
-            username,
-            first_name,
-            last_name
-          )
-        `)
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
-        .limit(50);
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Aucune notification.
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(notification => {
-
-        const profile =
-          notification.profiles || {};
-
-        const name =
-          [profile.first_name, profile.last_name]
-            .filter(Boolean)
-            .join(" ") ||
-          profile.username ||
-          "Quelqu'un";
-
-        return `
-          <div class="search-result">
-
-            <div class="avatar">
-              🔔
-            </div>
-
-            <div>
-
-              <strong>
-                ${escapeHTML(name)}
-              </strong>
-
-              <p style="margin:4px 0">
-                ${escapeHTML(notification.content || "")}
-              </p>
-
-              <small class="muted">
-                ${formatDate(notification.created_at)}
-              </small>
-
-            </div>
-
-          </div>
-        `;
-
-      }).join("");
-
-  }
-
-  /*
-   * =========================================================
-   * PROFIL
-   * =========================================================
-   */
-
-  async function loadProfile() {
-
-    if (!requireAuth("voir votre profil")) {
-      return;
-    }
-
-    await loadCurrentProfile();
-
-    const container =
-      document.getElementById(
-        "profileContainer"
-      );
-
-    if (!currentProfile) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Profil introuvable.
-        </div>`;
-
-      return;
-
-    }
-
-    const name =
-      [
-        currentProfile.first_name,
-        currentProfile.last_name
-      ]
-        .filter(Boolean)
-        .join(" ");
-
-    const username =
-      currentProfile.username ||
-      "";
-
-    const initial =
-      (
-        currentProfile.first_name ||
-        username ||
-        "U"
-      )
-      .charAt(0)
-      .toUpperCase();
-
-    const {
-      count: followers
-    } =
-      await supabaseClient
-        .from("follows")
-        .select(
-          "*",
-          {
-            count: "exact",
-            head: true
-          }
-        )
-        .eq(
-          "following_id",
-          currentUser.id
-        );
-
-    const {
-      count: following
-    } =
-      await supabaseClient
-        .from("follows")
-        .select(
-          "*",
-          {
-            count: "exact",
-            head: true
-          }
-        )
-        .eq(
-          "follower_id",
-          currentUser.id
-        );
-
-    container.innerHTML = `
-
-      <div class="card">
-
-        <div class="cover"></div>
-
-        <div class="profile-row">
-
-          <div class="profile-photo">
-
-            ${
-              currentProfile.avatar_url
-                ? `
-                  <img
-                    src="${escapeAttribute(currentProfile.avatar_url)}"
-                    alt=""
-                  >
-                `
-                : escapeHTML(initial)
-            }
-
-          </div>
-
-          <div>
-
-            <h2 style="margin:0">
-              ${escapeHTML(name || username)}
-            </h2>
-
-            <p class="muted">
-              @${escapeHTML(username)}
-            </p>
-
-            <p>
-              📍 ${escapeHTML(currentProfile.city || "")}
-            </p>
-
-          </div>
-
-        </div>
-
-        <div
-          style="
-            display:flex;
-            gap:25px;
-            padding:20px;
-          "
-        >
-
-          <div>
-            <strong>${followers || 0}</strong>
-            <br>
-            <small>Abonnés</small>
-          </div>
-
-          <div>
-            <strong>${following || 0}</strong>
-            <br>
-            <small>Abonnements</small>
-          </div>
-
-        </div>
-
-      </div>
-
-    `;
-
-  }
-
-  /*
-   * =========================================================
-   * SHORTS
-   * =========================================================
-   */
-
-  async function loadShorts() {
-
-    const container =
-      document.getElementById(
-        "shortsContainer"
-      );
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("shorts")
-        .select(`
-          *,
-          profiles:author_id (
-            username,
-            first_name,
-            last_name
-          )
-        `)
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
-        .limit(30);
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-          <h3>🎬 Aucun Short</h3>
-          <p>
-            Les Shorts publiés par la communauté
-            apparaîtront ici.
-          </p>
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(renderShort).join("");
-
-  }
-
-  function renderShort(short) {
-
-    const profile =
-      short.profiles || {};
-
-    const username =
-      profile.username ||
-      "utilisateur";
-
-    return `
-
-      <article class="short">
-
-        ${
-          short.video_url
-            ? `
-              <video
-                src="${escapeAttribute(short.video_url)}"
-                controls
-                loop
-                playsinline
-              ></video>
-            `
-            : short.thumbnail_url
-              ? `
-                <img
-                  src="${escapeAttribute(short.thumbnail_url)}"
-                  alt=""
-                >
-              `
-              : ""
-        }
-
-        <div class="short-overlay"></div>
-
-        <div class="short-content">
-
-          <strong>
-            @${escapeHTML(username)}
-          </strong>
-
-          <p>
-            ${escapeHTML(short.caption || "")}
-          </p>
-
-        </div>
-
-        <div class="short-actions">
-
-          <button
-            onclick="requireAuth('aimer un Short')"
-          >
-            ❤️
-          </button>
-
-          <button
-            onclick="requireAuth('commenter un Short')"
-          >
-            💬
-          </button>
-
-          <button
-            onclick="shareShort('${short.id}')"
-          >
-            ↗️
-          </button>
-
-        </div>
-
-      </article>
-
-    `;
-
-  }
-
-  async function shareShort(id) {
-
-    const url =
-      window.location.href.split("#")[0] +
-      "#short-" +
-      id;
-
-    if (navigator.share) {
-
-      try {
-
-        await navigator.share({
-          title: "Guinée Web Short",
-          url
-        });
-
-      } catch (_) {}
-
-    } else {
-
-      await navigator.clipboard.writeText(url);
-
-      showToast(
-        "Lien copié ✅"
-      );
-
-    }
-
-  }
-
-  /*
-   * =========================================================
-   * RECHERCHE
-   * =========================================================
-   */
-
-  function performSearch() {
-
-    const value =
-      document
-        .getElementById("homeSearch")
-        .value
-        .trim();
-
-    if (!value) {
-
-      showToast(
-        "Entrez une recherche."
-      );
-
-      return;
-
-    }
-
-    document
-      .getElementById(
-        "globalSearch"
-      )
-      .value = value;
-
-    navigate("search");
-
-    performGlobalSearch();
-
-  }
-
-  async function performGlobalSearch() {
-
-    const input =
-      document.getElementById(
-        "globalSearch"
-      );
-
-    const container =
-      document.getElementById(
-        "searchResults"
-      );
-
-    const query =
-      input.value
-        .trim()
-        .replace(/^@/, "");
-
-    if (!query) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Entrez une recherche.
-        </div>`;
-
-      return;
-
-    }
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("profiles")
-        .select(`
-          id,
-          username,
-          first_name,
-          last_name,
-          avatar_url,
-          city
-        `)
-        .or(
-          `username.ilike.%${query}%,first_name.ilike.%${query}%,last_name.ilike.%${query}%,city.ilike.%${query}%`
-        )
-        .limit(30);
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-          Aucun résultat.
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(user => {
-
-        const name =
-          [
-            user.first_name,
-            user.last_name
-          ]
-            .filter(Boolean)
-            .join(" ") ||
-          user.username ||
-          "Utilisateur";
-
-        const initial =
-          (
-            user.first_name ||
-            user.username ||
-            "U"
-          )
-          .charAt(0)
-          .toUpperCase();
-
-        return `
-
-          <div class="search-result">
-
-            <div class="avatar">
-
-              ${
-                user.avatar_url
-                  ? `
-                    <img
-                      src="${escapeAttribute(user.avatar_url)}"
-                      alt=""
-                    >
-                  `
-                  : escapeHTML(initial)
-              }
-
-            </div>
-
-            <div style="flex:1">
-
-              <strong>
-                ${escapeHTML(name)}
-              </strong>
-
-              <br>
-
-              <small class="muted">
-                @${escapeHTML(user.username || "")}
-                ${
-                  user.city
-                    ? " • " + escapeHTML(user.city)
-                    : ""
-                }
-              </small>
-
-            </div>
-
-            ${
-              currentUser &&
-              currentUser.id !== user.id
-                ? `
-                  <button
-                    class="btn btn-primary btn-small"
-                    onclick="toggleFollow('${user.id}')"
-                  >
-                    Suivre
-                  </button>
-                `
-                : ""
-            }
-
-          </div>
-
-        `;
-
-      }).join("");
-
-  }
-
-  /*
-   * =========================================================
-   * MESSAGES
-   * =========================================================
-   */
-
-  async function loadMessages() {
-
-    if (!requireAuth("accéder aux messages")) {
-      return;
-    }
-
-    const container =
-      document.getElementById(
-        "messagesContainer"
-      );
-
-    const {
-      data,
-      error
-    } =
-      await supabaseClient
-        .from("messages")
-        .select(`
-          *,
-          sender:sender_id (
-            username,
-            first_name,
-            last_name
-          ),
-          receiver:receiver_id (
-            username,
-            first_name,
-            last_name
-          )
-        `)
-        .or(
-          `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
-        )
-        .order(
-          "created_at",
-          {
-            ascending: false
-          }
-        )
-        .limit(50);
-
-    if (error) {
-
-      container.innerHTML =
-        `<div class="error">
-          ${escapeHTML(error.message)}
-        </div>`;
-
-      return;
-
-    }
-
-    if (!data.length) {
-
-      container.innerHTML =
-        `<div class="empty">
-
-          <h3>
-            💬 Aucun message
-          </h3>
-
-          <p>
-            Vos conversations apparaîtront ici.
-          </p>
-
-        </div>`;
-
-      return;
-
-    }
-
-    container.innerHTML =
-      data.map(message => {
-
-        const mine =
-          message.sender_id === currentUser.id;
-
-        const other =
-          mine
-            ? message.receiver
-            : message.sender;
-
-        const name =
-          [
-            other?.first_name,
-            other?.last_name
-          ]
-            .filter(Boolean)
-            .join(" ") ||
-          other?.username ||
-          "Utilisateur";
-
-        return `
-
-          <div
-            class="search-result"
-          >
-
-            <div class="avatar">
-              💬
-            </div>
-
-            <div>
-
-              <strong>
-                ${escapeHTML(name)}
-              </strong>
-
-              <p style="margin:3px 0">
-                ${escapeHTML(message.content)}
-              </p>
-
-              <small class="muted">
-                ${formatDate(message.created_at)}
-              </small>
-
-            </div>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-  }
-
-  /*
-   * =========================================================
-   * UTILITAIRES
-   * =========================================================
-   */
-
-  function closeModal(id) {
-
-    document
-      .getElementById(id)
-      ?.classList.remove("open");
-
-  }
-
-  function showToast(message) {
-
-    const toast =
-      document.createElement("div");
-
-    toast.className =
-      "toast";
-
-    toast.textContent =
-      message;
-
-    document.body.appendChild(
-      toast
-    );
-
-    setTimeout(
-      () => toast.remove(),
-      2800
-    );
-
-  }
-
-  function formatDate(date) {
-
-    if (!date) {
-      return "";
-    }
-
-    const d =
-      new Date(date);
-
-    return d.toLocaleString(
-      "fr-FR",
+    .on(
+      "postgres_changes",
       {
-        dateStyle: "medium",
-        timeStyle: "short"
+        event:"INSERT",
+        schema:"public",
+        table:"notifications",
+        filter:
+          `user_id=eq.${user.id}`
+      },
+      () => {
+
+        updateBadge();
+
+        if(
+          tab === "notifications"
+        )
+          notifications();
+
       }
-    );
+    )
 
-  }
+    .subscribe();
 
-  function escapeHTML(value) {
 
-    return String(value ?? "")
-      .replace(
-        /[&<>"']/g,
-        char => ({
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-        }[char])
-      );
+  /* =====================
+     MESSAGES TEMPS RÉEL
+  ===================== */
 
-  }
+  sb
+    .channel("gw-messages")
 
-  function escapeAttribute(value) {
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"messages",
+        filter:
+          `receiver_id=eq.${user.id}`
+      },
+      () => {
 
-    return escapeHTML(value);
+        updateBadge();
 
-  }
+        if(
+          tab === "messages"
+        )
+          messages();
 
-  /*
-   * Fermer les modales en cliquant à l'extérieur.
-   */
+      }
+    )
 
-  document
-    .querySelectorAll(".modal")
-    .forEach(modal => {
+    .subscribe();
 
-      modal.addEventListener(
-        "click",
-        event => {
+}
 
-          if (
-            event.target === modal
-          ) {
 
-            modal.classList.remove(
-              "open"
-            );
-
-          }
-
-        }
-      );
-
-    });
+start();
 
 </script>
 
