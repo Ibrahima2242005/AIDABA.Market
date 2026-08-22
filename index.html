@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Guinée Web 🇬🇳</title>
+
   <meta
     name="description"
-    content="Guinée Web — réseau social, Shorts, amis, services et marketplace."
-  />
+    content="Guinée Web — réseau social guinéen."
+  >
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
       --green: #078b50;
+      --green-dark: #056b3d;
       --green-light: #e7f8ef;
       --red: #d93645;
       --yellow: #f3c33b;
@@ -24,6 +26,7 @@
       --white: #ffffff;
       --border: #e1e9e4;
       --shadow: 0 10px 30px rgba(20, 35, 28, .08);
+      --radius: 18px;
     }
 
     * {
@@ -44,6 +47,7 @@
         sans-serif;
       background: var(--bg);
       color: var(--dark);
+      padding-bottom: 80px;
     }
 
     button,
@@ -63,6 +67,11 @@
       text-decoration: none;
     }
 
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
     .container {
       width: min(1100px, 100%);
       margin: auto;
@@ -75,13 +84,13 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(12px);
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
 
     .navbar {
-      height: 68px;
+      min-height: 68px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -94,6 +103,7 @@
       gap: 9px;
       font-size: 20px;
       font-weight: 900;
+      white-space: nowrap;
     }
 
     .flag {
@@ -135,6 +145,10 @@
       color: white;
     }
 
+    .btn-primary:hover {
+      background: var(--green-dark);
+    }
+
     .btn-secondary {
       background: #edf3ef;
       color: var(--dark);
@@ -143,6 +157,22 @@
     .btn-danger {
       background: #fff0f1;
       color: var(--red);
+    }
+
+    .btn-small {
+      padding: 7px 10px;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    /* APP */
+
+    .app-view {
+      display: none;
+    }
+
+    .app-view.active {
+      display: block;
     }
 
     /* HERO */
@@ -194,7 +224,7 @@
       min-width: 0;
     }
 
-    /* PHONE PREVIEW */
+    /* PHONE */
 
     .phone {
       max-width: 330px;
@@ -251,6 +281,14 @@
       margin-top: 0;
     }
 
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -261,7 +299,7 @@
       padding: 17px;
       background: white;
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
     }
 
@@ -271,10 +309,18 @@
 
     /* POSTS */
 
+    .post-card {
+      margin-bottom: 15px;
+    }
+
     .post-header {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .post-user {
+      flex: 1;
     }
 
     .avatar {
@@ -284,24 +330,38 @@
       place-items: center;
       border-radius: 50%;
       background: var(--green-light);
-      font-size: 21px;
+      color: var(--green);
+      font-size: 18px;
       font-weight: 900;
+      overflow: hidden;
     }
 
-    .post-media {
-      height: 205px;
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-content {
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .post-image {
+      width: 100%;
+      max-height: 500px;
+      object-fit: cover;
+      border-radius: 15px;
       margin: 13px 0;
-      display: grid;
-      place-items: center;
-      border-radius: 16px;
-      background: linear-gradient(135deg, #e2f3e9, white);
-      font-size: 70px;
     }
 
     .post-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
+      border-top: 1px solid var(--border);
+      padding-top: 10px;
     }
 
     .post-actions button {
@@ -310,33 +370,104 @@
       background: #eef3f0;
     }
 
+    .post-actions button.active {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    /* CREATE POST */
+
+    .create-post {
+      margin-bottom: 18px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+
+    .create-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    /* COMMENTS */
+
+    .comments {
+      margin-top: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+    }
+
+    .comment {
+      padding: 9px 0;
+      border-bottom: 1px solid #eef2ef;
+    }
+
+    .comment:last-child {
+      border-bottom: 0;
+    }
+
+    .comment-form {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .comment-form input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+    }
+
     /* SHORTS */
+
+    .shorts-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
 
     .short {
       position: relative;
-      height: 480px;
+      height: 500px;
       padding: 18px;
       display: flex;
       align-items: end;
       overflow: hidden;
       color: white;
       border-radius: 20px;
-      background:
-        linear-gradient(145deg, #164d37, #829d86, #17251f);
+      background: #17251f;
     }
 
-    .short:nth-child(2) {
-      background:
-        linear-gradient(145deg, #62391f, #bc9162, #263d31);
+    .short video,
+    .short img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .short:nth-child(3) {
-      background:
-        linear-gradient(145deg, #2b316b, #a2749c, #17251e);
+    .short-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        transparent 35%,
+        rgba(0,0,0,.75)
+      );
     }
 
     .short-content {
+      position: relative;
+      z-index: 2;
       text-shadow: 0 2px 8px rgba(0,0,0,.6);
+      padding-right: 60px;
     }
 
     .short-content p {
@@ -345,6 +476,7 @@
 
     .short-actions {
       position: absolute;
+      z-index: 3;
       right: 12px;
       bottom: 17px;
       display: grid;
@@ -353,7 +485,7 @@
 
     .short-actions button {
       width: 46px;
-      height: 46px;
+      min-height: 46px;
       border-radius: 50%;
       background: rgba(0,0,0,.55);
       color: white;
@@ -389,55 +521,43 @@
       border: 5px solid white;
       border-radius: 50%;
       background: #e7f5ed;
-      font-size: 55px;
+      font-size: 45px;
+      overflow: hidden;
+      flex-shrink: 0;
     }
 
-    /* BANNER */
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
 
-    .banner {
+    /* SEARCH */
+
+    .search-result {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 15px;
-      padding: 25px;
-      color: white;
-      border-radius: 22px;
-      background: linear-gradient(135deg, #087c49, #14b86a);
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
     }
 
-    .banner p {
-      color: #eafff2;
+    .search-result:last-child {
+      border-bottom: 0;
     }
 
-    /* BOTTOM NAV */
+    /* EMPTY */
 
-    .bottom-nav {
-      position: fixed;
-      z-index: 40;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      justify-content: center;
-      gap: 5px;
-      padding: 7px;
+    .empty {
+      padding: 45px 20px;
+      text-align: center;
+      color: var(--muted);
       background: white;
-      border-top: 1px solid var(--border);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
     }
 
-    .bottom-nav button {
-      padding: 8px 11px;
-      border-radius: 11px;
-      background: white;
-      font-size: 12px;
-    }
-
-    .bottom-nav button:hover {
-      background: var(--green-light);
-      color: var(--green);
-    }
-
-    /* MODALS */
+    /* MODAL */
 
     .modal {
       position: fixed;
@@ -455,7 +575,7 @@
     }
 
     .modal-box {
-      width: min(470px, 100%);
+      width: min(500px, 100%);
       max-height: 90vh;
       overflow-y: auto;
       padding: 23px;
@@ -515,31 +635,82 @@
       flex: 1;
     }
 
-    .notice {
+    .notice,
+    .success,
+    .error {
+      margin: 10px 0;
       padding: 11px;
       border-radius: 12px;
+    }
+
+    .notice {
       color: #66510a;
       background: #fff7dc;
     }
 
     .success {
-      margin: 10px 0;
-      padding: 11px;
-      border-radius: 12px;
       color: #08683e;
       background: #e7f8ee;
     }
 
     .error {
-      margin: 10px 0;
-      padding: 11px;
-      border-radius: 12px;
       color: #a21e2c;
       background: #fff0f1;
     }
 
+    /* TOAST */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 85px;
+      transform: translateX(-50%);
+      z-index: 999;
+      padding: 12px 17px;
+      color: white;
+      background: #14231c;
+      border-radius: 13px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+
+    /* BOTTOM NAV */
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 40;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      padding: 7px;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
+
+    .bottom-nav button {
+      padding: 8px 11px;
+      border-radius: 11px;
+      background: white;
+      font-size: 12px;
+    }
+
+    .bottom-nav button.active {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    /* LOADING */
+
+    .loading {
+      padding: 30px;
+      text-align: center;
+      color: var(--muted);
+    }
+
     footer {
-      padding: 40px 0 100px;
+      padding: 40px 0;
       text-align: center;
       color: var(--muted);
     }
@@ -549,7 +720,8 @@
         grid-template-columns: 1fr;
       }
 
-      .grid {
+      .grid,
+      .shorts-grid {
         grid-template-columns: 1fr;
       }
 
@@ -558,21 +730,36 @@
       }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 600px) {
+      .brand {
+        font-size: 17px;
+      }
+
       .nav-actions .btn-secondary {
         display: none;
       }
 
-      .banner {
-        display: block;
-      }
-
-      .banner .btn {
-        margin-top: 10px;
-      }
-
       .row {
         flex-direction: column;
+      }
+
+      .bottom-nav {
+        overflow-x: auto;
+        justify-content: flex-start;
+      }
+
+      .bottom-nav button {
+        white-space: nowrap;
+      }
+
+      .profile-row {
+        padding: 0 8px;
+        align-items: flex-end;
+      }
+
+      .profile-photo {
+        width: 85px;
+        height: 85px;
       }
     }
   </style>
@@ -589,620 +776,408 @@
         <span></span>
         <span></span>
       </span>
-
       Guinée Web
     </div>
 
-    <div class="nav-actions" id="authButtons">
-      <button
-        class="btn btn-secondary"
-        onclick="openAuth('login')"
-      >
-        Connexion
-      </button>
-
-      <button
-        class="btn btn-primary"
-        onclick="openAuth('signup')"
-      >
-        Inscription
-      </button>
-    </div>
+    <div class="nav-actions" id="authButtons"></div>
 
   </div>
 </header>
 
 <main class="container">
 
-  <!-- HERO -->
+  <!-- ACCUEIL -->
 
-  <section class="hero" id="home">
+  <div id="homeView" class="app-view active">
 
-    <div>
+    <section class="hero">
 
-      <span class="badge">
-        🇬🇳 RÉSEAU SOCIAL • SHORTS • SERVICES
-      </span>
+      <div>
 
-      <h1>
-        La vie quotidienne,
-        <br>
-        connectée.
-      </h1>
+        <span class="badge">
+          🇬🇳 RÉSEAU SOCIAL GUINÉEN
+        </span>
 
-      <p>
-        Guinée Web rassemble réseau social, vidéos courtes,
-        amis, services, marketplace et communauté dans une
-        seule application.
-      </p>
-
-      <div class="search-box">
-
-        <input
-          id="searchInput"
-          placeholder="Rechercher une personne, un service..."
-        >
-
-        <button
-          class="btn btn-primary"
-          onclick="searchSite()"
-        >
-          Rechercher
-        </button>
-
-      </div>
-
-      <div style="margin-top:12px">
-
-        <button
-          class="btn btn-primary"
-          onclick="openAuth('signup')"
-        >
-          Créer mon compte
-        </button>
-
-        <button
-          class="btn btn-secondary"
-          onclick="goTo('shorts')"
-        >
-          Voir les Shorts
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="phone">
-
-      <div class="phone-screen">
-
-        <small>Bonjour 👋</small>
-
-        <h3>
-          De quoi avez-vous besoin aujourd'hui ?
-        </h3>
-
-        <div class="mini-box">
-          🔎 J'ai besoin de...
-        </div>
-
-        <div class="category-grid">
-
-          <div class="category">
-            <strong>📰</strong>
-            Fil
-          </div>
-
-          <div class="category">
-            <strong>🎬</strong>
-            Shorts
-          </div>
-
-          <div class="category">
-            <strong>🤝</strong>
-            Amis
-          </div>
-
-          <div class="category">
-            <strong>🛍️</strong>
-            Marché
-          </div>
-
-          <div class="category">
-            <strong>🔧</strong>
-            Services
-          </div>
-
-          <div class="category">
-            <strong>💬</strong>
-            Messages
-          </div>
-
-        </div>
-
-        <div class="card">
-
-          <strong>
-            🇬🇳 Guinée Web
-          </strong>
-
-          <p style="font-size:13px">
-            Un compte pour accéder aux fonctionnalités sociales.
-          </p>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- FEED -->
-
-  <section id="feed">
-
-    <div style="
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-    ">
-
-      <h2>
-        📰 Fil d'actualité
-      </h2>
-
-      <button
-        class="btn btn-primary"
-        onclick="requireAuth('publier')"
-      >
-        ➕ Publier
-      </button>
-
-    </div>
-
-    <div class="grid">
-
-      <article class="card">
-
-        <div class="post-header">
-
-          <div class="avatar">
-            F
-          </div>
-
-          <div>
-
-            <strong>
-              Fatoumata Camara
-            </strong>
-
-            <br>
-
-            <small class="muted">
-              Conakry • il y a 12 min
-            </small>
-
-          </div>
-
-        </div>
+        <h1>
+          La vie quotidienne,
+          <br>
+          connectée.
+        </h1>
 
         <p>
-          Bonjour la communauté 🇬🇳 !
-          Quel endroit de Conakry recommandez-vous
-          pour passer un bon week-end ?
+          Connectez-vous, partagez vos publications,
+          découvrez des personnes et échangez avec
+          la communauté guinéenne.
         </p>
 
-        <div class="post-media">
-          🌆
-        </div>
+        <div class="search-box">
 
-        <div class="post-actions">
+          <input
+            id="homeSearch"
+            placeholder="Rechercher un utilisateur..."
+          >
 
-          <button onclick="requireAuth('aimer')">
-            ❤️ 24
-          </button>
-
-          <button onclick="requireAuth('commenter')">
-            💬 8
-          </button>
-
-          <button onclick="requireAuth('partager')">
-            ↗️ Partager
-          </button>
-
-          <button onclick="requireAuth('enregistrer')">
-            🔖
+          <button
+            class="btn btn-primary"
+            onclick="performSearch()"
+          >
+            Rechercher
           </button>
 
         </div>
 
-      </article>
-
-      <article class="card">
-
-        <div class="post-header">
-
-          <div class="avatar">
-            A
-          </div>
-
-          <div>
-
-            <strong>
-              Alpha Services
-            </strong>
-
-            <br>
-
-            <small class="muted">
-              Ratoma • il y a 1 h
-            </small>
-
-          </div>
-
-        </div>
-
-        <p>
-          Électricien disponible aujourd'hui
-          pour installations et réparations.
-        </p>
-
-        <div class="post-media">
-          🔧
-        </div>
-
-        <div class="post-actions">
-
-          <button onclick="requireAuth('aimer')">
-            ❤️ 41
-          </button>
-
-          <button onclick="requireAuth('commenter')">
-            💬 13
-          </button>
-
-          <button onclick="requireAuth('partager')">
-            ↗️ Partager
-          </button>
-
-        </div>
-
-      </article>
-
-    </div>
-
-  </section>
-
-  <!-- SHORTS -->
-
-  <section id="shorts">
-
-    <div style="
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    ">
-
-      <h2>
-        🎬 Guinée Shorts
-      </h2>
-
-      <button
-        class="btn btn-primary"
-        onclick="requireAuth('publier un Short')"
-      >
-        🎥 Créer un Short
-      </button>
-
-    </div>
-
-    <div class="grid">
-
-      <article class="short">
-
-        <div class="short-content">
-
-          <strong>
-            @aminata
-          </strong>
-
-          <p>
-            Une belle journée à Conakry 🇬🇳✨
-          </p>
-
-        </div>
-
-        <div class="short-actions">
-
-          <button onclick="requireAuth('aimer')">
-            ❤️<br>2.4K
-          </button>
-
-          <button onclick="requireAuth('commenter')">
-            💬<br>184
-          </button>
-
-          <button onclick="requireAuth('partager')">
-            ↗️
-          </button>
-
-          <button onclick="requireAuth('suivre')">
-            👤
-          </button>
-
-        </div>
-
-      </article>
-
-      <article class="short">
-
-        <div class="short-content">
-
-          <strong>
-            @mamadou_food
-          </strong>
-
-          <p>
-            Découvrez cette spécialité guinéenne 🍲
-          </p>
-
-        </div>
-
-        <div class="short-actions">
-
-          <button onclick="requireAuth('aimer')">
-            ❤️<br>5.8K
-          </button>
-
-          <button onclick="requireAuth('commenter')">
-            💬<br>421
-          </button>
-
-          <button onclick="requireAuth('partager')">
-            ↗️
-          </button>
-
-          <button onclick="requireAuth('suivre')">
-            👤
-          </button>
-
-        </div>
-
-      </article>
-
-      <article class="short">
-
-        <div class="short-content">
-
-          <strong>
-            @conakry_daily
-          </strong>
-
-          <p>
-            Les images du jour 📍
-          </p>
-
-        </div>
-
-        <div class="short-actions">
-
-          <button onclick="requireAuth('aimer')">
-            ❤️<br>8.1K
-          </button>
-
-          <button onclick="requireAuth('commenter')">
-            💬<br>703
-          </button>
-
-          <button onclick="requireAuth('partager')">
-            ↗️
-          </button>
-
-          <button onclick="requireAuth('suivre')">
-            👤
-          </button>
-
-        </div>
-
-      </article>
-
-    </div>
-
-  </section>
-
-  <!-- SERVICES -->
-
-  <section id="services">
-
-    <h2>
-      🛍️ Services & marketplace
-    </h2>
-
-    <div class="grid">
-
-      <div class="card">
-
-        <div style="font-size:48px">
-          🍚
-        </div>
-
-        <h3>
-          Riz local
-        </h3>
-
-        <p>
-          25 000 GNF
-        </p>
-
-        <button
-          class="btn btn-primary"
-          onclick="requireAuth('commander')"
-        >
-          Commander
-        </button>
-
-      </div>
-
-      <div class="card">
-
-        <div style="font-size:48px">
-          🔧
-        </div>
-
-        <h3>
-          Électricien
-        </h3>
-
-        <p>
-          Professionnel disponible
-        </p>
-
-        <button
-          class="btn btn-primary"
-          onclick="requireAuth('contacter un professionnel')"
-        >
-          Contacter
-        </button>
-
-      </div>
-
-      <div class="card">
-
-        <div style="font-size:48px">
-          🚚
-        </div>
-
-        <h3>
-          Livraison
-        </h3>
-
-        <p>
-          Selon votre zone
-        </p>
-
-        <button
-          class="btn btn-primary"
-          onclick="requireAuth('demander une livraison')"
-        >
-          Demander
-        </button>
-
-      </div>
-
-    </div>
-
-  </section>
-
-  <!-- PROFILE -->
-
-  <section id="profile">
-
-    <h2>
-      👤 Profils
-    </h2>
-
-    <div class="card">
-
-      <div class="cover"></div>
-
-      <div class="profile-row">
-
-        <div class="profile-photo">
-          🙂
-        </div>
-
-        <div>
-
-          <h2 style="margin:0">
-            Votre profil
-          </h2>
-
-          <p>
-            Créez votre profil Guinée Web
-            après inscription.
-          </p>
+        <div style="margin-top:12px">
 
           <button
             class="btn btn-primary"
             onclick="openAuth('signup')"
           >
-            Créer mon profil
+            Créer mon compte
+          </button>
+
+          <button
+            class="btn btn-secondary"
+            onclick="navigate('feed')"
+          >
+            Voir le fil
           </button>
 
         </div>
 
       </div>
 
-    </div>
+      <div class="phone">
 
-  </section>
+        <div class="phone-screen">
 
-  <!-- CTA -->
+          <small>Bonjour 👋</small>
 
-  <section>
+          <h3>
+            Bienvenue sur Guinée Web
+          </h3>
 
-    <div class="banner">
+          <div class="mini-box">
+            🔎 Découvrez la communauté
+          </div>
 
-      <div>
+          <div class="category-grid">
 
-        <h2>
-          Un compte pour tout.
-        </h2>
+            <div class="category">
+              <strong>📰</strong>
+              Fil
+            </div>
 
-        <p>
-          Amis, publications, Shorts,
-          commentaires, messages,
-          services et commandes.
-        </p>
+            <div class="category">
+              <strong>🎬</strong>
+              Shorts
+            </div>
+
+            <div class="category">
+              <strong>🤝</strong>
+              Amis
+            </div>
+
+            <div class="category">
+              <strong>💬</strong>
+              Messages
+            </div>
+
+            <div class="category">
+              <strong>🔔</strong>
+              Alertes
+            </div>
+
+            <div class="category">
+              <strong>👤</strong>
+              Profil
+            </div>
+
+          </div>
+
+          <div class="card">
+
+            <strong>
+              🇬🇳 Guinée Web
+            </strong>
+
+            <p style="font-size:13px">
+              Créez votre compte pour rejoindre
+              la communauté.
+            </p>
+
+          </div>
+
+        </div>
 
       </div>
 
-      <button
-        class="btn"
-        onclick="openAuth('signup')"
+    </section>
+
+  </div>
+
+  <!-- FIL -->
+
+  <div id="feedView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+
+        <h2>📰 Fil d'actualité</h2>
+
+        <button
+          class="btn btn-primary"
+          onclick="openCreatePost()"
+        >
+          ➕ Publier
+        </button>
+
+      </div>
+
+      <div
+        id="createPostContainer"
+        class="create-post"
+      ></div>
+
+      <div id="feedContainer">
+        <div class="loading">
+          Chargement des publications...
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- SHORTS -->
+
+  <div id="shortsView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+
+        <h2>🎬 Shorts</h2>
+
+        <button
+          class="btn btn-primary"
+          onclick="requireAuth('créer un Short')"
+        >
+          🎥 Créer un Short
+        </button>
+
+      </div>
+
+      <div
+        id="shortsContainer"
+        class="shorts-grid"
       >
-        Créer mon compte
-      </button>
+        <div class="loading">
+          Chargement...
+        </div>
+      </div>
 
-    </div>
+    </section>
 
-  </section>
+  </div>
+
+  <!-- AMIS -->
+
+  <div id="friendsView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+        <h2>🤝 Amis</h2>
+      </div>
+
+      <div class="card">
+
+        <label class="field">
+
+          Rechercher des utilisateurs
+
+          <input
+            id="friendSearch"
+            placeholder="@nomutilisateur"
+            oninput="searchFriends()"
+          >
+
+        </label>
+
+        <div id="friendResults">
+          <div class="empty">
+            Recherchez des personnes pour les ajouter.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- MESSAGES -->
+
+  <div id="messagesView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+        <h2>💬 Messages</h2>
+      </div>
+
+      <div class="card">
+
+        <div id="messagesContainer">
+          <div class="empty">
+            Connectez-vous pour accéder à vos messages.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- NOTIFICATIONS -->
+
+  <div id="notificationsView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+        <h2>🔔 Notifications</h2>
+      </div>
+
+      <div
+        id="notificationsContainer"
+        class="card"
+      >
+        <div class="loading">
+          Chargement...
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- PROFIL -->
+
+  <div id="profileView" class="app-view">
+
+    <section>
+
+      <div id="profileContainer">
+        <div class="loading">
+          Chargement du profil...
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- RECHERCHE -->
+
+  <div id="searchView" class="app-view">
+
+    <section>
+
+      <div class="section-header">
+        <h2>🔎 Recherche</h2>
+      </div>
+
+      <div class="card">
+
+        <div class="search-box">
+
+          <input
+            id="globalSearch"
+            placeholder="Nom ou nom d'utilisateur..."
+          >
+
+          <button
+            class="btn btn-primary"
+            onclick="performGlobalSearch()"
+          >
+            Rechercher
+          </button>
+
+        </div>
+
+        <div id="searchResults">
+          <div class="empty">
+            Entrez une recherche.
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </div>
 
 </main>
 
-<!-- MOBILE NAV -->
+<!-- NAVIGATION -->
 
 <nav class="bottom-nav">
 
-  <button onclick="goTo('home')">
+  <button
+    data-nav="home"
+    onclick="navigate('home')"
+  >
     🏠 Accueil
   </button>
 
-  <button onclick="goTo('feed')">
+  <button
+    data-nav="feed"
+    onclick="navigate('feed')"
+  >
     📰 Fil
   </button>
 
-  <button onclick="goTo('shorts')">
+  <button
+    data-nav="shorts"
+    onclick="navigate('shorts')"
+  >
     🎬 Shorts
   </button>
 
-  <button onclick="requireAuth('publier')">
-    ➕ Publier
+  <button
+    data-nav="friends"
+    onclick="navigate('friends')"
+  >
+    🤝 Amis
   </button>
 
-  <button onclick="requireAuth('messages')">
+  <button
+    data-nav="messages"
+    onclick="requireAuth('accéder aux messages')"
+  >
     💬 Messages
   </button>
 
-  <button onclick="goTo('profile')">
+  <button
+    data-nav="notifications"
+    onclick="requireAuth('voir les notifications')"
+  >
+    🔔
+  </button>
+
+  <button
+    data-nav="profile"
+    onclick="requireAuth('voir votre profil')"
+  >
     👤 Profil
   </button>
 
 </nav>
 
-<!-- AUTH MODAL -->
+<!-- AUTH -->
 
 <div
   class="modal"
@@ -1213,7 +1188,7 @@
 
     <button
       class="close"
-      onclick="closeAuth()"
+      onclick="closeModal('authModal')"
     >
       ×
     </button>
@@ -1247,22 +1222,12 @@
 
         <label class="field">
           Prénom
-
-          <input
-            id="firstName"
-            placeholder="Prénom"
-          >
-
+          <input id="firstName">
         </label>
 
         <label class="field">
           Nom
-
-          <input
-            id="lastName"
-            placeholder="Nom"
-          >
-
+          <input id="lastName">
         </label>
 
       </div>
@@ -1273,7 +1238,7 @@
 
         <input
           id="username"
-          placeholder="@utilisateur"
+          placeholder="monpseudo"
         >
 
       </label>
@@ -1289,6 +1254,10 @@
           <option>Labé</option>
           <option>Kankan</option>
           <option>Nzérékoré</option>
+          <option>Faranah</option>
+          <option>Mamou</option>
+          <option>Boké</option>
+          <option>Guéckédou</option>
           <option>Autre</option>
 
         </select>
@@ -1299,11 +1268,12 @@
 
     <label class="field">
 
-      Téléphone ou email
+      Email
 
       <input
         id="identifier"
-        placeholder="+224... ou email"
+        type="email"
+        placeholder="vous@example.com"
       >
 
     </label>
@@ -1315,7 +1285,7 @@
       <input
         id="password"
         type="password"
-        placeholder="Mot de passe"
+        placeholder="Votre mot de passe"
       >
 
     </label>
@@ -1330,92 +1300,196 @@
       Continuer
     </button>
 
-    <p style="font-size:12px">
-      La vérification SMS/email doit être activée
-      dans Supabase Auth.
-    </p>
+  </div>
+
+</div>
+
+<!-- CREATE POST -->
+
+<div
+  class="modal"
+  id="postModal"
+>
+
+  <div class="modal-box">
+
+    <button
+      class="close"
+      onclick="closeModal('postModal')"
+    >
+      ×
+    </button>
+
+    <h2>Créer une publication</h2>
+
+    <label class="field">
+
+      Que voulez-vous partager ?
+
+      <textarea
+        id="postContent"
+        placeholder="Écrivez quelque chose..."
+      ></textarea>
+
+    </label>
+
+    <label class="field">
+
+      URL d'une image (optionnel)
+
+      <input
+        id="postImage"
+        type="url"
+        placeholder="https://..."
+      >
+
+    </label>
+
+    <div id="postMessage"></div>
+
+    <button
+      class="btn btn-primary"
+      style="width:100%"
+      onclick="createPost()"
+    >
+      Publier
+    </button>
 
   </div>
 
 </div>
 
-<script>
+<footer>
 
+  <strong>
+    🇬🇳 Guinée Web
+  </strong>
+
+  <p>
+    Une plateforme numérique pensée pour la Guinée.
+  </p>
+
+  © 2026 Guinée Web
+
+</footer>
+
+<script>
   /*
-   * ============================================================
-   * CONFIGURATION SUPABASE
-   * ============================================================
-   *
-   * IMPORTANT :
-   * Cette clé doit être une clé PUBLISHABLE/ANON uniquement.
-   *
-   * Ne mets JAMAIS une service_role key ici.
+   * =========================================================
+   * SUPABASE
+   * =========================================================
    */
 
   const SUPABASE_URL =
     "https://llmftxuasvysawaazedm.supabase.co";
 
+  /*
+   * Utilise ici TA clé publishable/anon.
+   * Ne mets jamais la service_role key.
+   */
   const SUPABASE_PUBLISHABLE_KEY =
-"sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
-  let supabaseClient = null;
+    "REMPLACE_PAR_TA_CLE_PUBLISHABLE";
 
-  if (
-    SUPABASE_URL.startsWith("https://") &&
-    SUPABASE_PUBLISHABLE_KEY !== "REMPLACE_PAR_TA_CLE_PUBLISHABLE"
-  ) {
+  const supabaseClient =
+    window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_PUBLISHABLE_KEY
+    );
 
-    supabaseClient =
-      window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_PUBLISHABLE_KEY
-      );
-
-  }
-
-  let loggedIn = false;
+  let currentUser = null;
+  let currentProfile = null;
   let authMode = "signup";
 
   /*
-   * Vérification de la session
+   * =========================================================
+   * INITIALISATION
+   * =========================================================
+   */
+
+  document.addEventListener(
+    "DOMContentLoaded",
+    async () => {
+
+      await checkSession();
+
+      navigate("home");
+
+    }
+  );
+
+  supabaseClient.auth.onAuthStateChange(
+    async (_event, session) => {
+
+      currentUser =
+        session?.user || null;
+
+      await loadCurrentProfile();
+
+      updateAuthButtons();
+
+    }
+  );
+
+  /*
+   * =========================================================
+   * AUTH
+   * =========================================================
    */
 
   async function checkSession() {
 
-    if (!supabaseClient) {
+    const {
+      data,
+      error
+    } = await supabaseClient.auth.getSession();
+
+    if (error) {
+
+      console.error(error);
+
       return;
+
+    }
+
+    currentUser =
+      data.session?.user || null;
+
+    await loadCurrentProfile();
+
+    updateAuthButtons();
+
+  }
+
+  async function loadCurrentProfile() {
+
+    if (!currentUser) {
+
+      currentProfile = null;
+
+      return;
+
     }
 
     const {
-      data
-    } = await supabaseClient.auth.getSession();
+      data,
+      error
+    } = await supabaseClient
+      .from("profiles")
+      .select("*")
+      .eq("id", currentUser.id)
+      .maybeSingle();
 
-    loggedIn = !!data.session;
+    if (error) {
 
-    updateAuthButtons();
-  }
+      console.error(error);
 
-  /*
-   * Boutons de navigation
-   */
-
-  function goTo(id) {
-
-    const element =
-      document.getElementById(id);
-
-    if (element) {
-
-      element.scrollIntoView({
-        behavior: "smooth"
-      });
+      return;
 
     }
 
-  }
+    currentProfile = data;
 
-  /*
-   * Authentification
-   */
+  }
 
   function openAuth(mode = "signup") {
 
@@ -1424,14 +1498,6 @@
     document
       .getElementById("authModal")
       .classList.add("open");
-
-  }
-
-  function closeAuth() {
-
-    document
-      .getElementById("authModal")
-      .classList.remove("open");
 
   }
 
@@ -1475,11 +1541,12 @@
 
   async function submitAuth() {
 
-    const identifier =
+    const email =
       document
         .getElementById("identifier")
         .value
-        .trim();
+        .trim()
+        .toLowerCase();
 
     const password =
       document
@@ -1491,27 +1558,17 @@
         "authMessage"
       );
 
-    if (!supabaseClient) {
+    message.innerHTML = "";
 
-      message.innerHTML = `
-        <div class="error">
-          Supabase n'est pas encore configuré.
-          Ajoute ta clé publishable dans le code.
-        </div>
-      `;
+    if (!email || !password) {
 
-      return;
-    }
-
-    if (!identifier || !password) {
-
-      message.innerHTML = `
-        <div class="error">
-          Veuillez remplir les champs obligatoires.
-        </div>
-      `;
+      message.innerHTML =
+        `<div class="error">
+          Veuillez remplir tous les champs.
+        </div>`;
 
       return;
+
     }
 
     try {
@@ -1519,107 +1576,120 @@
       if (authMode === "signup") {
 
         const firstName =
-          document.getElementById(
-            "firstName"
-          ).value.trim();
+          document
+            .getElementById("firstName")
+            .value
+            .trim();
 
         const lastName =
-          document.getElementById(
-            "lastName"
-          ).value.trim();
+          document
+            .getElementById("lastName")
+            .value
+            .trim();
 
         const username =
-          document.getElementById(
-            "username"
-          ).value.trim();
+          document
+            .getElementById("username")
+            .value
+            .trim()
+            .toLowerCase()
+            .replace(/^@/, "");
 
         const city =
-          document.getElementById(
-            "city"
-          ).value;
+          document
+            .getElementById("city")
+            .value;
 
-        const metadata = {
-          first_name: firstName,
-          last_name: lastName,
-          username: username,
-          city: city
-        };
+        if (!firstName || !username) {
 
-        let result;
+          message.innerHTML =
+            `<div class="error">
+              Le prénom et le nom d'utilisateur
+              sont obligatoires.
+            </div>`;
 
-        if (identifier.includes("@")) {
+          return;
 
-          result =
-            await supabaseClient.auth.signUp({
-              email: identifier,
-              password,
-              options: {
-                data: metadata
+        }
+
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth.signUp({
+
+            email,
+            password,
+
+            options: {
+              data: {
+                first_name: firstName,
+                last_name: lastName,
+                username,
+                city
               }
-            });
+            }
+
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.session) {
+
+          currentUser =
+            data.session.user;
+
+          await loadCurrentProfile();
+
+          closeModal("authModal");
+
+          updateAuthButtons();
+
+          navigate("feed");
+
+          showToast(
+            "Compte créé avec succès ✅"
+          );
 
         } else {
 
-          result =
-            await supabaseClient.auth.signUp({
-              phone: identifier,
-              password,
-              options: {
-                data: metadata
-              }
-            });
+          message.innerHTML =
+            `<div class="success">
+              Compte créé. Vérifiez votre
+              adresse email si la confirmation
+              email est activée dans Supabase.
+            </div>`;
 
         }
-
-        if (result.error) {
-
-          throw result.error;
-
-        }
-
-        message.innerHTML = `
-          <div class="success">
-            ✅ Inscription envoyée.
-            Vérifiez votre email ou votre SMS
-            si la confirmation est activée.
-          </div>
-        `;
 
       } else {
 
-        let result;
+        const {
+          data,
+          error
+        } =
+          await supabaseClient.auth
+            .signInWithPassword({
+              email,
+              password
+            });
 
-        if (identifier.includes("@")) {
-
-          result =
-            await supabaseClient.auth
-              .signInWithPassword({
-                email: identifier,
-                password
-              });
-
-        } else {
-
-          result =
-            await supabaseClient.auth
-              .signInWithPassword({
-                phone: identifier,
-                password
-              });
-
+        if (error) {
+          throw error;
         }
 
-        if (result.error) {
+        currentUser =
+          data.user;
 
-          throw result.error;
+        await loadCurrentProfile();
 
-        }
-
-        loggedIn = true;
+        closeModal("authModal");
 
         updateAuthButtons();
 
-        closeAuth();
+        navigate("feed");
 
         showToast(
           "Connexion réussie ✅"
@@ -1629,76 +1699,44 @@
 
     } catch (error) {
 
-      message.innerHTML = `
-        <div class="error">
+      message.innerHTML =
+        `<div class="error">
           ${escapeHTML(error.message)}
-        </div>
-      `;
+        </div>`;
 
     }
 
   }
 
-  /*
-   * Vérification avant les actions sociales
-   */
+  async function logout() {
 
-  function requireAuth(action) {
+    const {
+      error
+    } =
+      await supabaseClient.auth.signOut();
 
-    if (!loggedIn) {
-
-      openAuth("signup");
-
-      document
-        .getElementById("authMessage")
-        .innerHTML = `
-          <div class="notice">
-            🔐 Vous devez créer un compte
-            ou vous connecter pour ${action}.
-          </div>
-        `;
-
-      return;
-    }
-
-    showToast(
-      "Fonction « " +
-      action +
-      " » disponible."
-    );
-
-  }
-
-  /*
-   * Recherche
-   */
-
-  function searchSite() {
-
-    const value =
-      document
-        .getElementById("searchInput")
-        .value
-        .trim();
-
-    if (!value) {
+    if (error) {
 
       showToast(
-        "Entrez une recherche."
+        error.message
       );
 
       return;
+
     }
 
+    currentUser = null;
+    currentProfile = null;
+
+    updateAuthButtons();
+
+    navigate("home");
+
     showToast(
-      "Recherche : " + value
+      "Vous êtes déconnecté."
     );
 
   }
-
-  /*
-   * UI utilisateur
-   */
 
   function updateAuthButtons() {
 
@@ -1707,14 +1745,20 @@
         "authButtons"
       );
 
-    if (loggedIn) {
+    if (currentUser) {
+
+      const name =
+        currentProfile?.first_name ||
+        currentUser.email?.split("@")[0] ||
+        "Profil";
 
       container.innerHTML = `
+
         <button
           class="btn btn-secondary"
-          onclick="goTo('profile')"
+          onclick="navigate('profile')"
         >
-          👤 Mon profil
+          👤 ${escapeHTML(name)}
         </button>
 
         <button
@@ -1723,11 +1767,13 @@
         >
           Déconnexion
         </button>
+
       `;
 
     } else {
 
       container.innerHTML = `
+
         <button
           class="btn btn-secondary"
           onclick="openAuth('login')"
@@ -1741,52 +1787,1976 @@
         >
           Inscription
         </button>
+
       `;
 
     }
 
   }
 
-  async function logout() {
+  /*
+   * =========================================================
+   * NAVIGATION
+   * =========================================================
+   */
 
-    if (supabaseClient) {
+  async function navigate(view) {
 
-      await supabaseClient.auth.signOut();
+    const views = [
+      "home",
+      "feed",
+      "shorts",
+      "friends",
+      "messages",
+      "notifications",
+      "profile",
+      "search"
+    ];
+
+    views.forEach(
+      name => {
+
+        const element =
+          document.getElementById(
+            name + "View"
+          );
+
+        if (element) {
+
+          element.classList.toggle(
+            "active",
+            name === view
+          );
+
+        }
+
+      }
+    );
+
+    document
+      .querySelectorAll(
+        "[data-nav]"
+      )
+      .forEach(button => {
+
+        button.classList.toggle(
+          "active",
+          button.dataset.nav === view
+        );
+
+      });
+
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+
+    if (view === "feed") {
+
+      await loadFeed();
 
     }
 
-    loggedIn = false;
+    if (view === "shorts") {
 
-    updateAuthButtons();
+      await loadShorts();
+
+    }
+
+    if (view === "friends") {
+
+      await searchFriends();
+
+    }
+
+    if (view === "notifications") {
+
+      await loadNotifications();
+
+    }
+
+    if (view === "profile") {
+
+      await loadProfile();
+
+    }
+
+    if (view === "messages") {
+
+      await loadMessages();
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * AUTHORIZATION
+   * =========================================================
+   */
+
+  function requireAuth(action) {
+
+    if (!currentUser) {
+
+      openAuth("signup");
+
+      document
+        .getElementById("authMessage")
+        .innerHTML =
+        `<div class="notice">
+          🔐 Vous devez créer un compte
+          ou vous connecter pour ${escapeHTML(action)}.
+        </div>`;
+
+      return false;
+
+    }
+
+    return true;
+
+  }
+
+  /*
+   * =========================================================
+   * PUBLICATIONS
+   * =========================================================
+   */
+
+  async function loadFeed() {
+
+    const container =
+      document.getElementById(
+        "feedContainer"
+      );
+
+    container.innerHTML =
+      `<div class="loading">
+        Chargement des publications...
+      </div>`;
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .select(`
+          *,
+          profiles:author_id (
+            id,
+            username,
+            first_name,
+            last_name,
+            avatar_url
+          )
+        `)
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+    if (error) {
+
+      console.error(error);
+
+      container.innerHTML =
+        `<div class="error">
+          Impossible de charger les publications.
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data || data.length === 0) {
+
+      container.innerHTML =
+        `<div class="empty">
+
+          <h3>
+            📰 Aucune publication
+          </h3>
+
+          <p>
+            Il n'y a encore aucune publication.
+            Soyez le premier à partager quelque chose.
+          </p>
+
+          <button
+            class="btn btn-primary"
+            onclick="openCreatePost()"
+          >
+            ➕ Publier
+          </button>
+
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data
+        .map(renderPost)
+        .join("");
+
+    await refreshLikeStates(data);
+
+  }
+
+  function renderPost(post) {
+
+    const profile =
+      post.profiles || {};
+
+    const name =
+      [profile.first_name, profile.last_name]
+        .filter(Boolean)
+        .join(" ") ||
+      profile.username ||
+      "Utilisateur";
+
+    const initial =
+      (
+        profile.first_name ||
+        profile.username ||
+        "U"
+      )
+      .charAt(0)
+      .toUpperCase();
+
+    const isOwner =
+      currentUser &&
+      currentUser.id === post.author_id;
+
+    return `
+
+      <article
+        class="card post-card"
+        id="post-${post.id}"
+      >
+
+        <div class="post-header">
+
+          <div class="avatar">
+
+            ${
+              profile.avatar_url
+                ? `
+                  <img
+                    src="${escapeAttribute(profile.avatar_url)}"
+                    alt=""
+                  >
+                `
+                : escapeHTML(initial)
+            }
+
+          </div>
+
+          <div class="post-user">
+
+            <strong>
+              ${escapeHTML(name)}
+            </strong>
+
+            <br>
+
+            <small class="muted">
+              ${
+                profile.username
+                  ? "@" + escapeHTML(profile.username)
+                  : ""
+              }
+              •
+              ${formatDate(post.created_at)}
+            </small>
+
+          </div>
+
+          ${
+            isOwner
+              ? `
+                <button
+                  class="btn btn-danger btn-small"
+                  onclick="deletePost('${post.id}')"
+                >
+                  🗑️
+                </button>
+              `
+              : ""
+          }
+
+        </div>
+
+        ${
+          post.content
+            ? `
+              <p class="post-content">
+                ${escapeHTML(post.content)}
+              </p>
+            `
+            : ""
+        }
+
+        ${
+          post.image_url
+            ? `
+              <img
+                class="post-image"
+                src="${escapeAttribute(post.image_url)}"
+                alt="Publication"
+                loading="lazy"
+              >
+            `
+            : ""
+        }
+
+        <div class="post-actions">
+
+          <button
+            id="like-${post.id}"
+            onclick="toggleLike('${post.id}')"
+          >
+            ❤️
+            <span id="likes-${post.id}">
+              ${post.likes_count || 0}
+            </span>
+          </button>
+
+          <button
+            onclick="toggleComments('${post.id}')"
+          >
+            💬
+            <span id="comments-count-${post.id}">
+              ${post.comments_count || 0}
+            </span>
+          </button>
+
+          <button
+            onclick="sharePost('${post.id}')"
+          >
+            ↗️ Partager
+          </button>
+
+        </div>
+
+        <div
+          id="comments-${post.id}"
+          class="comments"
+          style="display:none"
+        >
+
+          <div
+            id="comments-list-${post.id}"
+          >
+            Chargement...
+          </div>
+
+          ${
+            currentUser
+              ? `
+                <div class="comment-form">
+
+                  <input
+                    id="comment-input-${post.id}"
+                    placeholder="Écrire un commentaire..."
+                  >
+
+                  <button
+                    class="btn btn-primary"
+                    onclick="addComment('${post.id}')"
+                  >
+                    Envoyer
+                  </button>
+
+                </div>
+              `
+              : `
+                <p class="muted">
+                  Connectez-vous pour commenter.
+                </p>
+              `
+          }
+
+        </div>
+
+      </article>
+
+    `;
+
+  }
+
+  function openCreatePost() {
+
+    if (!requireAuth("publier")) {
+      return;
+    }
+
+    document
+      .getElementById("postModal")
+      .classList.add("open");
+
+  }
+
+  async function createPost() {
+
+    if (!requireAuth("publier")) {
+      return;
+    }
+
+    const content =
+      document
+        .getElementById("postContent")
+        .value
+        .trim();
+
+    const image =
+      document
+        .getElementById("postImage")
+        .value
+        .trim();
+
+    const message =
+      document.getElementById(
+        "postMessage"
+      );
+
+    message.innerHTML = "";
+
+    if (!content && !image) {
+
+      message.innerHTML =
+        `<div class="error">
+          Ajoutez du texte ou une image.
+        </div>`;
+
+      return;
+
+    }
+
+    try {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("posts")
+          .insert({
+
+            author_id:
+              currentUser.id,
+
+            content:
+              content || null,
+
+            image_url:
+              image || null
+
+          });
+
+      if (error) {
+        throw error;
+      }
+
+      document
+        .getElementById("postContent")
+        .value = "";
+
+      document
+        .getElementById("postImage")
+        .value = "";
+
+      closeModal("postModal");
+
+      await loadFeed();
+
+      showToast(
+        "Publication créée ✅"
+      );
+
+    } catch (error) {
+
+      message.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+    }
+
+  }
+
+  async function deletePost(postId) {
+
+    if (!requireAuth("supprimer cette publication")) {
+      return;
+    }
+
+    if (
+      !confirm(
+        "Voulez-vous vraiment supprimer cette publication ?"
+      )
+    ) {
+      return;
+    }
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("posts")
+        .delete()
+        .eq("id", postId)
+        .eq("author_id", currentUser.id);
+
+    if (error) {
+
+      showToast(
+        error.message
+      );
+
+      return;
+
+    }
+
+    document
+      .getElementById(
+        "post-" + postId
+      )
+      ?.remove();
 
     showToast(
-      "Vous êtes déconnecté."
+      "Publication supprimée."
     );
 
   }
 
   /*
-   * Notifications visuelles
+   * =========================================================
+   * LIKES
+   * =========================================================
    */
+
+  async function toggleLike(postId) {
+
+    if (!requireAuth("aimer une publication")) {
+      return;
+    }
+
+    const {
+      data: existing,
+      error: checkError
+    } =
+      await supabaseClient
+        .from("post_likes")
+        .select("id")
+        .eq("post_id", postId)
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+    if (checkError) {
+
+      showToast(
+        checkError.message
+      );
+
+      return;
+
+    }
+
+    if (existing) {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("post_likes")
+          .delete()
+          .eq("id", existing.id);
+
+      if (error) {
+
+        showToast(error.message);
+
+        return;
+
+      }
+
+    } else {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("post_likes")
+          .insert({
+
+            post_id: postId,
+            user_id: currentUser.id
+
+          });
+
+      if (error) {
+
+        showToast(error.message);
+
+        return;
+
+      }
+
+    }
+
+    await updateLikeUI(postId);
+
+  }
+
+  async function updateLikeUI(postId) {
+
+    const {
+      count
+    } =
+      await supabaseClient
+        .from("post_likes")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq("post_id", postId);
+
+    const countElement =
+      document.getElementById(
+        "likes-" + postId
+      );
+
+    if (countElement) {
+
+      countElement.textContent =
+        count || 0;
+
+    }
+
+    if (currentUser) {
+
+      const {
+        data
+      } =
+        await supabaseClient
+          .from("post_likes")
+          .select("id")
+          .eq("post_id", postId)
+          .eq("user_id", currentUser.id)
+          .maybeSingle();
+
+      const button =
+        document.getElementById(
+          "like-" + postId
+        );
+
+      if (button) {
+
+        button.classList.toggle(
+          "active",
+          !!data
+        );
+
+      }
+
+    }
+
+  }
+
+  async function refreshLikeStates(posts) {
+
+    for (const post of posts) {
+
+      await updateLikeUI(post.id);
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * COMMENTAIRES
+   * =========================================================
+   */
+
+  async function toggleComments(postId) {
+
+    const box =
+      document.getElementById(
+        "comments-" + postId
+      );
+
+    if (!box) {
+      return;
+    }
+
+    const visible =
+      box.style.display !== "none";
+
+    box.style.display =
+      visible ? "none" : "block";
+
+    if (!visible) {
+
+      await loadComments(postId);
+
+    }
+
+  }
+
+  async function loadComments(postId) {
+
+    const container =
+      document.getElementById(
+        "comments-list-" + postId
+      );
+
+    if (!container) {
+      return;
+    }
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("comments")
+        .select(`
+          *,
+          profiles:user_id (
+            username,
+            first_name,
+            last_name,
+            avatar_url
+          )
+        `)
+        .eq("post_id", postId)
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<p class="muted">
+          Aucun commentaire.
+        </p>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(comment => {
+
+        const profile =
+          comment.profiles || {};
+
+        const name =
+          [profile.first_name, profile.last_name]
+            .filter(Boolean)
+            .join(" ") ||
+          profile.username ||
+          "Utilisateur";
+
+        return `
+          <div class="comment">
+
+            <strong>
+              ${escapeHTML(name)}
+            </strong>
+
+            <p style="margin:3px 0">
+              ${escapeHTML(comment.content)}
+            </p>
+
+            <small class="muted">
+              ${formatDate(comment.created_at)}
+            </small>
+
+          </div>
+        `;
+
+      }).join("");
+
+  }
+
+  async function addComment(postId) {
+
+    if (!requireAuth("commenter")) {
+      return;
+    }
+
+    const input =
+      document.getElementById(
+        "comment-input-" + postId
+      );
+
+    const content =
+      input.value.trim();
+
+    if (!content) {
+      return;
+    }
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .from("comments")
+        .insert({
+
+          post_id: postId,
+          user_id: currentUser.id,
+          content
+
+        });
+
+    if (error) {
+
+      showToast(
+        error.message
+      );
+
+      return;
+
+    }
+
+    input.value = "";
+
+    await loadComments(postId);
+
+    const count =
+      document.getElementById(
+        "comments-count-" + postId
+      );
+
+    if (count) {
+
+      const {
+        count: total
+      } =
+        await supabaseClient
+          .from("comments")
+          .select(
+            "*",
+            {
+              count: "exact",
+              head: true
+            }
+          )
+          .eq("post_id", postId);
+
+      count.textContent =
+        total || 0;
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * PARTAGE
+   * =========================================================
+   */
+
+  async function sharePost(postId) {
+
+    const url =
+      window.location.href.split("#")[0] +
+      "#post-" +
+      postId;
+
+    if (
+      navigator.share
+    ) {
+
+      try {
+
+        await navigator.share({
+          title: "Guinée Web",
+          text: "Découvrez cette publication sur Guinée Web.",
+          url
+        });
+
+      } catch (_) {}
+
+    } else {
+
+      await navigator.clipboard.writeText(url);
+
+      showToast(
+        "Lien copié ✅"
+      );
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * AMIS / SUIVI
+   * =========================================================
+   */
+
+  async function searchFriends() {
+
+    const input =
+      document.getElementById(
+        "friendSearch"
+      );
+
+    const container =
+      document.getElementById(
+        "friendResults"
+      );
+
+    if (!input || !container) {
+      return;
+    }
+
+    const query =
+      input.value
+        .trim()
+        .replace(/^@/, "");
+
+    if (!query) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Recherchez des personnes pour les ajouter.
+        </div>`;
+
+      return;
+
+    }
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(`
+          id,
+          username,
+          first_name,
+          last_name,
+          avatar_url
+        `)
+        .or(
+          `username.ilike.%${query}%,first_name.ilike.%${query}%,last_name.ilike.%${query}%`
+        )
+        .limit(20);
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Aucun utilisateur trouvé.
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(renderUserResult).join("");
+
+  }
+
+  function renderUserResult(user) {
+
+    const name =
+      [user.first_name, user.last_name]
+        .filter(Boolean)
+        .join(" ") ||
+      user.username ||
+      "Utilisateur";
+
+    const initial =
+      (
+        user.first_name ||
+        user.username ||
+        "U"
+      )
+      .charAt(0)
+      .toUpperCase();
+
+    const self =
+      currentUser &&
+      currentUser.id === user.id;
+
+    return `
+
+      <div class="search-result">
+
+        <div class="avatar">
+
+          ${
+            user.avatar_url
+              ? `
+                <img
+                  src="${escapeAttribute(user.avatar_url)}"
+                  alt=""
+                >
+              `
+              : escapeHTML(initial)
+          }
+
+        </div>
+
+        <div style="flex:1">
+
+          <strong>
+            ${escapeHTML(name)}
+          </strong>
+
+          <br>
+
+          <small class="muted">
+            @${escapeHTML(user.username || "")}
+          </small>
+
+        </div>
+
+        ${
+          self
+            ? `
+              <button
+                class="btn btn-secondary btn-small"
+                onclick="navigate('profile')"
+              >
+                Moi
+              </button>
+            `
+            : `
+              <button
+                class="btn btn-primary btn-small"
+                onclick="toggleFollow('${user.id}')"
+              >
+                Suivre
+              </button>
+            `
+        }
+
+      </div>
+
+    `;
+
+  }
+
+  async function toggleFollow(targetId) {
+
+    if (!requireAuth("suivre un utilisateur")) {
+      return;
+    }
+
+    if (targetId === currentUser.id) {
+      return;
+    }
+
+    const {
+      data: existing,
+      error: checkError
+    } =
+      await supabaseClient
+        .from("follows")
+        .select("id")
+        .eq("follower_id", currentUser.id)
+        .eq("following_id", targetId)
+        .maybeSingle();
+
+    if (checkError) {
+
+      showToast(
+        checkError.message
+      );
+
+      return;
+
+    }
+
+    if (existing) {
+
+      await supabaseClient
+        .from("follows")
+        .delete()
+        .eq("id", existing.id);
+
+      showToast(
+        "Vous ne suivez plus cet utilisateur."
+      );
+
+    } else {
+
+      const {
+        error
+      } =
+        await supabaseClient
+          .from("follows")
+          .insert({
+
+            follower_id: currentUser.id,
+            following_id: targetId
+
+          });
+
+      if (error) {
+
+        showToast(
+          error.message
+        );
+
+        return;
+
+      }
+
+      await createNotification(
+        targetId,
+        "follow",
+        "Vous suit maintenant."
+      );
+
+      showToast(
+        "Utilisateur suivi ✅"
+      );
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * NOTIFICATIONS
+   * =========================================================
+   */
+
+  async function createNotification(
+    userId,
+    type,
+    content
+  ) {
+
+    if (!currentUser) {
+      return;
+    }
+
+    await supabaseClient
+      .from("notifications")
+      .insert({
+
+        user_id: userId,
+        actor_id: currentUser.id,
+        type,
+        content
+
+      });
+
+  }
+
+  async function loadNotifications() {
+
+    if (!requireAuth("voir les notifications")) {
+      return;
+    }
+
+    const container =
+      document.getElementById(
+        "notificationsContainer"
+      );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("notifications")
+        .select(`
+          *,
+          profiles:actor_id (
+            username,
+            first_name,
+            last_name
+          )
+        `)
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(50);
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Aucune notification.
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(notification => {
+
+        const profile =
+          notification.profiles || {};
+
+        const name =
+          [profile.first_name, profile.last_name]
+            .filter(Boolean)
+            .join(" ") ||
+          profile.username ||
+          "Quelqu'un";
+
+        return `
+          <div class="search-result">
+
+            <div class="avatar">
+              🔔
+            </div>
+
+            <div>
+
+              <strong>
+                ${escapeHTML(name)}
+              </strong>
+
+              <p style="margin:4px 0">
+                ${escapeHTML(notification.content || "")}
+              </p>
+
+              <small class="muted">
+                ${formatDate(notification.created_at)}
+              </small>
+
+            </div>
+
+          </div>
+        `;
+
+      }).join("");
+
+  }
+
+  /*
+   * =========================================================
+   * PROFIL
+   * =========================================================
+   */
+
+  async function loadProfile() {
+
+    if (!requireAuth("voir votre profil")) {
+      return;
+    }
+
+    await loadCurrentProfile();
+
+    const container =
+      document.getElementById(
+        "profileContainer"
+      );
+
+    if (!currentProfile) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Profil introuvable.
+        </div>`;
+
+      return;
+
+    }
+
+    const name =
+      [
+        currentProfile.first_name,
+        currentProfile.last_name
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+    const username =
+      currentProfile.username ||
+      "";
+
+    const initial =
+      (
+        currentProfile.first_name ||
+        username ||
+        "U"
+      )
+      .charAt(0)
+      .toUpperCase();
+
+    const {
+      count: followers
+    } =
+      await supabaseClient
+        .from("follows")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "following_id",
+          currentUser.id
+        );
+
+    const {
+      count: following
+    } =
+      await supabaseClient
+        .from("follows")
+        .select(
+          "*",
+          {
+            count: "exact",
+            head: true
+          }
+        )
+        .eq(
+          "follower_id",
+          currentUser.id
+        );
+
+    container.innerHTML = `
+
+      <div class="card">
+
+        <div class="cover"></div>
+
+        <div class="profile-row">
+
+          <div class="profile-photo">
+
+            ${
+              currentProfile.avatar_url
+                ? `
+                  <img
+                    src="${escapeAttribute(currentProfile.avatar_url)}"
+                    alt=""
+                  >
+                `
+                : escapeHTML(initial)
+            }
+
+          </div>
+
+          <div>
+
+            <h2 style="margin:0">
+              ${escapeHTML(name || username)}
+            </h2>
+
+            <p class="muted">
+              @${escapeHTML(username)}
+            </p>
+
+            <p>
+              📍 ${escapeHTML(currentProfile.city || "")}
+            </p>
+
+          </div>
+
+        </div>
+
+        <div
+          style="
+            display:flex;
+            gap:25px;
+            padding:20px;
+          "
+        >
+
+          <div>
+            <strong>${followers || 0}</strong>
+            <br>
+            <small>Abonnés</small>
+          </div>
+
+          <div>
+            <strong>${following || 0}</strong>
+            <br>
+            <small>Abonnements</small>
+          </div>
+
+        </div>
+
+      </div>
+
+    `;
+
+  }
+
+  /*
+   * =========================================================
+   * SHORTS
+   * =========================================================
+   */
+
+  async function loadShorts() {
+
+    const container =
+      document.getElementById(
+        "shortsContainer"
+      );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("shorts")
+        .select(`
+          *,
+          profiles:author_id (
+            username,
+            first_name,
+            last_name
+          )
+        `)
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(30);
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+          <h3>🎬 Aucun Short</h3>
+          <p>
+            Les Shorts publiés par la communauté
+            apparaîtront ici.
+          </p>
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(renderShort).join("");
+
+  }
+
+  function renderShort(short) {
+
+    const profile =
+      short.profiles || {};
+
+    const username =
+      profile.username ||
+      "utilisateur";
+
+    return `
+
+      <article class="short">
+
+        ${
+          short.video_url
+            ? `
+              <video
+                src="${escapeAttribute(short.video_url)}"
+                controls
+                loop
+                playsinline
+              ></video>
+            `
+            : short.thumbnail_url
+              ? `
+                <img
+                  src="${escapeAttribute(short.thumbnail_url)}"
+                  alt=""
+                >
+              `
+              : ""
+        }
+
+        <div class="short-overlay"></div>
+
+        <div class="short-content">
+
+          <strong>
+            @${escapeHTML(username)}
+          </strong>
+
+          <p>
+            ${escapeHTML(short.caption || "")}
+          </p>
+
+        </div>
+
+        <div class="short-actions">
+
+          <button
+            onclick="requireAuth('aimer un Short')"
+          >
+            ❤️
+          </button>
+
+          <button
+            onclick="requireAuth('commenter un Short')"
+          >
+            💬
+          </button>
+
+          <button
+            onclick="shareShort('${short.id}')"
+          >
+            ↗️
+          </button>
+
+        </div>
+
+      </article>
+
+    `;
+
+  }
+
+  async function shareShort(id) {
+
+    const url =
+      window.location.href.split("#")[0] +
+      "#short-" +
+      id;
+
+    if (navigator.share) {
+
+      try {
+
+        await navigator.share({
+          title: "Guinée Web Short",
+          url
+        });
+
+      } catch (_) {}
+
+    } else {
+
+      await navigator.clipboard.writeText(url);
+
+      showToast(
+        "Lien copié ✅"
+      );
+
+    }
+
+  }
+
+  /*
+   * =========================================================
+   * RECHERCHE
+   * =========================================================
+   */
+
+  function performSearch() {
+
+    const value =
+      document
+        .getElementById("homeSearch")
+        .value
+        .trim();
+
+    if (!value) {
+
+      showToast(
+        "Entrez une recherche."
+      );
+
+      return;
+
+    }
+
+    document
+      .getElementById(
+        "globalSearch"
+      )
+      .value = value;
+
+    navigate("search");
+
+    performGlobalSearch();
+
+  }
+
+  async function performGlobalSearch() {
+
+    const input =
+      document.getElementById(
+        "globalSearch"
+      );
+
+    const container =
+      document.getElementById(
+        "searchResults"
+      );
+
+    const query =
+      input.value
+        .trim()
+        .replace(/^@/, "");
+
+    if (!query) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Entrez une recherche.
+        </div>`;
+
+      return;
+
+    }
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("profiles")
+        .select(`
+          id,
+          username,
+          first_name,
+          last_name,
+          avatar_url,
+          city
+        `)
+        .or(
+          `username.ilike.%${query}%,first_name.ilike.%${query}%,last_name.ilike.%${query}%,city.ilike.%${query}%`
+        )
+        .limit(30);
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+          Aucun résultat.
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(user => {
+
+        const name =
+          [
+            user.first_name,
+            user.last_name
+          ]
+            .filter(Boolean)
+            .join(" ") ||
+          user.username ||
+          "Utilisateur";
+
+        const initial =
+          (
+            user.first_name ||
+            user.username ||
+            "U"
+          )
+          .charAt(0)
+          .toUpperCase();
+
+        return `
+
+          <div class="search-result">
+
+            <div class="avatar">
+
+              ${
+                user.avatar_url
+                  ? `
+                    <img
+                      src="${escapeAttribute(user.avatar_url)}"
+                      alt=""
+                    >
+                  `
+                  : escapeHTML(initial)
+              }
+
+            </div>
+
+            <div style="flex:1">
+
+              <strong>
+                ${escapeHTML(name)}
+              </strong>
+
+              <br>
+
+              <small class="muted">
+                @${escapeHTML(user.username || "")}
+                ${
+                  user.city
+                    ? " • " + escapeHTML(user.city)
+                    : ""
+                }
+              </small>
+
+            </div>
+
+            ${
+              currentUser &&
+              currentUser.id !== user.id
+                ? `
+                  <button
+                    class="btn btn-primary btn-small"
+                    onclick="toggleFollow('${user.id}')"
+                  >
+                    Suivre
+                  </button>
+                `
+                : ""
+            }
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+  /*
+   * =========================================================
+   * MESSAGES
+   * =========================================================
+   */
+
+  async function loadMessages() {
+
+    if (!requireAuth("accéder aux messages")) {
+      return;
+    }
+
+    const container =
+      document.getElementById(
+        "messagesContainer"
+      );
+
+    const {
+      data,
+      error
+    } =
+      await supabaseClient
+        .from("messages")
+        .select(`
+          *,
+          sender:sender_id (
+            username,
+            first_name,
+            last_name
+          ),
+          receiver:receiver_id (
+            username,
+            first_name,
+            last_name
+          )
+        `)
+        .or(
+          `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
+        )
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        )
+        .limit(50);
+
+    if (error) {
+
+      container.innerHTML =
+        `<div class="error">
+          ${escapeHTML(error.message)}
+        </div>`;
+
+      return;
+
+    }
+
+    if (!data.length) {
+
+      container.innerHTML =
+        `<div class="empty">
+
+          <h3>
+            💬 Aucun message
+          </h3>
+
+          <p>
+            Vos conversations apparaîtront ici.
+          </p>
+
+        </div>`;
+
+      return;
+
+    }
+
+    container.innerHTML =
+      data.map(message => {
+
+        const mine =
+          message.sender_id === currentUser.id;
+
+        const other =
+          mine
+            ? message.receiver
+            : message.sender;
+
+        const name =
+          [
+            other?.first_name,
+            other?.last_name
+          ]
+            .filter(Boolean)
+            .join(" ") ||
+          other?.username ||
+          "Utilisateur";
+
+        return `
+
+          <div
+            class="search-result"
+          >
+
+            <div class="avatar">
+              💬
+            </div>
+
+            <div>
+
+              <strong>
+                ${escapeHTML(name)}
+              </strong>
+
+              <p style="margin:3px 0">
+                ${escapeHTML(message.content)}
+              </p>
+
+              <small class="muted">
+                ${formatDate(message.created_at)}
+              </small>
+
+            </div>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+  /*
+   * =========================================================
+   * UTILITAIRES
+   * =========================================================
+   */
+
+  function closeModal(id) {
+
+    document
+      .getElementById(id)
+      ?.classList.remove("open");
+
+  }
 
   function showToast(message) {
 
     const toast =
       document.createElement("div");
 
-    toast.textContent = message;
+    toast.className =
+      "toast";
 
-    toast.style =
-      "position:fixed;" +
-      "left:50%;" +
-      "bottom:75px;" +
-      "transform:translateX(-50%);" +
-      "background:#14231c;" +
-      "color:white;" +
-      "padding:12px 17px;" +
-      "border-radius:13px;" +
-      "z-index:999;" +
-      "box-shadow:0 10px 30px #0004;";
+    toast.textContent =
+      message;
 
     document.body.appendChild(
       toast
@@ -1794,51 +3764,80 @@
 
     setTimeout(
       () => toast.remove(),
-      2500
+      2800
+    );
+
+  }
+
+  function formatDate(date) {
+
+    if (!date) {
+      return "";
+    }
+
+    const d =
+      new Date(date);
+
+    return d.toLocaleString(
+      "fr-FR",
+      {
+        dateStyle: "medium",
+        timeStyle: "short"
+      }
     );
 
   }
 
   function escapeHTML(value) {
 
-    return value.replace(
-      /[&<>"']/g,
-      function(char) {
-
-        return {
+    return String(value ?? "")
+      .replace(
+        /[&<>"']/g,
+        char => ({
           "&": "&amp;",
           "<": "&lt;",
           ">": "&gt;",
           '"': "&quot;",
           "'": "&#039;"
-        }[char];
+        }[char])
+      );
 
-      }
-    );
+  }
+
+  function escapeAttribute(value) {
+
+    return escapeHTML(value);
 
   }
 
   /*
-   * Démarrage
+   * Fermer les modales en cliquant à l'extérieur.
    */
 
-  checkSession();
+  document
+    .querySelectorAll(".modal")
+    .forEach(modal => {
+
+      modal.addEventListener(
+        "click",
+        event => {
+
+          if (
+            event.target === modal
+          ) {
+
+            modal.classList.remove(
+              "open"
+            );
+
+          }
+
+        }
+      );
+
+    });
 
 </script>
-
-<footer>
-
-  <strong>
-    🇬🇳 Guinée Web
-  </strong>
-
-  <p>
-    Une plateforme numérique pensée pour la Guinée.
-  </p>
-
-  © 2026 Guinée Web
-
-</footer>
 
 </body>
 </html>
