@@ -1,499 +1,665 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#0b63ce">
-  <title>Guinée Actualité 🇬🇳</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Guinée Web 🇬🇳</title>
+  <meta name="description" content="Guinée Web - Le réseau social guinéen">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root{
-      --blue:#0b63ce;
-      --blue2:#0751aa;
-      --bg:#f3f6fa;
-      --card:#fff;
-      --text:#172033;
-      --muted:#687386;
-      --line:#e4e8ef;
-      --danger:#d92d20;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --green: #009460;
+      --yellow: #f4c400;
+      --red: #ce1126;
+      --blue: #1877f2;
+      --bg: #f3f5f7;
+      --card: #ffffff;
+      --text: #17202a;
+      --muted: #697586;
+      --border: #e2e6ea;
+      --danger: #d93025;
+    }
+
+    body {
+      font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img,
+    video {
+      max-width: 100%;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    #authScreen {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background:
+        linear-gradient(
+          135deg,
+          rgba(206,17,38,.13),
+          rgba(244,196,0,.13),
+          rgba(0,148,96,.13)
+        );
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 430px;
+      background: white;
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.12);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 25px;
+      font-weight: 900;
+      font-size: 28px;
+    }
+
+    .gn-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      background:
+        linear-gradient(
+          90deg,
+          var(--red) 0 33%,
+          var(--yellow) 33% 66%,
+          var(--green) 66%
+        );
     }
 
-    *{box-sizing:border-box}
-
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
+    .auth-title {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 25px;
     }
-
-    button,input,textarea,select{font:inherit}
 
-    button{
-      cursor:pointer;
-      border:0;
-      transition:background 0.2s
+    .auth-subtitle {
+      text-align: center;
+      color: var(--muted);
+      margin-bottom: 22px;
     }
 
-    img,video{
-      max-width:100%
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: #f1f3f5;
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 20px;
     }
 
-    .hidden{
-      display:none!important
+    .tabs button {
+      flex: 1;
+      border: 0;
+      background: transparent;
+      padding: 11px;
+      border-radius: 9px;
     }
 
-    .center{
-      min-height:100vh;
-      display:grid;
-      place-items:center;
-      padding:20px
+    .tabs button.active {
+      background: white;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      font-weight: 700;
     }
 
-    .welcome{
-      min-height:100vh;
-      display:grid;
-      place-content:center;
-      text-align:center;
-      padding:24px;
-      max-width:620px;
-      margin:auto
+    .field {
+      margin-bottom: 13px;
     }
 
-    .logo{
-      width:76px;
-      height:76px;
-      border-radius:24px;
-      background:var(--blue);
-      color:#fff;
-      display:grid;
-      place-items:center;
-      font-weight:900;
-      font-size:28px;
-      margin:0 auto 16px
+    .field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: 600;
     }
 
-    .logo.sm{
-      width:52px;
-      height:52px;
-      border-radius:16px;
-      font-size:19px
+    .field input,
+    .field textarea,
+    .search-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px;
+      outline: none;
+      background: white;
     }
 
-    h1,h2,h3{
-      margin:0 0 10px
+    .field input:focus,
+    .field textarea:focus,
+    .search-input:focus {
+      border-color: var(--blue);
     }
 
-    .muted,small{
-      color:var(--muted)
+    .primary {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px;
+      background: var(--blue);
+      color: white;
+      font-weight: 700;
     }
 
-    .tag{
-      font-size:19px
+    .secondary {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 10px;
+      padding: 9px 14px;
     }
 
-    .features{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      justify-content:center;
-      margin:24px 0
+    .danger {
+      background: var(--danger);
+      color: white;
+      border: 0;
+    }
+
+    .message {
+      margin-top: 12px;
+      padding: 11px;
+      border-radius: 10px;
+      background: #f8f9fa;
+      color: var(--muted);
+      font-size: 14px;
     }
 
-    .features span{
-      background:#eaf2ff;
-      padding:9px 12px;
-      border-radius:999px
-    }
+    /* =========================
+       APP
+    ========================= */
 
-    .card{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:18px;
-      padding:16px;
-      box-shadow:0 3px 14px #0b1f3a0b;
-      margin-bottom:12px
+    #app {
+      min-height: 100vh;
     }
 
-    .auth{
-      width:min(440px,100%)
+    .topbar {
+      position: fixed;
+      z-index: 100;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 64px;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
     }
 
-    form{
-      display:grid;
-      gap:12px
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 900;
+      font-size: 20px;
     }
 
-    label{
-      display:grid;
-      gap:6px;
-      font-weight:650;
-      text-align:left
+    .brand .gn-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      font-size: 13px;
     }
 
-    input,textarea,select{
-      width:100%;
-      border:1px solid #ccd4df;
-      border-radius:12px;
-      padding:12px;
-      background:#fff;
-      outline:none;
-      font-size:14px
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
-    input:focus,
-    textarea:focus,
-    select:focus{
-      border-color:var(--blue);
-      box-shadow:0 0 0 3px #0b63ce18
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: #f1f3f5;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
     }
 
-    .primary,
-    .secondary,
-    .danger,
-    .link{
-      padding:11px 15px;
-      border-radius:12px;
-      font-weight:750
+    .layout {
+      max-width: 1250px;
+      margin: 0 auto;
+      padding: 84px 18px 90px;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 650px) 280px;
+      gap: 20px;
     }
 
-    .primary{
-      background:var(--blue);
-      color:#fff
+    .sidebar,
+    .rightbar {
+      position: sticky;
+      top: 84px;
+      height: fit-content;
     }
 
-    .primary:hover{
-      background:var(--blue2)
+    .side-menu {
+      background: white;
+      border-radius: 18px;
+      padding: 10px;
+      border: 1px solid var(--border);
     }
 
-    .primary:disabled{
-      opacity:0.6;
-      cursor:not-allowed
+    .nav-item {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 0;
+      background: transparent;
+      padding: 13px;
+      border-radius: 12px;
+      text-align: left;
+      font-weight: 650;
+      color: #364152;
     }
 
-    .secondary{
-      background:#eaf2ff;
-      color:var(--blue)
+    .nav-item:hover,
+    .nav-item.active {
+      background: #edf4ff;
+      color: var(--blue);
     }
 
-    .secondary:hover{
-      background:#d4e4ff
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      margin-bottom: 15px;
+      overflow: hidden;
     }
 
-    .danger{
-      background:#fff0ee;
-      color:var(--danger)
+    .composer {
+      padding: 15px;
     }
 
-    .link{
-      background:transparent;
-      color:var(--blue);
-      padding:6px
+    .composer-row {
+      display: flex;
+      gap: 10px;
     }
 
-    .link:hover{
-      text-decoration:underline
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #e9ecef;
+      flex-shrink: 0;
     }
 
-    .wide{
-      width:100%;
-      margin-top:8px
+    .avatar-large {
+      width: 90px;
+      height: 90px;
     }
 
-    .small{
-      padding:8px 11px;
-      font-size:14px
+    .composer textarea {
+      resize: none;
+      min-height: 45px;
+      border-radius: 20px;
+      background: #f5f6f8;
+      border: 0;
+      padding: 13px 16px;
     }
 
-    .shell{
-      min-height:100vh;
-      padding-bottom:78px
+    .composer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
     }
 
-    .top{
-      position:sticky;
-      top:0;
-      z-index:10;
-      background:#ffffffee;
-      backdrop-filter:blur(12px);
-      border-bottom:1px solid var(--line);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      padding:10px max(14px,calc((100vw - 900px)/2));
+    .post {
+      padding-top: 14px;
     }
 
-    .brand{
-      background:transparent;
-      font-weight:900;
-      font-size:20px;
-      color:var(--blue)
+    .post-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 15px 12px;
     }
 
-    .brand span{
-      color:var(--text)
+    .post-author {
+      flex: 1;
     }
 
-    .top-right{
-      display:flex;
-      gap:8px;
-      align-items:center
+    .post-author strong {
+      display: block;
     }
 
-    .icon{
-      background:#eef3f9;
-      border-radius:12px;
-      padding:9px;
-      position:relative;
-      cursor:pointer
+    .post-time {
+      color: var(--muted);
+      font-size: 12px;
     }
 
-    .icon:hover{
-      background:#dce9fb
+    .post-text {
+      padding: 0 15px 13px;
+      white-space: pre-wrap;
+      line-height: 1.45;
     }
 
-    .badge{
-      position:absolute;
-      right:-3px;
-      top:-5px;
-      background:#e5484d;
-      color:#fff;
-      font-size:10px;
-      border-radius:99px;
-      padding:2px 5px;
-      font-weight:bold
+    .post-media {
+      width: 100%;
+      max-height: 650px;
+      object-fit: cover;
+      display: block;
+      background: #111;
     }
 
-    main{
-      width:min(900px,100%);
-      margin:0 auto;
-      padding:14px
+    .post-stats {
+      padding: 10px 15px;
+      color: var(--muted);
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
     }
 
-    .composer{
-      display:flex;
-      gap:10px;
-      align-items:flex-start;
-      margin-bottom:16px
+    .post-actions {
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
     }
 
-    .composer textarea{
-      flex:1
+    .post-actions button {
+      border: 0;
+      background: white;
+      padding: 12px;
+      color: #56616f;
     }
 
-    .composer button{
-      background:var(--blue);
-      color:#fff;
-      padding:12px 20px;
-      border-radius:12px;
-      font-weight:600;
-      align-self:flex-end;
-      white-space:nowrap
+    .post-actions button:hover {
+      background: #f6f7f8;
     }
 
-    .avatar{
-      width:42px;
-      height:42px;
-      border-radius:50%;
-      background:#dce9fb;
-      color:var(--blue);
-      display:grid;
-      place-items:center;
-      font-weight:850;
-      overflow:hidden;
-      flex:0 0 auto;
-      font-size:18px
+    .liked {
+      color: var(--blue) !important;
+      font-weight: 700;
     }
 
-    .avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover
+    .section-title {
+      font-size: 20px;
+      margin-bottom: 14px;
     }
 
-    .avatar.sm{
-      width:34px;
-      height:34px
+    .empty {
+      text-align: center;
+      padding: 45px 20px;
+      color: var(--muted);
     }
 
-    .avatar.lg{
-      width:92px;
-      height:92px;
-      font-size:30px;
-      margin:auto
+    .right-card {
+      padding: 16px;
     }
 
-    .head,
-    .person,
-    .row{
-      display:flex;
-      align-items:center;
-      gap:10px
+    .profile-mini {
+      display: flex;
+      gap: 10px;
+      align-items: center;
     }
 
-    .head>div:nth-child(2),
-    .person>div{
-      display:grid
+    .profile-mini strong {
+      display: block;
     }
 
-    .head small{
-      display:block;
-      font-size:12px
-    }
+    /* =========================
+       SHORTS
+    ========================= */
 
-    .post{
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:12px;
-      padding:12px;
-      margin-bottom:12px
+    .shorts-feed {
+      max-width: 520px;
+      margin: 0 auto;
     }
 
-    .post p{
-      white-space:pre-wrap;
-      line-height:1.5;
-      margin:8px 0 0
+    .short {
+      height: calc(100vh - 100px);
+      min-height: 570px;
+      position: relative;
+      background: #111;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 15px;
     }
 
-    .media{
-      display:block;
-      width:100%;
-      max-height:560px;
-      object-fit:cover;
-      border-radius:12px;
-      margin-top:10px;
-      background:#111
+    .short video,
+    .short img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    .actions{
-      display:flex;
-      gap:6px;
-      border-top:1px solid var(--line);
-      margin-top:12px;
-      padding-top:10px;
-      flex-wrap:wrap
+    .short-overlay {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(
+          transparent 45%,
+          rgba(0,0,0,.8)
+        );
+      pointer-events: none;
     }
 
-    .actions button{
-      background:#f4f6f9;
-      padding:6px 10px;
-      border-radius:8px;
-      font-size:13px;
-      color:var(--muted)
+    .short-info {
+      position: absolute;
+      bottom: 20px;
+      left: 18px;
+      right: 80px;
+      color: white;
     }
 
-    .actions button:hover{
-      background:#e8ecf1
+    .short-actions {
+      position: absolute;
+      right: 12px;
+      bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
 
-    .title{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin:8px 0 12px
+    .short-actions button {
+      width: 48px;
+      height: 48px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(0,0,0,.5);
+      color: white;
+      font-size: 19px;
     }
 
-    .empty{
-      text-align:center;
-      padding:35px 18px;
-      color:var(--muted)
+    /* =========================
+       FRIENDS
+    ========================= */
+
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .error{
-      background:#fff0ee;
-      border:1px solid #ffdbce;
-      padding:12px;
-      border-radius:12px;
-      color:var(--danger)
+    .user-row:last-child {
+      border-bottom: 0;
     }
 
-    .success{
-      background:#ecfdf5;
-      border:1px solid #d1fae5;
-      padding:12px;
-      border-radius:12px;
-      color:#065f46
+    .user-info {
+      flex: 1;
     }
+
+    /* =========================
+       MESSAGES
+    ========================= */
 
-    .people{
-      display:grid;
-      grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-      gap:10px
+    .message-list {
+      max-height: 600px;
+      overflow-y: auto;
     }
 
-    .person{
-      padding:12px;
-      background:var(--card);
-      border:1px solid var(--line);
-      border-radius:12px;
-      display:flex;
-      align-items:center;
-      gap:10px
+    .message-row {
+      display: flex;
+      gap: 10px;
+      padding: 13px 15px;
+      border-bottom: 1px solid var(--border);
     }
 
-    .person button{
-      margin-left:auto
+    .bubble {
+      padding: 10px 13px;
+      border-radius: 16px;
+      background: #eef1f4;
+      max-width: 75%;
     }
 
-    .tabs{
-      position:fixed;
-      bottom:0;
-      left:0;
-      right:0;
-      background:#fff;
-      border-top:1px solid var(--line);
-      z-index:20;
-      display:flex;
-      justify-content:center
+    .bubble.mine {
+      margin-left: auto;
+      background: var(--blue);
+      color: white;
     }
 
-    .tabs button{
-      background:transparent;
-      color:var(--muted);
-      padding:9px 10px;
-      min-width:68px;
-      font-size:12px
+    /* =========================
+       PROFILE
+    ========================= */
+
+    .cover {
+      height: 220px;
+      background:
+        linear-gradient(
+          90deg,
+          var(--red),
+          var(--yellow),
+          var(--green)
+        );
+      position: relative;
     }
 
-    .tabs button.active{
-      color:var(--blue);
-      font-weight:800
+    .profile-content {
+      padding: 0 20px 20px;
     }
 
-    .tabs small{
-      display:block;
-      font-size:11px;
-      margin-top:2px
+    .profile-avatar-wrap {
+      margin-top: -55px;
+      position: relative;
+      z-index: 2;
     }
 
-    .spinner{
-      display:inline-block;
-      width:20px;
-      height:20px;
-      border:3px solid #eee;
-      border-top-color:var(--blue);
-      border-radius:50%;
-      animation:spin 0.8s linear infinite
+    .profile-name {
+      font-size: 25px;
+      margin-top: 10px;
     }
+
+    /* =========================
+       MOBILE
+    ========================= */
 
-    @keyframes spin{
-      to{transform:rotate(360deg)}
+    .bottom-nav {
+      display: none;
     }
 
-    @media(min-width:760px){
-      .tabs{
-        position:sticky;
-        bottom:0;
-        width:min(900px,100%);
-        margin:auto;
-        border:1px solid var(--line);
-        border-radius:16px 16px 0 0
+    @media (max-width: 950px) {
+      .layout {
+        grid-template-columns: 1fr;
+        max-width: 680px;
       }
 
-      .shell{
-        padding-bottom:0
+      .sidebar,
+      .rightbar {
+        display: none;
+      }
+
+      .bottom-nav {
+        position: fixed;
+        display: grid;
+        grid-template-columns: repeat(5,1fr);
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 66px;
+        background: rgba(255,255,255,.97);
+        border-top: 1px solid var(--border);
+        z-index: 200;
+      }
+
+      .bottom-nav button {
+        border: 0;
+        background: transparent;
+        font-size: 20px;
+      }
+
+      .bottom-nav button span {
+        display: block;
+        font-size: 10px;
+        margin-top: 2px;
+      }
+
+      .layout {
+        padding-bottom: 80px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        padding: 0 12px;
+      }
+
+      .layout {
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .card {
+        border-radius: 14px;
+      }
+
+      .short {
+        border-radius: 0;
+        height: calc(100vh - 90px);
       }
     }
   </style>
@@ -501,435 +667,2177 @@
 
 <body>
 
-<div id="app"></div>
+<!-- ============================================================
+     AUTHENTIFICATION
+============================================================ -->
+
+<section id="authScreen">
+
+  <div class="auth-card">
+
+    <div class="logo">
+      <div class="gn-logo">GN</div>
+      Guinée Web
+    </div>
+
+    <h1 class="auth-title">Bienvenue sur Guinée Web</h1>
+
+    <p class="auth-subtitle">
+      Le réseau social guinéen 🇬🇳
+    </p>
+
+    <div class="tabs">
+      <button id="loginTab" class="active" onclick="showAuth('login')">
+        Connexion
+      </button>
+
+      <button id="signupTab" onclick="showAuth('signup')">
+        Créer un compte
+      </button>
+    </div>
+
+    <form id="authForm">
+
+      <div id="nameField" class="field hidden">
+        <label>Nom complet</label>
+        <input
+          id="authName"
+          type="text"
+          placeholder="Ex : Ibrahim Diallo"
+        >
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input
+          id="authEmail"
+          type="email"
+          required
+          placeholder="vous@example.com"
+        >
+      </div>
+
+      <div class="field">
+        <label>Mot de passe</label>
+        <input
+          id="authPassword"
+          type="password"
+          required
+          minlength="6"
+          placeholder="••••••••"
+        >
+      </div>
+
+      <div id="cityField" class="field hidden">
+        <label>Ville</label>
+        <input
+          id="authCity"
+          type="text"
+          placeholder="Conakry"
+        >
+      </div>
+
+      <button class="primary" type="submit">
+        <span id="authButtonText">Se connecter</span>
+      </button>
+
+      <div id="authMessage" class="message hidden"></div>
+
+    </form>
+
+  </div>
+
+</section>
+
+
+<!-- ============================================================
+     APPLICATION
+============================================================ -->
+
+<div id="app" class="hidden">
+
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="gn-logo">GN</div>
+      Guinée Web
+    </div>
+
+    <div class="top-actions">
+
+      <button class="icon-btn" onclick="showPage('friends')">
+        🔎
+      </button>
+
+      <button class="icon-btn" onclick="showPage('notifications')">
+        🔔
+      </button>
+
+      <button class="icon-btn" onclick="showPage('profile')">
+        👤
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <main class="layout">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+      <div class="side-menu">
+
+        <button class="nav-item active" data-page="home"
+                onclick="showPage('home')">
+          🏠 Accueil
+        </button>
+
+        <button class="nav-item" data-page="shorts"
+                onclick="showPage('shorts')">
+          🎬 Shorts
+        </button>
+
+        <button class="nav-item" data-page="friends"
+                onclick="showPage('friends')">
+          👥 Amis
+        </button>
+
+        <button class="nav-item" data-page="messages"
+                onclick="showPage('messages')">
+          💬 Messages
+        </button>
+
+        <button class="nav-item" data-page="profile"
+                onclick="showPage('profile')">
+          👤 Profil
+        </button>
+
+        <button class="nav-item" data-page="notifications"
+                onclick="showPage('notifications')">
+          🔔 Notifications
+        </button>
+
+        <button class="nav-item" onclick="logout()">
+          🚪 Déconnexion
+        </button>
+
+      </div>
+
+    </aside>
+
+
+    <!-- CONTENT -->
+
+    <section id="content">
+
+      <!-- HOME -->
+
+      <div id="page-home">
+
+        <div class="card composer">
+
+          <div class="composer-row">
+
+            <img
+              id="composerAvatar"
+              class="avatar"
+              src=""
+              alt=""
+            >
+
+            <textarea
+              id="postText"
+              placeholder="Quoi de neuf ?"
+            ></textarea>
+
+          </div>
+
+          <div class="composer-actions">
+
+            <label class="secondary">
+              📷 Photo
+              <input
+                id="postImage"
+                type="file"
+                accept="image/*"
+                hidden
+              >
+            </label>
+
+            <label class="secondary">
+              🎥 Vidéo
+              <input
+                id="postVideo"
+                type="file"
+                accept="video/*"
+                hidden
+              >
+            </label>
+
+            <button
+              class="primary"
+              style="width:auto;padding:10px 20px"
+              onclick="createPost()">
+              Publier
+            </button>
+
+          </div>
+
+          <div id="uploadMessage" class="message hidden"></div>
+
+        </div>
+
+        <h2 class="section-title">
+          Fil d'actualité
+        </h2>
+
+        <div id="feed"></div>
+
+      </div>
+
+
+      <!-- SHORTS -->
+
+      <div id="page-shorts" class="hidden">
+
+        <h2 class="section-title">
+          🎬 Shorts
+        </h2>
+
+        <div id="shortsFeed" class="shorts-feed"></div>
+
+      </div>
+
+
+      <!-- FRIENDS -->
+
+      <div id="page-friends" class="hidden">
+
+        <h2 class="section-title">
+          👥 Amis
+        </h2>
+
+        <div class="card" style="padding:15px">
+
+          <input
+            id="userSearch"
+            class="search-input"
+            placeholder="Rechercher une personne..."
+            oninput="searchUsers()"
+          >
+
+        </div>
+
+        <div id="usersList" class="card"></div>
+
+      </div>
+
+
+      <!-- MESSAGES -->
+
+      <div id="page-messages" class="hidden">
+
+        <h2 class="section-title">
+          💬 Messages
+        </h2>
+
+        <div class="card">
+
+          <div id="messagesList" class="message-list"></div>
+
+          <div style="padding:12px;border-top:1px solid var(--border);display:flex;gap:8px">
+
+            <input
+              id="messageInput"
+              class="search-input"
+              placeholder="Écrire un message..."
+            >
+
+            <button
+              class="primary"
+              style="width:auto"
+              onclick="sendMessage()">
+              Envoyer
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- PROFILE -->
+
+      <div id="page-profile" class="hidden">
+
+        <div class="card">
+
+          <div class="cover"></div>
+
+          <div class="profile-content">
+
+            <div class="profile-avatar-wrap">
+
+              <img
+                id="profileAvatar"
+                class="avatar avatar-large"
+                src=""
+              >
+
+            </div>
+
+            <h1 id="profileName" class="profile-name">
+              Utilisateur
+            </h1>
+
+            <p id="profileCity" style="color:var(--muted)">
+              Guinée 🇬🇳
+            </p>
+
+            <p id="profileBio" style="margin-top:10px"></p>
+
+            <div style="display:flex;gap:10px;margin-top:15px">
+
+              <label class="secondary">
+                Modifier photo
+                <input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  hidden
+                  onchange="updateProfilePhoto()"
+                >
+              </label>
+
+              <button
+                class="secondary"
+                onclick="editProfile()">
+                Modifier profil
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <h2 class="section-title">
+          Mes publications
+        </h2>
+
+        <div id="myPosts"></div>
+
+      </div>
+
+
+      <!-- NOTIFICATIONS -->
+
+      <div id="page-notifications" class="hidden">
+
+        <h2 class="section-title">
+          🔔 Notifications
+        </h2>
+
+        <div id="notificationsList" class="card"></div>
+
+      </div>
+
+    </section>
+
+
+    <!-- RIGHT BAR -->
+
+    <aside class="rightbar">
+
+      <div class="card right-card">
+
+        <h3 style="margin-bottom:14px">
+          Mon compte
+        </h3>
+
+        <div class="profile-mini">
+
+          <img
+            id="rightAvatar"
+            class="avatar"
+            src=""
+          >
+
+          <div>
+            <strong id="rightName">
+              Utilisateur
+            </strong>
+
+            <span style="color:var(--muted)">
+              Guinée 🇬🇳
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="card right-card">
+
+        <h3 style="margin-bottom:10px">
+          🇬🇳 Guinée Web
+        </h3>
+
+        <p style="color:var(--muted);line-height:1.5">
+          Connecte-toi avec les Guinéens,
+          partage tes moments et découvre
+          les actualités de la communauté.
+        </p>
+
+      </div>
+
+    </aside>
+
+  </main>
+
+
+  <!-- MOBILE NAV -->
+
+  <nav class="bottom-nav">
+
+    <button onclick="showPage('home')">
+      🏠
+      <span>Accueil</span>
+    </button>
+
+    <button onclick="showPage('shorts')">
+      🎬
+      <span>Shorts</span>
+    </button>
+
+    <button onclick="showPage('friends')">
+      👥
+      <span>Amis</span>
+    </button>
+
+    <button onclick="showPage('messages')">
+      💬
+      <span>Messages</span>
+    </button>
+
+    <button onclick="showPage('profile')">
+      👤
+      <span>Profil</span>
+    </button>
+
+  </nav>
+
+</div>
+
 
 <script>
+/* ============================================================
+   SUPABASE
+============================================================ */
 
-const SUPABASE_URL = "https://llmftxuasvysawaazedm.supabase.co";
-const SUPABASE_KEY = "sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
+/*
+  Tes informations Supabase.
+*/
+
+const SUPABASE_URL =
+  "https://llmftxuasvysawaazedm.supabase.co";
+
+const SUPABASE_KEY =
+  "sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
 
 const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const app = document.getElementById("app");
+const db = createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
 
-let user = null;
-let profile = null;
-let tab = "home";
 
-/* ========================= UTILITAIRES ========================= */
+/* ============================================================
+   VARIABLES
+============================================================ */
 
-const esc = s =>
-  String(s ?? "").replace(/[&<>"']/g, c => ({
-    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#039;"
-  }[c]));
+let currentUser = null;
+let currentProfile = null;
+let authMode = "login";
+let currentPage = "home";
 
-const initials = p => (p?.full_name || "U").trim().charAt(0).toUpperCase();
 
-const avatar = p =>
-  p?.avatar_url
-    ? `<div class="avatar"><img src="${esc(p.avatar_url)}" alt=""></div>`
-    : `<div class="avatar">${esc(initials(p))}</div>`;
+/* ============================================================
+   HELPERS
+============================================================ */
 
-const fmt = d => new Date(d).toLocaleString("fr-FR", {
-  dateStyle:"short", timeStyle:"short"
-});
+function $(id) {
+  return document.getElementById(id);
+}
 
-const msg = (e, type = "error") => {
-  const el = document.getElementById("msg");
-  if(el){
-    el.className = type;
-    el.textContent = e?.message || String(e);
-  }
-};
+function escapeHTML(value) {
+  if (value === null || value === undefined) return "";
 
-/* ========================= INITIALISATION ========================= */
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
 
-async function init(){
-  try{
-    const { data, error } = await sb.auth.getSession();
-    if(error) throw error;
+function timeAgo(date) {
 
-    if(data.session){
-      user = data.session.user;
-      await loadProfile();
-      shell();
-      await go("home");
-    }else{
-      welcome();
+  if (!date) return "";
+
+  const diff =
+    Math.floor(
+      (Date.now() - new Date(date).getTime()) / 1000
+    );
+
+  if (diff < 60) return "à l'instant";
+
+  if (diff < 3600)
+    return Math.floor(diff / 60) + " min";
+
+  if (diff < 86400)
+    return Math.floor(diff / 3600) + " h";
+
+  return Math.floor(diff / 86400) + " j";
+}
+
+function defaultAvatar(name = "G") {
+
+  const letter =
+    encodeURIComponent(
+      name.trim().charAt(0).toUpperCase() || "G"
+    );
+
+  return `
+    https://ui-avatars.com/api/
+    ?name=${letter}
+    &background=009460
+    &color=ffffff
+    &size=160
+  `.replace(/\s/g, "");
+
+}
+
+
+/* ============================================================
+   AUTH UI
+============================================================ */
+
+function showAuth(mode) {
+
+  authMode = mode;
+
+  const signup =
+    mode === "signup";
+
+  $("nameField").classList.toggle(
+    "hidden",
+    !signup
+  );
+
+  $("cityField").classList.toggle(
+    "hidden",
+    !signup
+  );
+
+  $("loginTab").classList.toggle(
+    "active",
+    !signup
+  );
+
+  $("signupTab").classList.toggle(
+    "active",
+    signup
+  );
+
+  $("authButtonText").textContent =
+    signup
+      ? "Créer mon compte"
+      : "Se connecter";
+
+  $("authMessage").classList.add("hidden");
+}
+
+
+$("authForm").addEventListener(
+  "submit",
+  async event => {
+
+    event.preventDefault();
+
+    const email =
+      $("authEmail").value.trim();
+
+    const password =
+      $("authPassword").value;
+
+    try {
+
+      if (authMode === "login") {
+
+        const { error } =
+          await db.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) throw error;
+
+      } else {
+
+        const name =
+          $("authName").value.trim();
+
+        const city =
+          $("authCity").value.trim();
+
+        const { data, error } =
+          await db.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: name,
+                city: city
+              }
+            }
+          });
+
+        if (error) throw error;
+
+        /*
+          Si l'email de confirmation est activé
+          dans Supabase, l'utilisateur devra
+          confirmer son adresse.
+        */
+
+        if (data.user) {
+
+          await createProfile(
+            data.user,
+            name,
+            city
+          );
+
+        }
+
+        showAuthMessage(
+          "Compte créé. Vérifie ton email si Supabase demande une confirmation."
+        );
+      }
+
+    } catch (error) {
+
+      console.error(error);
+
+      showAuthMessage(
+        error.message || "Une erreur est survenue."
+      );
+
     }
-  }catch(e){
-    console.error("Erreur d'initialisation:", e);
-    welcome();
+
+  }
+);
+
+
+function showAuthMessage(text) {
+
+  $("authMessage").textContent = text;
+
+  $("authMessage")
+    .classList.remove("hidden");
+}
+
+
+/* ============================================================
+   PROFILE
+============================================================ */
+
+async function createProfile(
+  user,
+  name,
+  city
+) {
+
+  const { error } =
+    await db
+      .from("profiles")
+      .upsert({
+        id: user.id,
+        full_name: name || "Utilisateur",
+        city: city || null
+      });
+
+  if (error)
+    console.error(
+      "Erreur création profil:",
+      error
+    );
+}
+
+
+async function loadProfile() {
+
+  if (!currentUser)
+    return;
+
+  const { data, error } =
+    await db
+      .from("profiles")
+      .select("*")
+      .eq("id", currentUser.id)
+      .maybeSingle();
+
+  if (error) {
+
+    console.error(error);
+    return;
+
   }
 
-  // Écouter les changements de session
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if(event === "SIGNED_OUT"){
-      user = null;
-      profile = null;
-      welcome();
-    }else if(event === "SIGNED_IN" && session){
-      user = session.user;
-      await loadProfile();
-      shell();
-      await go("home");
+  currentProfile = data;
+
+  if (!currentProfile) {
+
+    await createProfile(
+      currentUser,
+      currentUser.user_metadata?.full_name,
+      currentUser.user_metadata?.city
+    );
+
+    const result =
+      await db
+        .from("profiles")
+        .select("*")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+    currentProfile = result.data;
+  }
+
+  updateProfileUI();
+}
+
+
+function updateProfileUI() {
+
+  if (!currentProfile)
+    return;
+
+  const name =
+    currentProfile.full_name ||
+    "Utilisateur";
+
+  const avatar =
+    currentProfile.avatar_url ||
+    defaultAvatar(name);
+
+  $("composerAvatar").src = avatar;
+
+  $("profileAvatar").src = avatar;
+
+  $("rightAvatar").src = avatar;
+
+  $("profileName").textContent = name;
+
+  $("rightName").textContent = name;
+
+  $("profileCity").textContent =
+    currentProfile.city
+      ? currentProfile.city + " 🇬🇳"
+      : "Guinée 🇬🇳";
+
+  $("profileBio").textContent =
+    currentProfile.bio || "";
+}
+
+
+async function editProfile() {
+
+  const name =
+    prompt(
+      "Nom complet :",
+      currentProfile?.full_name || ""
+    );
+
+  if (name === null)
+    return;
+
+  const city =
+    prompt(
+      "Ville :",
+      currentProfile?.city || ""
+    );
+
+  if (city === null)
+    return;
+
+  const bio =
+    prompt(
+      "Biographie :",
+      currentProfile?.bio || ""
+    );
+
+  if (bio === null)
+    return;
+
+  const { error } =
+    await db
+      .from("profiles")
+      .update({
+        full_name: name,
+        city,
+        bio
+      })
+      .eq("id", currentUser.id);
+
+  if (error) {
+
+    alert(error.message);
+    return;
+
+  }
+
+  await loadProfile();
+}
+
+
+/* ============================================================
+   STORAGE
+============================================================ */
+
+async function uploadFile(
+  file,
+  folder
+) {
+
+  if (!file)
+    return null;
+
+  const extension =
+    file.name.split(".").pop();
+
+  const path =
+    `${currentUser.id}/${folder}-${Date.now()}.${extension}`;
+
+  const { error } =
+    await db.storage
+      .from("media")
+      .upload(
+        path,
+        file,
+        {
+          cacheControl: "3600",
+          upsert: false
+        }
+      );
+
+  if (error)
+    throw error;
+
+  const { data } =
+    db.storage
+      .from("media")
+      .getPublicUrl(path);
+
+  return data.publicUrl;
+}
+
+
+/* ============================================================
+   POSTS
+============================================================ */
+
+async function createPost() {
+
+  const text =
+    $("postText").value.trim();
+
+  const image =
+    $("postImage").files[0];
+
+  const video =
+    $("postVideo").files[0];
+
+  if (!text && !image && !video) {
+
+    alert("Ajoute un texte, une photo ou une vidéo.");
+    return;
+
+  }
+
+  try {
+
+    showUploadMessage("Publication en cours...");
+
+    let mediaUrl = null;
+    let mediaType = null;
+
+    if (image) {
+
+      mediaUrl =
+        await uploadFile(
+          image,
+          "post-image"
+        );
+
+      mediaType = "image";
+
     }
+
+    if (video) {
+
+      mediaUrl =
+        await uploadFile(
+          video,
+          "post-video"
+        );
+
+      mediaType = "video";
+
+    }
+
+    const { error } =
+      await db
+        .from("posts")
+        .insert({
+          user_id: currentUser.id,
+          content: text || null,
+          media_url: mediaUrl,
+          media_type: mediaType
+        });
+
+    if (error)
+      throw error;
+
+    $("postText").value = "";
+
+    $("postImage").value = "";
+
+    $("postVideo").value = "";
+
+    showUploadMessage(
+      "Publication réussie."
+    );
+
+    await loadFeed();
+
+  } catch (error) {
+
+    console.error(error);
+
+    showUploadMessage(
+      error.message
+    );
+
+  }
+}
+
+
+function showUploadMessage(text) {
+
+  $("uploadMessage").textContent = text;
+
+  $("uploadMessage")
+    .classList.remove("hidden");
+
+  setTimeout(() => {
+
+    $("uploadMessage")
+      .classList.add("hidden");
+
+  }, 3000);
+}
+
+
+async function loadFeed() {
+
+  const container =
+    $("feed");
+
+  container.innerHTML =
+    `<div class="empty">Chargement...</div>`;
+
+  const { data, error } =
+    await db
+      .from("posts")
+      .select(`
+        *,
+        profiles (
+          id,
+          full_name,
+          avatar_url,
+          city
+        )
+      `)
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="card empty">
+        Impossible de charger le fil.
+      </div>
+    `;
+
+    return;
+  }
+
+  if (!data || data.length === 0) {
+
+    container.innerHTML = `
+      <div class="card empty">
+        <h3>Bienvenue sur Guinée Web 🇬🇳</h3>
+        <p style="margin-top:8px">
+          Aucune publication pour le moment.
+          Sois le premier à publier.
+        </p>
+      </div>
+    `;
+
+    return;
+  }
+
+  const postsHTML =
+    await Promise.all(
+      data.map(
+        post => renderPost(post)
+      )
+    );
+
+  container.innerHTML =
+    postsHTML.join("");
+}
+
+
+async function renderPost(post) {
+
+  const profile =
+    post.profiles || {};
+
+  const name =
+    profile.full_name ||
+    "Utilisateur";
+
+  const avatar =
+    profile.avatar_url ||
+    defaultAvatar(name);
+
+  let media = "";
+
+  if (
+    post.media_url &&
+    post.media_type === "image"
+  ) {
+
+    media = `
+      <img
+        class="post-media"
+        src="${escapeHTML(post.media_url)}"
+        alt=""
+      >
+    `;
+
+  }
+
+  if (
+    post.media_url &&
+    post.media_type === "video"
+  ) {
+
+    media = `
+      <video
+        class="post-media"
+        src="${escapeHTML(post.media_url)}"
+        controls
+        playsinline
+      ></video>
+    `;
+
+  }
+
+  const { count: likesCount } =
+    await db
+      .from("likes")
+      .select(
+        "*",
+        {
+          count: "exact",
+          head: true
+        }
+      )
+      .eq(
+        "post_id",
+        post.id
+      );
+
+  const { data: myLike } =
+    await db
+      .from("likes")
+      .select("id")
+      .eq("post_id", post.id)
+      .eq("user_id", currentUser.id)
+      .maybeSingle();
+
+  const { count: commentsCount } =
+    await db
+      .from("comments")
+      .select(
+        "*",
+        {
+          count: "exact",
+          head: true
+        }
+      )
+      .eq(
+        "post_id",
+        post.id
+      );
+
+  return `
+    <article class="card post">
+
+      <div class="post-head">
+
+        <img
+          class="avatar"
+          src="${escapeHTML(avatar)}"
+          alt=""
+        >
+
+        <div class="post-author">
+
+          <strong>
+            ${escapeHTML(name)}
+          </strong>
+
+          <span class="post-time">
+            ${timeAgo(post.created_at)}
+            ${profile.city ? " · " + escapeHTML(profile.city) : ""}
+          </span>
+
+        </div>
+
+      </div>
+
+      ${
+        post.content
+          ? `
+            <div class="post-text">
+              ${escapeHTML(post.content)}
+            </div>
+          `
+          : ""
+      }
+
+      ${media}
+
+      <div class="post-stats">
+
+        <span>
+          ❤️ ${likesCount || 0}
+        </span>
+
+        <span>
+          💬 ${commentsCount || 0}
+        </span>
+
+      </div>
+
+      <div class="post-actions">
+
+        <button
+          class="${myLike ? "liked" : ""}"
+          onclick="toggleLike('${post.id}', ${!!myLike})"
+        >
+          ❤️ J'aime
+        </button>
+
+        <button
+          onclick="commentPost('${post.id}')"
+        >
+          💬 Commenter
+        </button>
+
+        <button
+          onclick="sharePost('${post.id}')"
+        >
+          ↗️ Partager
+        </button>
+
+      </div>
+
+    </article>
+  `;
+}
+
+
+/* ============================================================
+   LIKES
+============================================================ */
+
+async function toggleLike(
+  postId,
+  alreadyLiked
+) {
+
+  try {
+
+    if (alreadyLiked) {
+
+      const { error } =
+        await db
+          .from("likes")
+          .delete()
+          .eq("post_id", postId)
+          .eq("user_id", currentUser.id);
+
+      if (error)
+        throw error;
+
+    } else {
+
+      const { error } =
+        await db
+          .from("likes")
+          .insert({
+            post_id: postId,
+            user_id: currentUser.id
+          });
+
+      if (error)
+        throw error;
+
+      await createNotificationForPost(
+        postId,
+        "like"
+      );
+    }
+
+    await loadFeed();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+}
+
+
+/* ============================================================
+   COMMENTS
+============================================================ */
+
+async function commentPost(postId) {
+
+  const content =
+    prompt("Écris ton commentaire :");
+
+  if (!content?.trim())
+    return;
+
+  const { error } =
+    await db
+      .from("comments")
+      .insert({
+        post_id: postId,
+        user_id: currentUser.id,
+        content: content.trim()
+      });
+
+  if (error) {
+
+    alert(error.message);
+    return;
+
+  }
+
+  await createNotificationForPost(
+    postId,
+    "comment"
+  );
+
+  await loadFeed();
+}
+
+
+/* ============================================================
+   SHARING
+============================================================ */
+
+async function sharePost(postId) {
+
+  const url =
+    `${location.origin}${location.pathname}?post=${postId}`;
+
+  try {
+
+    if (
+      navigator.share
+    ) {
+
+      await navigator.share({
+        title: "Guinée Web",
+        text: "Regarde cette publication sur Guinée Web 🇬🇳",
+        url
+      });
+
+    } else {
+
+      await navigator.clipboard.writeText(url);
+
+      alert(
+        "Lien de publication copié."
+      );
+
+    }
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+}
+
+
+/* ============================================================
+   NOTIFICATIONS
+============================================================ */
+
+async function createNotificationForPost(
+  postId,
+  type
+) {
+
+  try {
+
+    const { data: post } =
+      await db
+        .from("posts")
+        .select("user_id")
+        .eq("id", postId)
+        .maybeSingle();
+
+    if (!post)
+      return;
+
+    if (
+      post.user_id === currentUser.id
+    )
+      return;
+
+    await db
+      .from("notifications")
+      .insert({
+        user_id: post.user_id,
+        actor_id: currentUser.id,
+        type,
+        post_id: postId
+      });
+
+  } catch (error) {
+
+    console.log(
+      "Notification:",
+      error
+    );
+
+  }
+}
+
+
+async function loadNotifications() {
+
+  const container =
+    $("notificationsList");
+
+  const { data, error } =
+    await db
+      .from("notifications")
+      .select(`
+        *,
+        profiles:actor_id (
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    container.innerHTML =
+      `<div class="empty">Impossible de charger les notifications.</div>`;
+
+    return;
+  }
+
+  if (!data?.length) {
+
+    container.innerHTML =
+      `<div class="empty">Aucune notification.</div>`;
+
+    return;
+  }
+
+  container.innerHTML =
+    data.map(n => {
+
+      const actor =
+        n.profiles?.full_name ||
+        "Quelqu'un";
+
+      let text =
+        "a interagi avec toi.";
+
+      if (n.type === "like")
+        text = "a aimé ta publication.";
+
+      if (n.type === "comment")
+        text = "a commenté ta publication.";
+
+      return `
+        <div class="user-row">
+          <div class="user-info">
+            <strong>
+              ${escapeHTML(actor)}
+            </strong>
+            <div style="color:var(--muted)">
+              ${text}
+            </div>
+          </div>
+          <span class="post-time">
+            ${timeAgo(n.created_at)}
+          </span>
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+/* ============================================================
+   FRIENDS
+============================================================ */
+
+async function searchUsers() {
+
+  const query =
+    $("userSearch").value.trim();
+
+  if (!query) {
+
+    $("usersList").innerHTML =
+      `<div class="empty">Recherche un utilisateur.</div>`;
+
+    return;
+  }
+
+  const { data, error } =
+    await db
+      .from("profiles")
+      .select("*")
+      .ilike(
+        "full_name",
+        `%${query}%`
+      )
+      .neq(
+        "id",
+        currentUser.id
+      )
+      .limit(30);
+
+  if (error) {
+
+    console.error(error);
+
+    return;
+  }
+
+  renderUsers(data || []);
+}
+
+
+function renderUsers(users) {
+
+  if (!users.length) {
+
+    $("usersList").innerHTML =
+      `<div class="empty">Aucun utilisateur trouvé.</div>`;
+
+    return;
+  }
+
+  $("usersList").innerHTML =
+    users.map(user => {
+
+      const avatar =
+        user.avatar_url ||
+        defaultAvatar(
+          user.full_name
+        );
+
+      return `
+        <div class="user-row">
+
+          <img
+            class="avatar"
+            src="${escapeHTML(avatar)}"
+          >
+
+          <div class="user-info">
+
+            <strong>
+              ${escapeHTML(user.full_name || "Utilisateur")}
+            </strong>
+
+            <span style="color:var(--muted)">
+              ${escapeHTML(user.city || "Guinée")}
+            </span>
+
+          </div>
+
+          <button
+            class="secondary"
+            onclick="sendFriendRequest('${user.id}')"
+          >
+            Ajouter
+          </button>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+async function sendFriendRequest(
+  receiverId
+) {
+
+  const { error } =
+    await db
+      .from("friend_requests")
+      .insert({
+        sender_id: currentUser.id,
+        receiver_id: receiverId,
+        status: "pending"
+      });
+
+  if (error) {
+
+    alert(error.message);
+    return;
+
+  }
+
+  alert(
+    "Demande d'amitié envoyée."
+  );
+}
+
+
+/* ============================================================
+   SHORTS
+============================================================ */
+
+async function loadShorts() {
+
+  const container =
+    $("shortsFeed");
+
+  const { data, error } =
+    await db
+      .from("shorts")
+      .select(`
+        *,
+        profiles (
+          full_name,
+          avatar_url
+        )
+      `)
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    console.error(error);
+
+    container.innerHTML = `
+      <div class="card empty">
+        Impossible de charger les Shorts.
+      </div>
+    `;
+
+    return;
+  }
+
+  if (!data?.length) {
+
+    container.innerHTML = `
+      <div class="card empty">
+        Aucun Short pour le moment.
+      </div>
+    `;
+
+    return;
+  }
+
+  container.innerHTML =
+    data.map(short => {
+
+      const profile =
+        short.profiles || {};
+
+      const name =
+        profile.full_name ||
+        "Utilisateur";
+
+      return `
+        <article class="short">
+
+          <video
+            src="${escapeHTML(short.video_url)}"
+            controls
+            playsinline
+            loop
+          ></video>
+
+          <div class="short-overlay"></div>
+
+          <div class="short-info">
+
+            <strong>
+              @${escapeHTML(name)}
+            </strong>
+
+            <p style="margin-top:8px">
+              ${escapeHTML(short.caption || "")}
+            </p>
+
+          </div>
+
+          <div class="short-actions">
+
+            <button>
+              ❤️
+            </button>
+
+            <button>
+              💬
+            </button>
+
+            <button
+              onclick="shareShort('${short.id}')"
+            >
+              ↗️
+            </button>
+
+          </div>
+
+        </article>
+      `;
+
+    }).join("");
+}
+
+
+async function shareShort(id) {
+
+  const url =
+    `${location.origin}${location.pathname}?short=${id}`;
+
+  try {
+
+    if (navigator.share) {
+
+      await navigator.share({
+        title: "Guinée Web Shorts",
+        url
+      });
+
+    } else {
+
+      await navigator.clipboard.writeText(url);
+
+      alert(
+        "Lien copié."
+      );
+
+    }
+
+  } catch {}
+
+}
+
+
+/* ============================================================
+   MESSAGES
+============================================================ */
+
+async function loadMessages() {
+
+  const container =
+    $("messagesList");
+
+  const { data, error } =
+    await db
+      .from("messages")
+      .select("*")
+      .or(
+        `sender_id.eq.${currentUser.id},receiver_id.eq.${currentUser.id}`
+      )
+      .order(
+        "created_at",
+        {
+          ascending: true
+        }
+      )
+      .limit(100);
+
+  if (error) {
+
+    console.error(error);
+
+    container.innerHTML =
+      `<div class="empty">Impossible de charger les messages.</div>`;
+
+    return;
+  }
+
+  if (!data?.length) {
+
+    container.innerHTML =
+      `<div class="empty">
+        Aucun message pour le moment.
+      </div>`;
+
+    return;
+  }
+
+  container.innerHTML =
+    data.map(message => {
+
+      const mine =
+        message.sender_id === currentUser.id;
+
+      return `
+        <div style="padding:8px 15px;display:flex">
+
+          <div class="bubble ${mine ? "mine" : ""}">
+            ${escapeHTML(message.content || "")}
+          </div>
+
+        </div>
+      `;
+
+    }).join("");
+}
+
+
+async function sendMessage() {
+
+  const content =
+    $("messageInput").value.trim();
+
+  if (!content)
+    return;
+
+  /*
+    Pour une vraie conversation,
+    receiver_id doit correspondre
+    à l'utilisateur sélectionné.
+  */
+
+  const receiverId =
+    prompt(
+      "ID Supabase du destinataire :"
+    );
+
+  if (!receiverId)
+    return;
+
+  const { error } =
+    await db
+      .from("messages")
+      .insert({
+        sender_id: currentUser.id,
+        receiver_id: receiverId,
+        content
+      });
+
+  if (error) {
+
+    alert(error.message);
+    return;
+
+  }
+
+  $("messageInput").value = "";
+
+  await loadMessages();
+}
+
+
+/* ============================================================
+   PROFILE PHOTO
+============================================================ */
+
+async function updateProfilePhoto() {
+
+  const file =
+    $("profileImage").files[0];
+
+  if (!file)
+    return;
+
+  try {
+
+    const url =
+      await uploadFile(
+        file,
+        "avatar"
+      );
+
+    const { error } =
+      await db
+        .from("profiles")
+        .update({
+          avatar_url: url
+        })
+        .eq(
+          "id",
+          currentUser.id
+        );
+
+    if (error)
+      throw error;
+
+    await loadProfile();
+
+  } catch (error) {
+
+    alert(error.message);
+
+  }
+}
+
+
+/* ============================================================
+   MY POSTS
+============================================================ */
+
+async function loadMyPosts() {
+
+  const { data, error } =
+    await db
+      .from("posts")
+      .select(`
+        *,
+        profiles (
+          full_name,
+          avatar_url,
+          city
+        )
+      `)
+      .eq(
+        "user_id",
+        currentUser.id
+      )
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+  if (error) {
+
+    console.error(error);
+    return;
+
+  }
+
+  if (!data?.length) {
+
+    $("myPosts").innerHTML =
+      `<div class="card empty">
+        Tu n'as encore publié aucun contenu.
+      </div>`;
+
+    return;
+  }
+
+  const html =
+    await Promise.all(
+      data.map(
+        post => renderPost(post)
+      )
+    );
+
+  $("myPosts").innerHTML =
+    html.join("");
+}
+
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+
+async function showPage(page) {
+
+  currentPage = page;
+
+  const pages = [
+    "home",
+    "shorts",
+    "friends",
+    "messages",
+    "profile",
+    "notifications"
+  ];
+
+  pages.forEach(name => {
+
+    const element =
+      $("page-" + name);
+
+    if (element) {
+
+      element.classList.toggle(
+        "hidden",
+        name !== page
+      );
+
+    }
+
+  });
+
+  document
+    .querySelectorAll(".nav-item")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === page
+      );
+
+    });
+
+  if (page === "home")
+    await loadFeed();
+
+  if (page === "shorts")
+    await loadShorts();
+
+  if (page === "friends")
+    $("usersList").innerHTML =
+      `<div class="empty">Recherche une personne.</div>`;
+
+  if (page === "messages")
+    await loadMessages();
+
+  if (page === "profile") {
+
+    await loadProfile();
+    await loadMyPosts();
+
+  }
+
+  if (page === "notifications")
+    await loadNotifications();
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
   });
 }
 
-/* ========================= PAGE D'ACCUEIL ========================= */
 
-function welcome(){
-  app.innerHTML = `
-    <section class="welcome">
-      <div class="logo">GA</div>
-      <h1>Guinée Actualité 🇬🇳</h1>
-      <p class="tag">Actualités 100% guinéennes</p>
-      <p class="muted">
-        Partagez les nouvelles de votre région. Aucun contenu de démonstration,
-        juste l'actualité véritable de la Guinée.
-      </p>
-      <div class="features">
-        <span>📰 Actualités</span>
-        <span>👥 Amis</span>
-        <span>💬 Messages</span>
-        <span>🔔 Notifications</span>
-      </div>
-      <button class="primary wide" onclick="auth('signup')">
-        Créer un compte
-      </button>
-      <button class="secondary wide" onclick="auth('login')">
-        Se connecter
-      </button>
-    </section>
-  `;
+/* ============================================================
+   LOGOUT
+============================================================ */
+
+async function logout() {
+
+  await db.auth.signOut();
+
+  currentUser = null;
+  currentProfile = null;
+
+  $("app").classList.add("hidden");
+
+  $("authScreen")
+    .classList.remove("hidden");
+
 }
 
-/* ========================= AUTHENTIFICATION ========================= */
 
-function auth(mode){
-  app.innerHTML = `
-    <section class="center">
-      <div class="card auth">
-        <div class="logo sm">GA</div>
-        <h2>${mode === "login" ? "Se connecter" : "Créer mon compte"}</h2>
-        <form id="authForm">
-          ${
-            mode === "signup"
-              ? `
-                <label>
-                  Nom complet
-                  <input id="name" required maxlength="100">
-                </label>
-                <label>
-                  Ville
-                  <input id="city" required placeholder="Conakry">
-                </label>
-              `
-              : ""
-          }
-          <label>
-            Email
-            <input id="email" type="email" required>
-          </label>
-          <label>
-            Mot de passe
-            <input id="pass" type="password" minlength="6" required>
-          </label>
-          <button type="submit" class="primary wide">
-            ${mode === "login" ? "Se connecter" : "Créer le compte"}
-          </button>
-        </form>
-        <p id="msg" class="muted"></p>
-        <button class="link" onclick="auth('${
-          mode === "login" ? "signup" : "login"
-        }')">
-          ${mode === "login" ? "Créer un compte" : "J'ai déjà un compte"}
-        </button>
-        <button class="link" onclick="welcome()">← Retour</button>
-      </div>
-    </section>
-  `;
+/* ============================================================
+   REALTIME
+============================================================ */
 
-  document.getElementById("authForm").onsubmit = async e => {
-    e.preventDefault();
-    const btn = e.target.querySelector("button");
-    const originalText = btn.textContent;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span>';
+function subscribeRealtime() {
 
-    try{
-      msg("Patiente...", "muted");
+  db.channel(
+    "guinee-web-realtime"
+  )
 
-      if(mode === "login"){
-        const { error } = await sb.auth.signInWithPassword({
-          email: document.getElementById("email").value,
-          password: document.getElementById("pass").value
-        });
-        if(error) throw error;
-      }else{
-        const { error } = await sb.auth.signUp({
-          email: document.getElementById("email").value,
-          password: document.getElementById("pass").value,
-          options:{
-            data:{
-              full_name: document.getElementById("name").value,
-              city: document.getElementById("city").value
-            }
-          }
-        });
-        if(error) throw error;
-        msg("Compte créé! Vérifie ton email pour confirmer.", "success");
-        setTimeout(() => auth("login"), 2000);
-      }
-    }catch(e){
-      msg(e, "error");
-      btn.disabled = false;
-      btn.textContent = originalText;
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "posts"
+    },
+    () => {
+
+      if (
+        currentPage === "home"
+      )
+        loadFeed();
+
     }
-  };
-}
+  )
 
-/* ========================= PROFIL ========================= */
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "notifications"
+    },
+    () => {
 
-async function loadProfile(){
-  try{
-    const { data, error } = await sb
-      .from("profiles")
-      .select("*")
-      .eq("id", user.id)
-      .maybeSingle();
+      if (
+        currentPage === "notifications"
+      )
+        loadNotifications();
 
-    if(error) throw error;
-
-    profile = data || {
-      id: user.id,
-      full_name: user.email?.split("@")[0] || "Utilisateur",
-      city: "Guinée",
-      avatar_url: null
-    };
-  }catch(e){
-    console.error("Erreur chargement profil:", e);
-    profile = {
-      id: user.id,
-      full_name: user.email?.split("@")[0] || "Utilisateur",
-      city: "Guinée"
-    };
-  }
-}
-
-async function profilePage(){
-  const v = document.getElementById("view");
-  v.innerHTML = `
-    <div class="card">
-      <div style="text-align:center;padding:20px">
-        ${avatar({...profile, full_name: profile?.full_name?.charAt(0)})}
-        <h2>${esc(profile?.full_name || "Utilisateur")}</h2>
-        <p class="muted">${esc(profile?.city || "Guinée")}</p>
-        <p class="muted">Email: ${esc(user?.email || "")}</p>
-        <button class="primary wide" onclick="logout()" style="margin-top:20px">
-          Se déconnecter
-        </button>
-      </div>
-    </div>
-  `;
-}
-
-async function logout(){
-  try{
-    await sb.auth.signOut();
-  }catch(e){
-    console.error("Erreur déconnexion:", e);
-  }
-}
-
-/* ========================= NOTIFICATIONS ========================= */
-
-async function counts(){
-  try{
-    const { count } = await sb
-      .from("notifications")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", user.id)
-      .eq("read", false);
-    return count || 0;
-  }catch(e){
-    console.error("Erreur notifications:", e);
-    return 0;
-  }
-}
-
-async function updateBadge(){
-  try{
-    const c = await counts();
-    const badge = document.getElementById("badge");
-    if(badge){
-      if(c > 0){
-        badge.textContent = c;
-        badge.classList.remove("hidden");
-      }else{
-        badge.classList.add("hidden");
-      }
     }
-  }catch(e){
-    console.error("Erreur badge:", e);
+  )
+
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "messages"
+    },
+    () => {
+
+      if (
+        currentPage === "messages"
+      )
+        loadMessages();
+
+    }
+  )
+
+  .subscribe();
+}
+
+
+/* ============================================================
+   INITIALISATION
+============================================================ */
+
+async function initializeApp() {
+
+  const {
+    data: {
+      session
+    }
+  } = await db.auth.getSession();
+
+  if (session?.user) {
+
+    currentUser =
+      session.user;
+
+    $("authScreen")
+      .classList.add("hidden");
+
+    $("app")
+      .classList.remove("hidden");
+
+    await loadProfile();
+
+    await loadFeed();
+
+    subscribeRealtime();
+
+  } else {
+
+    $("authScreen")
+      .classList.remove("hidden");
+
+    $("app")
+      .classList.add("hidden");
+
   }
 }
 
-async function notifications(){
-  const v = document.getElementById("view");
-  v.innerHTML = `<div class="empty">Pas de notifications pour le moment</div>`;
-}
 
-/* ========================= POSTS (Actualités) ========================= */
+db.auth.onAuthStateChange(
+  async (_event, session) => {
 
-async function home(){
-  const v = document.getElementById("view");
-  v.innerHTML = `<div class="empty"><div class="spinner"></div></div>`;
+    if (session?.user) {
 
-  try{
-    const { data: posts, error } = await sb
-      .from("posts")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(20);
+      currentUser =
+        session.user;
 
-    if(error) throw error;
+      $("authScreen")
+        .classList.add("hidden");
 
-    if(!posts || posts.length === 0){
-      v.innerHTML = `
-        <div class="composer">
-          <textarea placeholder="Qu'est-ce qui se passe en Guinée?" rows="3"></textarea>
-          <button onclick="alert('Partager un post - à implémenter')">Partager</button>
-        </div>
-        <div class="empty">Aucune actualité pour le moment. Sois le premier à partager!</div>
-      `;
-      return;
+      $("app")
+        .classList.remove("hidden");
+
+      await loadProfile();
+
+      await loadFeed();
+
+    } else {
+
+      currentUser = null;
+
+      $("authScreen")
+        .classList.remove("hidden");
+
+      $("app")
+        .classList.add("hidden");
+
     }
 
-    v.innerHTML = `
-      <div class="composer">
-        <textarea placeholder="Qu'est-ce qui se passe en Guinée?" rows="3"></textarea>
-        <button onclick="alert('Partager un post - à implémenter')">Partager</button>
-      </div>
-      ${posts.map(post => `
-        <div class="post">
-          <div class="head">
-            <div class="avatar sm">
-              ${post.author_name?.charAt(0).toUpperCase() || "U"}
-            </div>
-            <div>
-              <strong>${esc(post.author_name || "Anonyme")}</strong>
-              <small>${fmt(post.created_at)}</small>
-            </div>
-          </div>
-          <p>${esc(post.content)}</p>
-          ${post.image_url ? `<img src="${esc(post.image_url)}" class="media">` : ""}
-          <div class="actions">
-            <button>👍 ${post.likes || 0}</button>
-            <button>💬 ${post.comments || 0}</button>
-            <button>↗️ Partager</button>
-          </div>
-        </div>
-      `).join("")}
-    `;
-  }catch(e){
-    v.innerHTML = `<div class="error">Erreur: ${esc(e.message)}</div>`;
   }
-}
+);
 
-async function shorts(){
-  const v = document.getElementById("view");
-  v.innerHTML = `<div class="empty">📹 Shorts (vidéos courtes) - à implémenter</div>`;
-}
 
-/* ========================= AMIS ========================= */
-
-async function friends(){
-  const v = document.getElementById("view");
-  v.innerHTML = `<div class="empty">👥 Gérer les amis - à implémenter</div>`;
-}
-
-/* ========================= MESSAGES ========================= */
-
-async function messages(){
-  const v = document.getElementById("view");
-  v.innerHTML = `<div class="empty">💬 Messages - à implémenter</div>`;
-}
-
-/* ========================= INTERFACE PRINCIPALE ========================= */
-
-function shell(){
-  app.innerHTML = `
-    <div class="shell">
-      <header class="top">
-        <button class="brand" onclick="go('home')">
-          🇬🇳 <span>Guinée Actualité</span>
-        </button>
-        <div class="top-right">
-          <button class="icon" onclick="go('notifications')">
-            🔔
-            <span id="badge" class="badge hidden"></span>
-          </button>
-          ${avatar(profile)}
-        </div>
-      </header>
-
-      <main id="view"></main>
-
-      <nav class="tabs">
-        <button id="tab-home" onclick="go('home')">
-          📰
-          <small>Actualités</small>
-        </button>
-        <button id="tab-friends" onclick="go('friends')">
-          👥
-          <small>Amis</small>
-        </button>
-        <button id="tab-messages" onclick="go('messages')">
-          💬
-          <small>Messages</small>
-        </button>
-        <button id="tab-profile" onclick="go('profile')">
-          👤
-          <small>Profil</small>
-        </button>
-      </nav>
-    </div>
-  `;
-
-  updateBadge();
-}
-
-/* ========================= NAVIGATION ========================= */
-
-async function go(t){
-  tab = t;
-
-  document.querySelectorAll(".tabs button").forEach(b => 
-    b.classList.remove("active")
-  );
-
-  document.getElementById("tab-" + t)?.classList.add("active");
-
-  const v = document.getElementById("view");
-  if(!v) return;
-
-  try{
-    if(t === "home") await home();
-    else if(t === "shorts") await shorts();
-    else if(t === "friends") await friends();
-    else if(t === "messages") await messages();
-    else if(t === "profile") await profilePage();
-    else if(t === "notifications") await notifications();
-  }catch(e){
-    v.innerHTML = `<div class="error">Erreur: ${esc(e.message)}</div>`;
-  }
-}
-
-// Démarrer l'application
-init();
+initializeApp();
 
 </script>
 
