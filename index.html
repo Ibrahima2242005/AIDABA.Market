@@ -21,7 +21,23 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background-color: var(--bg-color); padding-bottom: 60px; color: var(--text-dark); }
+    body { background-color: var(--bg-color); color: var(--text-dark); }
+    body.app-active { padding-bottom: 60px; }
+
+    /* ECRAN D'AUTHENTIFICATION */
+    #auth-screen {
+      position: fixed; inset: 0; background: #ffffff; z-index: 5000;
+      display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 20px;
+    }
+    .auth-box { width: 100%; max-width: 380px; text-align: center; }
+    .auth-box .brand-badge { width: 60px; height: 60px; font-size: 28px; margin: 0 auto 15px; border-radius: 14px; }
+    .auth-title { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+    .auth-subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+    .auth-form { display: flex; flex-direction: column; gap: 12px; }
+    .auth-form input { padding: 12px 16px; border-radius: 8px; border: 1px solid #ddd; outline: none; font-size: 14px; }
+    .auth-btn { background: var(--gn-red); color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; margin-top: 5px; }
+    .auth-toggle { margin-top: 20px; font-size: 13px; color: var(--text-muted); }
+    .auth-toggle span { color: var(--gn-red); font-weight: bold; cursor: pointer; }
 
     /* HEADER */
     header { 
@@ -39,8 +55,8 @@
     .header-actions { display: flex; gap: 10px; }
     .header-actions i { font-size: 16px; background: #e4e6eb; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-dark); cursor: pointer; }
 
-    /* VUES */
-    .view { display: none; }
+    /* VUES APP */
+    .view { display: none; min-height: calc(100vh - 120px); }
     .view.active { display: block; }
 
     /* STORIES */
@@ -66,8 +82,8 @@
     .post-footer button { background: none; border: none; color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 10px; }
 
     /* REELS */
-    .reels-feed { height: calc(100vh - 118px); overflow-y: scroll; snap-type: y mandatory; background: #000; }
-    .reel-box { height: calc(100vh - 118px); snap-align: start; position: relative; display: flex; justify-content: center; align-items: center; }
+    .reels-feed { height: calc(100vh - 120px); overflow-y: scroll; snap-type: y mandatory; background: #000; }
+    .reel-box { height: calc(100vh - 120px); snap-align: start; position: relative; display: flex; justify-content: center; align-items: center; }
     .reel-box video { width: 100%; height: 100%; object-fit: cover; }
 
     /* MARKETPLACE */
@@ -77,14 +93,9 @@
     .market-info { padding: 10px; }
     .market-price { font-weight: bold; color: var(--gn-green); font-size: 15px; }
 
-    /* MODAL STORY VIEWER */
-    #story-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
-    #story-modal.active { display: flex; }
-
-    /* PANNEAU DE COMMENTAIRES (BOTTOM SHEET) */
+    /* PANNEAU DE COMMENTAIRES */
     .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2999; }
     .modal-overlay.active { display: block; }
-
     .comments-modal {
       position: fixed; bottom: -100%; left: 0; right: 0; height: 75vh;
       background: #ffffff; border-top-left-radius: 18px; border-top-right-radius: 18px;
@@ -93,7 +104,6 @@
     }
     .comments-modal.active { bottom: 0; }
     .comments-header { padding: 14px 16px; border-bottom: 1px solid #e4e6eb; display: flex; justify-content: space-between; align-items: center; position: relative; }
-    .comments-header::before { content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: #cccccc; border-radius: 2px; }
     .comments-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
     .comment-item { display: flex; gap: 10px; align-items: flex-start; }
     .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
@@ -106,13 +116,33 @@
 
     /* NAVIGATION BAS */
     .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 58px; background: var(--card-bg); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e4e6eb; z-index: 1000; }
-    .nav-item { background: none; border: none; font-size: 22px; color: var(--text-muted); width: 20%; height: 100%; position: relative; cursor: pointer; }
+    .nav-item { background: none; border: none; font-size: 22px; color: var(--text-muted); width: 20%; height: 100%; cursor: pointer; }
     .nav-item.active { color: var(--gn-red); border-bottom: 3px solid var(--gn-red); }
   </style>
 </head>
-<body>
+<body class="app-active">
 
-  <!-- HEADER -->
+  <!-- ECRAN D'AUTHENTIFICATION (Connexion / Inscription) -->
+  <div id="auth-screen">
+    <div class="auth-box">
+      <div class="brand-badge">A</div>
+      <h2 class="auth-title" id="auth-heading">Connexion</h2>
+      <p class="auth-subtitle">Bienvenue sur AIDBA GUINÉE</p>
+      
+      <form class="auth-form" onsubmit="handleAuth(event)">
+        <input type="email" id="auth-email" placeholder="Adresse email" required>
+        <input type="password" id="auth-password" placeholder="Mot de passe" required>
+        <button type="submit" class="auth-btn" id="auth-submit-btn">Se connecter</button>
+      </form>
+
+      <div class="auth-toggle">
+        <span id="auth-toggle-text">Pas encore de compte ?</span>
+        <span onclick="toggleAuthMode()" id="auth-toggle-link">S'inscrire</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HEADER APPLICATION -->
   <header>
     <div class="brand-logo">
       <div class="brand-badge">A</div>
@@ -135,14 +165,14 @@
     </div>
 
     <div class="create-post">
-      <img src="logo.png" alt="Avatar">
+      <img src="logo.png" alt="Avatar" id="user-avatar-post">
       <input type="text" placeholder="Quoi de neuf sur AIDBA GUINÉE ?">
     </div>
 
     <div id="posts-feed"></div>
   </div>
 
-  <!-- VUE 2: REELS -->
+  <!-- VUE 2: REELS / SHORTS -->
   <div id="view-reels" class="view">
     <div class="reels-feed" id="reels-container"></div>
   </div>
@@ -158,33 +188,21 @@
   <!-- VUE 4: NOTIFICATIONS -->
   <div id="view-notifs" class="view">
     <div style="padding:15px; background:var(--card-bg); font-weight:bold;">Notifications</div>
-    <div style="padding:30px; text-align:center; color:var(--text-muted);">Aucune nouvelle notification.</div>
+    <div style="padding:40px 20px; text-align:center; color:var(--text-muted);">Aucune notification pour le moment.</div>
   </div>
 
-  <!-- VUE 5: MENU -->
+  <!-- VUE 5: MENU / PROFIL -->
   <div id="view-menu" class="view">
-    <div style="display:flex; align-items:center; gap:12px; padding:15px; background:var(--card-bg);">
-      <img src="logo.png" style="width:54px; height:54px; border-radius:50%;" alt="Avatar">
+    <div style="display:flex; align-items:center; gap:12px; padding:15px; background:var(--card-bg); margin-bottom:15px;">
+      <img src="logo.png" id="user-avatar-menu" style="width:54px; height:54px; border-radius:50%; object-fit:cover;">
       <div>
-        <h3>Mon Compte</h3>
+        <h3 id="user-email-display">Mon Compte</h3>
         <small style="color:var(--text-muted);">Conakry, Guinée</small>
       </div>
     </div>
-  </div>
-
-  <!-- MODAL STORY VIEWER -->
-  <div id="story-modal">
-    <div style="display:flex; justify-content:space-between; color:#fff; align-items:center;">
-      <strong id="story-author-name">Utilisateur</strong>
-      <span onclick="closeStoryModal()" style="font-size: 24px; cursor:pointer;">&times;</span>
-    </div>
-    <div style="text-align:center;">
-      <img id="story-media-img" src="" style="max-width:100%; max-height:70vh; border-radius:12px;">
-    </div>
-    <div style="display:flex; justify-content:space-between; align-items:center; color:#fff;">
-      <div><i class="fa-solid fa-eye"></i> <span id="story-views-count">0</span> vues</div>
-      <button onclick="likeCurrentStory()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">
-        <i class="fa-solid fa-heart" id="story-heart-icon"></i>
+    <div style="padding:0 15px;">
+      <button onclick="logout()" style="width:100%; padding:12px; background:#f0f2f5; border:none; border-radius:8px; color:var(--gn-red); font-weight:bold; cursor:pointer;">
+        <i class="fa-solid fa-right-from-bracket"></i> Se déconnecter
       </button>
     </div>
   </div>
@@ -213,149 +231,198 @@
   </nav>
 
   <script>
-    // Configuration Supabase (remplace par tes réelles clefs)
+    // Config Supabase (à compléter avec tes clés)
     const SUPABASE_URL = "https://bdzdaceiettpiosstxkp.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    let activeStoryId = null;
+    let isSignUp = false;
     let currentPostId = null;
     let commentsSubscription = null;
 
-    // NAVIGATION ENTRE VUES
+    // 1. GESTION DE L'AUTHENTIFICATION
+    async function checkUserSession() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (session) {
+        document.getElementById('auth-screen').style.display = 'none';
+        document.getElementById('user-email-display').innerText = session.user.email;
+        loadStories();
+        loadPosts();
+      } else {
+        document.getElementById('auth-screen').style.display = 'flex';
+      }
+    }
+
+    function toggleAuthMode() {
+      isSignUp = !isSignUp;
+      document.getElementById('auth-heading').innerText = isSignUp ? "Créer un compte" : "Connexion";
+      document.getElementById('auth-submit-btn').innerText = isSignUp ? "S'inscrire" : "Se connecter";
+      document.getElementById('auth-toggle-text').innerText = isSignUp ? "Déjà un compte ?" : "Pas encore de compte ?";
+      document.getElementById('auth-toggle-link').innerText = isSignUp ? "Se connecter" : "S'inscrire";
+    }
+
+    async function handleAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value.trim();
+
+      if (!email || !password) return alert("Remplissez tous les champs");
+
+      if (isSignUp) {
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
+        if (error) alert(error.message);
+        else {
+          alert("Compte créé avec succès !");
+          checkUserSession();
+        }
+      } else {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        if (error) alert(error.message);
+        else {
+          checkUserSession();
+        }
+      }
+    }
+
+    async function logout() {
+      await supabaseClient.auth.signOut();
+      window.location.reload();
+    }
+
+    // 2. SWITCH DE NAVIGATION ENTRE VUES
     function switchTab(viewId, btn) {
+      // Masquer toutes les vues
       document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      // Réinitialiser les boutons du bas
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       
-      document.getElementById(viewId).classList.add('active');
+      // Activer la vue cliquée
+      const targetView = document.getElementById(viewId);
+      if(targetView) targetView.classList.add('active');
       btn.classList.add('active');
 
-      if(viewId === 'view-home') { loadStories(); loadPosts(); }
-      if(viewId === 'view-reels') loadReels();
-      if(viewId === 'view-market') loadMarketplace();
+      // Charger dynamiquement le contenu
+      if (viewId === 'view-home') { loadStories(); loadPosts(); }
+      if (viewId === 'view-reels') loadReels();
+      if (viewId === 'view-market') loadMarketplace();
     }
 
-    // 1. STORIES
+    // 3. RECUPERATION DES DONNEES (STORIES, POSTS, REELS, MARKET)
     async function loadStories() {
       const container = document.getElementById('stories-container');
-      const { data: stories } = await supabaseClient.from('stories').select('*, profiles(username, avatar_url)');
-
-      if (!stories || stories.length === 0) return;
-
-      const createBtn = container.children[0].outerHTML;
-      container.innerHTML = createBtn + stories.map(s => `
-        <div class="story-card" onclick="openStory('${s.id}', '${s.media_url}', '${s.profiles?.username || 'Membre'}', ${s.views_count || 0})">
-          <img src="${s.media_url}">
-          <span class="story-views"><i class="fa-solid fa-eye"></i> ${s.views_count || 0}</span>
-          <p>${s.profiles?.username || 'Story'}</p>
-        </div>
-      `).join('');
+      try {
+        const { data: stories } = await supabaseClient.from('stories').select('*, profiles(username, avatar_url)');
+        if (!stories || stories.length === 0) return;
+        
+        const createBtn = container.children[0].outerHTML;
+        container.innerHTML = createBtn + stories.map(s => `
+          <div class="story-card">
+            <img src="${s.media_url}">
+            <span class="story-views"><i class="fa-solid fa-eye"></i> ${s.views_count || 0}</span>
+            <p>${s.profiles?.username || 'Story'}</p>
+          </div>
+        `).join('');
+      } catch (err) { console.error(err); }
     }
 
-    async function openStory(id, url, author, views) {
-      activeStoryId = id;
-      document.getElementById('story-author-name').innerText = author;
-      document.getElementById('story-media-img').src = url;
-      document.getElementById('story-views-count').innerText = views + 1;
-      document.getElementById('story-heart-icon').style.color = '#fff';
-      document.getElementById('story-modal').classList.add('active');
-
-      await supabaseClient.from('stories').update({ views_count: views + 1 }).eq('id', id);
-    }
-
-    function closeStoryModal() {
-      document.getElementById('story-modal').classList.remove('active');
-    }
-
-    async function likeCurrentStory() {
-      if(!activeStoryId) return;
-      document.getElementById('story-heart-icon').style.color = 'var(--gn-red)';
-      const { data } = await supabaseClient.from('stories').select('likes_count').eq('id', activeStoryId).single();
-      if(data) {
-        await supabaseClient.from('stories').update({ likes_count: (data.likes_count || 0) + 1 }).eq('id', activeStoryId);
-      }
-    }
-
-    // 2. POSTS & FIL D'ACTUALITÉ
     async function loadPosts() {
       const container = document.getElementById('posts-feed');
-      const { data: posts } = await supabaseClient.from('posts').select('*, profiles(username, avatar_url)').order('created_at', { ascending: false });
+      try {
+        const { data: posts } = await supabaseClient.from('posts').select('*, profiles(username, avatar_url)').order('created_at', { ascending: false });
+        if (!posts || posts.length === 0) {
+          container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted);">Soyez le premier à publier sur AIDBA GUINÉE !</p>';
+          return;
+        }
 
-      if (!posts || posts.length === 0) {
-        container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted);">Soyez le premier à publier sur AIDBA GUINÉE !</p>';
-        return;
-      }
+        container.innerHTML = posts.map(p => `
+          <div class="post-card">
+            <div class="post-header">
+              <img src="${p.profiles?.avatar_url || 'logo.png'}">
+              <div><strong>${p.profiles?.username || 'Membre Guinéen'}</strong></div>
+            </div>
+            <div class="post-content">${p.content || ''}</div>
+            ${p.media_url ? `<img src="${p.media_url}" class="post-media">` : ''}
+            
+            <div class="post-stats">
+              <span><i class="fa-solid fa-thumbs-up" style="color:var(--gn-red);"></i> ${p.likes_count || 0} Likes</span>
+              <div>
+                <span>${p.comments_count || 0} commentaires</span>
+              </div>
+            </div>
 
-      container.innerHTML = posts.map(p => `
-        <div class="post-card">
-          <div class="post-header">
-            <img src="${p.profiles?.avatar_url || 'logo.png'}">
-            <div><strong>${p.profiles?.username || 'Membre Guinéen'}</strong></div>
-          </div>
-          <div class="post-content">${p.content || ''}</div>
-          ${p.media_url ? `<img src="${p.media_url}" class="post-media">` : ''}
-          
-          <div class="post-stats">
-            <span><i class="fa-solid fa-thumbs-up" style="color:var(--gn-red);"></i> ${p.likes_count || 0} Likes</span>
-            <div>
-              <span style="margin-right:8px;">${p.comments_count || 0} commentaires</span>
-              <span style="margin-right:8px;">${p.shares_count || 0} partages</span>
-              <span><i class="fa-solid fa-eye"></i> ${p.views_count || 0} vues</span>
+            <div class="post-footer">
+              <button onclick="likePost('${p.id}', ${p.likes_count || 0}, this)"><i class="fa-regular fa-thumbs-up"></i> J'aime</button>
+              <button onclick="openCommentsModal('${p.id}')"><i class="fa-regular fa-comment"></i> Commenter</button>
             </div>
           </div>
+        `).join('');
+      } catch (err) { console.error(err); }
+    }
 
-          <div class="post-footer">
-            <button onclick="likePost('${p.id}', ${p.likes_count || 0}, this)"><i class="fa-regular fa-thumbs-up"></i> J'aime</button>
-            <button onclick="openCommentsModal('${p.id}')"><i class="fa-regular fa-comment"></i> Commenter</button>
-            <button onclick="sharePost('${p.id}', ${p.shares_count || 0})"><i class="fa-regular fa-share-from-square"></i> Partager</button>
-            <button onclick="bookmarkPost('${p.id}')"><i class="fa-regular fa-bookmark"></i> Favoris</button>
+    async function loadReels() {
+      const container = document.getElementById('reels-container');
+      container.innerHTML = '<p style="color:#fff; text-align:center; padding-top:40px;">Chargement des vidéos...</p>';
+      try {
+        const { data: reels } = await supabaseClient.from('reels').select('*').order('created_at', { ascending: false });
+        if (!reels || reels.length === 0) {
+          container.innerHTML = '<p style="color:#fff; text-align:center; padding-top:40px;">Aucun Short/Reel pour le moment.</p>';
+          return;
+        }
+        container.innerHTML = reels.map(r => `
+          <div class="reel-box">
+            <video src="${r.video_url}" loop controls playsinline></video>
           </div>
-        </div>
-      `).join('');
+        `).join('');
+      } catch(e) {
+        container.innerHTML = '<p style="color:#fff; text-align:center; padding-top:40px;">Erreur de chargement.</p>';
+      }
     }
 
-    async function likePost(id, currentLikes, btn) {
-      btn.style.color = 'var(--gn-red)';
-      await supabaseClient.from('posts').update({ likes_count: currentLikes + 1 }).eq('id', id);
+    async function loadMarketplace() {
+      const container = document.getElementById('market-container');
+      container.innerHTML = '<p style="grid-column:1/span 2; text-align:center; color:var(--text-muted); padding:20px;">Chargement du marché...</p>';
+      try {
+        const { data: items } = await supabaseClient.from('marketplace_items').select('*').order('created_at', { ascending: false });
+        if (!items || items.length === 0) {
+          container.innerHTML = '<p style="grid-column:1/span 2; text-align:center; color:var(--text-muted); padding:20px;">Aucun article en vente.</p>';
+          return;
+        }
+        container.innerHTML = items.map(i => `
+          <div class="market-card">
+            <img src="${i.image_url}">
+            <div class="market-info">
+              <div class="market-price">${i.price} ${i.currency || 'GNF'}</div>
+              <div>${i.title}</div>
+              <small style="color:var(--text-muted);">${i.location || 'Conakry'}</small>
+            </div>
+          </div>
+        `).join('');
+      } catch(e) {
+        container.innerHTML = '<p style="grid-column:1/span 2; text-align:center; color:var(--text-muted); padding:20px;">Erreur de chargement.</p>';
+      }
     }
 
-    async function sharePost(id, currentShares) {
-      alert("Lien de la publication copié !");
-      await supabaseClient.from('posts').update({ shares_count: currentShares + 1 }).eq('id', id);
-    }
-
-    async function bookmarkPost(postId) {
-      alert("Publication ajoutée aux favoris !");
-    }
-
-    // 3. COMMENTAIRES EN TEMPS RÉEL (BOTTOM SHEET)
+    // 4. COMMENTAIRES BOTTOM SHEET
     async function openCommentsModal(postId) {
       currentPostId = postId;
       document.getElementById('comments-overlay').classList.add('active');
       document.getElementById('comments-modal').classList.add('active');
       await fetchComments(postId);
-      subscribeToComments(postId);
     }
 
     function closeCommentsModal() {
       document.getElementById('comments-overlay').classList.remove('active');
       document.getElementById('comments-modal').classList.remove('active');
       currentPostId = null;
-      if (commentsSubscription) supabaseClient.removeChannel(commentsSubscription);
     }
 
     async function fetchComments(postId) {
       const list = document.getElementById('comments-list');
       list.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Chargement...</p>';
       
-      const { data: comments } = await supabaseClient
-        .from('comments')
-        .select('*, profiles(username, avatar_url)')
-        .eq('post_id', postId)
-        .order('created_at', { ascending: true });
-
+      const { data: comments } = await supabaseClient.from('comments').select('*, profiles(username, avatar_url)').eq('post_id', postId);
       if (!comments || comments.length === 0) {
-        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">Aucun commentaire. Soyez le premier à commenter !</p>';
+        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">Aucun commentaire.</p>';
         return;
       }
 
@@ -368,7 +435,6 @@
           </div>
         </div>
       `).join('');
-      list.scrollTop = list.scrollHeight;
     }
 
     async function sendComment() {
@@ -377,21 +443,17 @@
       if (!text || !currentPostId) return;
 
       const { data: { user } } = await supabaseClient.auth.getUser();
-      if (!user) {
-        alert("Veuillez vous connecter pour commenter.");
-        return;
-      }
+      if (!user) return alert("Connectez-vous pour commenter.");
 
       input.value = '';
       await supabaseClient.from('comments').insert([{ post_id: currentPostId, user_id: user.id, content: text }]);
-      
-      const { data: post } = await supabaseClient.from('posts').select('comments_count').eq('id', currentPostId).single();
-      if (post) {
-        await supabaseClient.from('posts').update({ comments_count: (post.comments_count || 0) + 1 }).eq('id', currentPostId);
-      }
+      fetchComments(currentPostId);
     }
 
-    function subscribeToComments(postId) {
-      commentsSubscription = supabaseClient
-        .channel(`comments-${postId}`)
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments', filte
+    // DEMARRAGE
+    document.addEventListener('DOMContentLoaded', () => {
+      checkUserSession();
+    });
+  </script>
+</body>
+</html>
