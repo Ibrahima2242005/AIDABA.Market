@@ -1,675 +1,2676 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>AIDABA World🇬🇳</title>
-<link rel="manifest" id="manifestLink">
-<meta name="theme-color" content="#111111">
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<title>AIDABA — word</title>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
-:root{--bg:#eef1f5;--glass:rgba(255,255,255,.72);--glass2:rgba(255,255,255,.9);--line:rgba(0,0,0,.08);--text:#111;--muted:#68707c;--accent:#111;--danger:#e53935;--shadow:0 10px 35px rgba(0,0,0,.08);--r:22px}
-*{box-sizing:border-box;margin:0;padding:0}html,body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);min-height:100%;-webkit-tap-highlight-color:transparent}button,input,textarea{font:inherit}button{cursor:pointer}body.dark{--bg:#101216;--glass:rgba(27,29,34,.78);--glass2:rgba(25,27,31,.94);--line:rgba(255,255,255,.1);--text:#f5f5f5;--muted:#a7adb7;--shadow:0 10px 35px rgba(0,0,0,.3)}
-#auth{min-height:100vh;display:grid;place-items:center;padding:18px;background:radial-gradient(circle at top,#fff,transparent 45%),var(--bg)}.auth{width:min(430px,100%);padding:26px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(28px);border-radius:28px;box-shadow:var(--shadow)}.brand{font-weight:900;font-size:28px;letter-spacing:-1px}.sub{color:var(--muted);font-size:13px;margin:5px 0 22px}.tabs{display:flex;padding:4px;background:rgba(127,127,127,.12);border-radius:14px;margin-bottom:18px}.tabs button{flex:1;border:0;background:transparent;padding:10px;border-radius:11px;font-weight:750;color:var(--muted)}.tabs .on{background:var(--glass2);color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.07)}.field{margin:10px 0}.field label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--muted);margin-bottom:6px}.field input,.field textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.42);color:var(--text);outline:0;border-radius:14px;padding:12px}.row{display:grid;grid-template-columns:1fr 1fr;gap:9px}.primary{width:100%;border:0;border-radius:15px;background:#111;color:#fff;padding:13px;font-weight:800;margin-top:8px}.dark .primary{background:#fff;color:#111}
-#app{display:none}.top{position:fixed;z-index:30;top:0;left:50%;transform:translateX(-50%);width:min(680px,100%);height:58px;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;background:var(--glass);backdrop-filter:blur(25px);border-bottom:1px solid var(--line)}.logo{font-weight:900;font-size:19px}.top-actions{display:flex;gap:6px}.icon{position:relative;width:38px;height:38px;border:1px solid var(--line);background:rgba(255,255,255,.35);color:var(--text);border-radius:13px;display:grid;place-items:center;font-size:18px}.main{width:min(680px,100%);margin:auto;padding:72px 10px 78px}.page{display:none}.page.active{display:block}.section-title{font-size:20px;font-weight:900;margin:4px 5px 13px;display:flex;align-items:center;justify-content:space-between}.glass{background:var(--glass);backdrop-filter:blur(22px);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:var(--r)}
-.badge{position:absolute;top:-3px;right:-3px;background:var(--danger);color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:grid;place-items:center;padding:0 3px}
-.seg{display:flex;padding:4px;background:rgba(127,127,127,.12);border-radius:13px;margin:0 5px 12px}.seg button{flex:1;border:0;background:transparent;padding:8px;border-radius:10px;font-weight:750;font-size:12px;color:var(--muted)}.seg .on{background:var(--glass2);color:var(--text)}
-.stories{display:flex;gap:9px;overflow-x:auto;padding:3px 3px 15px;scrollbar-width:none}.stories::-webkit-scrollbar{display:none}.story{width:72px;flex:0 0 72px;text-align:center}.story .ring{width:68px;height:68px;margin:auto;border-radius:20px;padding:2px;background:linear-gradient(135deg,#f4c,#f90,#0af)}.story .ring.seen{background:rgba(127,127,127,.35)}.story img,.story .plus{width:100%;height:100%;border-radius:18px;object-fit:cover;border:2px solid var(--glass2)}.plus{display:grid;place-items:center;background:var(--glass2);font-size:27px}.story small{display:block;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;font-weight:750}
-.composer{padding:12px;margin-bottom:12px}.compose-row{display:flex;gap:9px;align-items:center}.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:#111;color:#fff;display:grid;place-items:center;font-weight:850;flex:0 0 auto}.trigger{flex:1;border:0;text-align:left;padding:12px 15px;border-radius:18px;background:rgba(127,127,127,.12);color:var(--muted)}.quick{display:flex;border-top:1px solid var(--line);margin-top:10px;padding-top:8px}.quick button{flex:1;border:0;background:transparent;color:var(--muted);font-weight:750;padding:7px;font-size:12px}
-.post{overflow:hidden;margin-bottom:12px;scroll-margin-top:75px}.post.flash{animation:flash 1.4s ease}@keyframes flash{0%{box-shadow:0 0 0 3px #1877f2}100%{box-shadow:var(--shadow)}}.head{display:flex;align-items:center;gap:9px;padding:12px}.head .who{flex:1}.name{font-size:13px;font-weight:850}.meta{font-size:10px;color:var(--muted)}.more{border:0;background:transparent;color:var(--muted);font-size:20px;padding:4px}.text{padding:0 13px 11px;font-size:14px;line-height:1.48;white-space:pre-wrap}.media{background:#000;position:relative}.media img,.media video{width:100%;max-height:560px;display:block;object-fit:contain;background:#000}.media video{cursor:pointer}.stats{display:flex;justify-content:space-between;padding:8px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line)}.actions{display:flex;padding:3px 6px}.actions button{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 4px;font-size:12px;font-weight:800;border-radius:10px}.actions button.on{color:#1877f2}.actions button[data-favorite].on{color:#f5a623}.comments{display:none;padding:9px 12px;background:rgba(127,127,127,.07)}.comments.open{display:block}.comment{display:flex;gap:7px;margin:8px 0;align-items:flex-start}.comment .avatar{width:28px;height:28px;font-size:10px}.bubble{background:rgba(127,127,127,.13);padding:7px 10px;border-radius:13px;flex:1;font-size:12px}.bubble b{display:block;font-size:11px;margin-bottom:2px}.cdel{border:0;background:transparent;color:var(--muted);font-size:15px;padding:2px 6px}.comment-form{display:flex;gap:6px;margin-top:8px}.comment-form input{min-width:0;flex:1;border:1px solid var(--line);border-radius:18px;padding:9px 12px;background:var(--glass2);color:var(--text)}.comment-form button{border:0;background:#111;color:#fff;border-radius:18px;padding:0 14px;font-weight:800}.dark .comment-form button{background:#fff;color:#111}
-.shorts{height:calc(100vh - 140px);overflow-y:auto;scroll-snap-type:y mandatory;border-radius:20px}.short{height:calc(100vh - 140px);min-height:480px;position:relative;scroll-snap-align:start;background:#000;overflow:hidden;margin-bottom:8px}.short video{width:100%;height:100%;object-fit:cover}.short .shade{position:absolute;inset:auto 0 0;padding:45px 15px 15px;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.8));pointer-events:none}.short .s-actions{position:absolute;right:10px;bottom:72px;display:flex;flex-direction:column;gap:8px}.s-actions button{width:42px;height:42px;border:0;border-radius:14px;background:rgba(255,255,255,.2);color:#fff;backdrop-filter:blur(10px);font-size:18px}.s-actions button.on{color:#ff4d67}.empty{text-align:center;padding:38px;color:var(--muted);font-size:13px}.profile-cover{height:155px;background:linear-gradient(90deg,#e31b23 0 33%,#f4d03f 33% 66%,#159447 66%);border-radius:var(--r) var(--r) 0 0}.profile-box{overflow:hidden}.profile-info{padding:0 15px 15px;margin-top:-25px}.profile-info .avatar{width:76px;height:76px;border:4px solid var(--glass2);font-size:23px}.profile-info h2{font-size:19px;margin-top:7px}.profile-info p{color:var(--muted);font-size:12px}.settings{padding:8px}.setting-row{display:flex;align-items:center;justify-content:space-between;padding:15px 8px;border-bottom:1px solid var(--line);font-size:13px;gap:10px}.danger{color:var(--danger)!important}.switch{width:46px;height:25px;border-radius:20px;background:#bbb;border:0;flex:0 0 auto}.switch.on{background:#111}.dark .switch.on{background:#fff}
-.ftabs{display:flex;gap:6px;margin:0 5px 10px;overflow-x:auto}.ftabs button{border:1px solid var(--line);background:var(--glass2);color:var(--muted);padding:8px 13px;border-radius:20px;font-size:12px;font-weight:750;white-space:nowrap}.ftabs button.on{background:#111;color:#fff}.dark .ftabs button.on{background:#fff;color:#111}
-.fr-row{display:flex;align-items:center;gap:9px;padding:11px 8px;border-bottom:1px solid var(--line)}.fr-row .who{flex:1;min-width:0}.fr-row .name{font-size:13px}.fr-actions{display:flex;gap:6px}.btn-sm{border:0;border-radius:11px;padding:7px 12px;font-size:11px;font-weight:800}.btn-accept{background:#159447;color:#fff}.btn-decline{background:rgba(127,127,127,.18);color:var(--text)}
-.bottom{position:fixed;z-index:30;bottom:0;left:50%;transform:translateX(-50%);width:min(680px,100%);height:62px;background:var(--glass);backdrop-filter:blur(25px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding-bottom:env(safe-area-inset-bottom)}.bottom button{position:relative;width:16.6%;border:0;background:transparent;color:var(--muted);font-size:19px}.bottom button.on{color:var(--text)}.bottom small{display:none}.modal{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.48);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:10px}.modal.show{display:flex}.sheet{width:min(680px,100%);background:var(--glass2);border:1px solid var(--line);border-radius:24px 24px 15px 15px;padding:16px;max-height:88vh;overflow:auto}.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.sheet h3{font-size:16px}.close{border:0;background:rgba(127,127,127,.12);color:var(--text);width:34px;height:34px;border-radius:50%}.preview{max-height:230px;width:100%;object-fit:contain;border-radius:15px;margin-top:8px;background:#000;display:none}.share-list{display:grid;gap:7px;max-height:260px;overflow:auto}.friend{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid var(--line);border-radius:13px}.friend input{margin-left:auto}.toast{position:fixed;z-index:200;bottom:76px;left:50%;transform:translateX(-50%) translateY(15px);opacity:0;background:#111;color:#fff;padding:10px 15px;border-radius:13px;font-size:12px;font-weight:750;transition:.2s}.toast.show{opacity:1;transform:translateX(-50%)}
-.notif-row{display:flex;gap:9px;align-items:flex-start;padding:12px 8px;border-bottom:1px solid var(--line)}.notif-row.unread{background:rgba(24,119,242,.08)}.notif-row .avatar{width:34px;height:34px;font-size:12px}.notif-row .txt{flex:1;font-size:12.5px;line-height:1.4}.notif-row time{display:block;font-size:10px;color:var(--muted);margin-top:2px}
-.story-viewer{position:fixed;inset:0;z-index:150;background:#000;display:none}.story-viewer.show{display:block}.sv-bars{position:absolute;top:8px;left:8px;right:8px;display:flex;gap:4px;z-index:2}.sv-bars i{flex:1;height:3px;background:rgba(255,255,255,.35);border-radius:2px;overflow:hidden}.sv-bars i b{display:block;height:100%;width:0;background:#fff}.sv-head{position:absolute;top:18px;left:12px;right:12px;display:flex;align-items:center;gap:8px;z-index:2;color:#fff}.sv-head .avatar{width:32px;height:32px;font-size:11px}.sv-close{margin-left:auto;background:rgba(255,255,255,.15);border:0;color:#fff;width:30px;height:30px;border-radius:50%;font-size:16px}.sv-media{width:100%;height:100%;object-fit:contain}.sv-tap{position:absolute;top:0;bottom:0;width:35%}.sv-tap.left{left:0}.sv-tap.right{right:0}.sv-cap{position:absolute;bottom:20px;left:12px;right:12px;color:#fff;font-size:13px;text-align:center}
-@media(min-width:700px){body{padding:0}.main{padding-left:0;padding-right:0}.bottom,.top{border-radius:0}}
+:root{
+  --bg:#f5f7fb;
+  --card:rgba(255,255,255,.78);
+  --text:#111318;
+  --muted:#70757f;
+  --line:rgba(0,0,0,.09);
+  --accent:#1877f2;
+  --danger:#e53935;
+  --shadow:0 8px 30px rgba(0,0,0,.08);
+  --blur:blur(24px);
+}
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",
+  "Segoe UI",Roboto,Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+button,input,textarea{
+  font:inherit;
+}
+
+button{
+  border:0;
+  background:none;
+  cursor:pointer;
+}
+
+.hidden{
+  display:none!important;
+}
+
+#app{
+  min-height:100vh;
+}
+
+/* ================= AUTH ================= */
+
+.auth{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:24px;
+}
+
+.auth-card{
+  width:min(430px,100%);
+  padding:28px;
+  border-radius:30px;
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border:1px solid rgba(255,255,255,.8);
+  box-shadow:var(--shadow);
+}
+
+.logo{
+  text-align:center;
+  font-size:42px;
+  font-weight:900;
+  letter-spacing:-2px;
+  margin-bottom:8px;
+}
+
+.logo span{
+  color:var(--accent);
+}
+
+.auth-subtitle{
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:25px;
+}
+
+.input{
+  width:100%;
+  padding:15px 16px;
+  border-radius:17px;
+  border:1px solid var(--line);
+  background:rgba(255,255,255,.7);
+  outline:none;
+  margin-bottom:12px;
+}
+
+.input:focus{
+  border-color:var(--accent);
+}
+
+.primary{
+  width:100%;
+  padding:15px;
+  border-radius:17px;
+  background:var(--accent);
+  color:white;
+  font-weight:700;
+}
+
+.auth-switch{
+  text-align:center;
+  margin-top:18px;
+  color:var(--muted);
+}
+
+.auth-switch button{
+  color:var(--accent);
+  font-weight:700;
+}
+
+/* ================= HEADER ================= */
+
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  height:68px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 16px;
+  background:rgba(255,255,255,.72);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-bottom:1px solid var(--line);
+}
+
+.brand{
+  font-size:27px;
+  font-weight:900;
+  color:var(--accent);
+}
+
+.header-actions{
+  display:flex;
+  gap:8px;
+}
+
+.icon-btn{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  font-size:23px;
+}
+
+.icon-btn:active{
+  transform:scale(.94);
+  background:rgba(0,0,0,.07);
+}
+
+/* ================= MAIN ================= */
+
+.page{
+  width:min(720px,100%);
+  margin:auto;
+  padding-bottom:95px;
+}
+
+.create{
+  margin:12px;
+  padding:15px;
+  border-radius:23px;
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  border:1px solid rgba(255,255,255,.7);
+  box-shadow:var(--shadow);
+}
+
+.create-row{
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+
+.avatar{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.create-input{
+  flex:1;
+  border:0;
+  background:rgba(0,0,0,.045);
+  padding:13px 16px;
+  border-radius:18px;
+  outline:none;
+}
+
+.create-actions{
+  display:flex;
+  gap:8px;
+  margin-top:12px;
+}
+
+.action-small{
+  flex:1;
+  padding:10px;
+  border-radius:14px;
+  background:rgba(0,0,0,.045);
+}
+
+/* ================= STORIES ================= */
+
+.stories{
+  display:flex;
+  overflow-x:auto;
+  gap:10px;
+  padding:4px 12px 14px;
+}
+
+.stories::-webkit-scrollbar{
+  display:none;
+}
+
+.story{
+  min-width:108px;
+  height:180px;
+  position:relative;
+  border-radius:18px;
+  overflow:hidden;
+  background:#ddd;
+  flex-shrink:0;
+}
+
+.story img,
+.story video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.story-name{
+  position:absolute;
+  bottom:9px;
+  left:8px;
+  right:8px;
+  color:white;
+  font-weight:700;
+  font-size:13px;
+  text-shadow:0 2px 6px #000;
+}
+
+.create-story{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:white;
+  border:1px solid var(--line);
+}
+
+.plus{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:var(--accent);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:27px;
+  margin-bottom:55px;
+}
+
+/* ================= POST ================= */
+
+.post{
+  margin:10px 0;
+  background:var(--card);
+  backdrop-filter:var(--blur);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.post-head{
+  display:flex;
+  align-items:center;
+  gap:11px;
+  padding:13px;
+}
+
+.post-user{
+  flex:1;
+}
+
+.post-user strong{
+  display:block;
+}
+
+.post-user small{
+  color:var(--muted);
+}
+
+.post-content{
+  padding:0 14px 12px;
+  line-height:1.45;
+  white-space:pre-wrap;
+}
+
+.post-media{
+  width:100%;
+  max-height:680px;
+  object-fit:contain;
+  display:block;
+  background:#000;
+}
+
+.post-video{
+  cursor:pointer;
+}
+
+.post-stats{
+  padding:10px 14px;
+  color:var(--muted);
+  font-size:13px;
+  display:flex;
+  justify-content:space-between;
+}
+
+.post-actions{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-top:1px solid var(--line);
+}
+
+.post-action{
+  padding:13px 5px;
+  font-weight:600;
+  color:var(--text);
+}
+
+.post-action.active{
+  color:var(--accent);
+}
+
+/* ================= COMMENTS ================= */
+
+.comments{
+  padding:12px 14px;
+  border-top:1px solid var(--line);
+}
+
+.comment{
+  display:flex;
+  gap:9px;
+  margin-bottom:12px;
+}
+
+.comment-body{
+  background:rgba(0,0,0,.045);
+  padding:9px 12px;
+  border-radius:15px;
+  flex:1;
+}
+
+.comment-form{
+  display:flex;
+  gap:8px;
+}
+
+.comment-form input{
+  flex:1;
+  border:0;
+  background:rgba(0,0,0,.05);
+  padding:12px;
+  border-radius:17px;
+  outline:none;
+}
+
+/* ================= BOTTOM NAV ================= */
+
+.bottom-nav{
+  position:fixed;
+  z-index:100;
+  bottom:0;
+  left:0;
+  right:0;
+  height:72px;
+  display:flex;
+  justify-content:space-around;
+  align-items:center;
+  background:rgba(255,255,255,.8);
+  backdrop-filter:var(--blur);
+  -webkit-backdrop-filter:var(--blur);
+  border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+
+.nav-btn{
+  width:20%;
+  height:60px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+  font-size:22px;
+}
+
+.nav-label{
+  font-size:10px;
+  color:var(--muted);
+}
+
+.nav-btn.active{
+  color:var(--accent);
+}
+
+/* ================= SHORTS ================= */
+
+.shorts{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  background:#000;
+  overflow-y:auto;
+  scroll-snap-type:y mandatory;
+}
+
+.short{
+  position:relative;
+  height:100dvh;
+  scroll-snap-align:start;
+  background:#000;
+  overflow:hidden;
+}
+
+.short video{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.short-top{
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  padding:18px;
+  color:white;
+  display:flex;
+  justify-content:space-between;
+  z-index:3;
+}
+
+.short-title{
+  font-size:27px;
+  font-weight:800;
+}
+
+.short-side{
+  position:absolute;
+  right:13px;
+  bottom:110px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  z-index:4;
+}
+
+.short-button{
+  color:white;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:27px;
+}
+
+.short-button span{
+  font-size:12px;
+  margin-top:2px;
+}
+
+.short-info{
+  position:absolute;
+  left:16px;
+  right:85px;
+  bottom:28px;
+  color:white;
+  z-index:4;
+}
+
+.short-info strong{
+  display:block;
+  margin-bottom:8px;
+}
+
+/* ================= PROFILE ================= */
+
+.profile{
+  padding-bottom:100px;
+}
+
+.cover{
+  height:230px;
+  background:
+    linear-gradient(135deg,#008751 0 33%,#fcd116 33% 66%,#ce1126 66%);
+  position:relative;
+}
+
+.cover img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.profile-main{
+  padding:0 16px;
+  margin-top:-48px;
+  position:relative;
+}
+
+.profile-avatar{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  border:5px solid var(--bg);
+  object-fit:cover;
+}
+
+.profile-name{
+  font-size:25px;
+  font-weight:800;
+  margin-top:8px;
+}
+
+.profile-bio{
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.profile-tabs{
+  display:flex;
+  gap:8px;
+  margin:18px 0;
+}
+
+.profile-tab{
+  flex:1;
+  padding:12px;
+  border-radius:15px;
+  background:rgba(0,0,0,.05);
+}
+
+/* ================= MENU ================= */
+
+.menu-panel{
+  position:fixed;
+  inset:0;
+  z-index:150;
+  background:var(--bg);
+  overflow:auto;
+}
+
+.menu-head{
+  padding:20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.menu-item{
+  width:100%;
+  padding:17px 22px;
+  display:flex;
+  gap:15px;
+  align-items:center;
+  text-align:left;
+  border-bottom:1px solid var(--line);
+}
+
+.logout{
+  color:var(--danger);
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+  position:fixed;
+  inset:0;
+  z-index:300;
+  background:rgba(0,0,0,.45);
+  display:flex;
+  align-items:flex-end;
+}
+
+.modal-card{
+  width:100%;
+  max-height:90vh;
+  overflow:auto;
+  background:var(--bg);
+  border-radius:28px 28px 0 0;
+  padding:20px;
+}
+
+.modal-card h2{
+  margin-bottom:18px;
+}
+
+.modal-actions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+}
+
+.modal-actions button{
+  flex:1;
+  padding:14px;
+  border-radius:16px;
+  background:rgba(0,0,0,.07);
+}
+
+.modal-actions .confirm{
+  background:var(--accent);
+  color:white;
+}
+
+/* ================= DARK ================= */
+
+body.dark{
+  --bg:#101114;
+  --card:rgba(28,30,35,.82);
+  --text:#f5f5f5;
+  --muted:#a5a7ad;
+  --line:rgba(255,255,255,.09);
+}
+
+body.dark .topbar,
+body.dark .bottom-nav{
+  background:rgba(20,21,25,.82);
+}
+
+body.dark .input{
+  background:rgba(255,255,255,.07);
+  color:white;
+}
+
+@media(min-width:800px){
+  .bottom-nav{
+    left:50%;
+    transform:translateX(-50%);
+    width:720px;
+    border-radius:25px 25px 0 0;
+  }
+
+  .post{
+    border-radius:20px;
+    margin:14px 0;
+  }
+}
 </style>
 </head>
+
 <body>
-<section id="auth"><div class="auth"><div class="brand">AIDABA World Industrie</div><div class="sub">Le réseau qui relie la Guinée, ses talents et le monde.</div><div class="tabs"><button id="regTab" class="on">Inscription</button><button id="logTab">Connexion</button></div><div id="regBox"><div class="row"><div class="field"><label>Prénom</label><input id="fname"></div><div class="field"><label>Nom</label><input id="lname"></div></div><div class="field"><label>Date de naissance</label><input id="birth" type="date"></div><div class="field"><label>Email</label><input id="email" type="email"></div><div class="field"><label>Téléphone</label><input id="phone" type="tel"></div><div class="row"><div class="field"><label>Mot de passe</label><input id="pass" type="password"></div><div class="field"><label>Confirmer</label><input id="pass2" type="password"></div></div><button class="primary" id="register">Créer mon compte</button></div><div id="logBox" style="display:none"><div class="field"><label>Email</label><input id="lemail" type="email"></div><div class="field"><label>Mot de passe</label><input id="lpass" type="password"></div><button class="primary" id="login">Se connecter</button></div></div></section>
-<section id="app"><header class="top"><button class="icon" id="homeLogo" aria-label="Accueil">A</button><div class="logo">AIDABA</div><div class="top-actions"><button class="icon" id="searchBtn">⌕</button><button class="icon" id="settingsBtn">⋮</button></div></header>
-<main class="main">
-<section class="page active" id="page-feed">
-<div class="stories glass" id="stories"></div>
-<div class="composer glass"><div class="compose-row"><div class="avatar" id="myMini">A</div><button class="trigger" id="composeTrigger">Que voulez-vous partager ?</button></div><div class="quick"><button id="photoQuick">▣ Photo</button><button id="videoQuick">▶ Vidéo</button><button id="textQuick">✎ Texte</button></div></div>
-<div class="seg" id="feedSeg"><button class="on" data-sort="recent">Récent</button><button data-sort="algo">Pour toi ✦</button></div>
-<div id="feed"></div>
-</section>
-<section class="page" id="page-shorts"><div class="section-title">Shorts</div><div class="shorts" id="shorts"></div></section>
-<section class="page" id="page-friends"><div class="section-title">Amis</div><div class="ftabs" id="friendTabs"><button class="on" data-ft="suggest">Suggestions</button><button data-ft="requests">Demandes<span id="reqBadge"></span></button><button data-ft="mine">Mes amis</button></div><div class="glass" id="friends"></div></section>
-<section class="page" id="page-notifications"><div class="section-title">Notifications</div><div class="glass" id="notifications"></div></section>
-<section class="page" id="page-favorites"><div class="section-title">Favoris</div><div id="favorites"></div></section>
-<section class="page" id="page-profile"><div class="profile-box glass"><div class="profile-cover"></div><div class="profile-info"><div class="avatar" id="profileAvatar">A</div><h2 id="profileName">Utilisateur</h2><p id="profileBio">Profil AIDABA</p><p id="profileStats"></p></div></div><div style="height:10px"></div><div id="profilePosts"></div></section>
-<section class="page" id="page-settings"><div class="section-title">Paramètres</div><div class="settings glass"><div class="setting-row"><span>🌒 Mode sombre</span><button class="switch" id="darkSwitch"></button></div><div class="setting-row"><span>🔔 Notifications push</span><button class="switch" id="pushSwitch"></button></div><div class="setting-row"><span>Modifier mes informations</span><button class="icon" id="editProfile">›</button></div><div class="setting-row"><span class="danger">Déconnexion</span><button class="icon danger" id="logout">↪</button></div></div></section>
-</main>
-<nav class="bottom"><button class="on" data-tab="feed">⌂</button><button data-tab="shorts">▶</button><button data-tab="friends">♧</button><button data-tab="notifications">♢<span class="badge" id="notifBadge" style="display:none"></span></button><button data-tab="favorites">☆</button><button data-tab="profile">◎</button></nav>
-</section>
-<div class="modal" id="postModal"><div class="sheet"><div class="sheet-head"><h3 id="modalTitle">Créer une publication</h3><button class="close" data-close="postModal">×</button></div><textarea id="postText" rows="5" placeholder="Écrivez votre publication, vos hashtags..."></textarea><input id="mediaInput" type="file" accept="image/*,video/*" style="margin-top:10px"><img id="mediaPreview" class="preview"><video id="videoPreview" class="preview" controls></video><button class="primary" id="publishBtn">Publier</button></div></div>
-<div class="modal" id="storyModal"><div class="sheet"><div class="sheet-head"><h3>Ajouter une story</h3><button class="close" data-close="storyModal">×</button></div><input id="storyInput" type="file" accept="image/*,video/*"><input id="storyCaption" placeholder="Légende (optionnel)" style="width:100%;margin-top:10px;border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--glass2);color:var(--text)"><img id="storyPreview" class="preview"><video id="storyVideoPreview" class="preview" controls></video><button class="primary" id="publishStoryBtn">Publier la story</button></div></div>
-<div class="modal" id="settingsModal"><div class="sheet"><div class="sheet-head"><h3>Paramètres</h3><button class="close" data-close="settingsModal">×</button></div><div class="settings"><div class="setting-row"><span>🌒 Mode sombre</span><button class="switch" id="darkSwitch2"></button></div><div class="setting-row"><span>🔔 Notifications push</span><button class="switch" id="pushSwitch2"></button></div><div class="setting-row"><span>Modifier mes informations</span><button class="icon" id="editProfile2">›</button></div><div class="setting-row"><span class="danger">Déconnexion</span><button class="icon danger" id="logout2">↪</button></div></div></div></div>
-<div class="modal" id="commentModal"><div class="sheet"><div class="sheet-head"><h3>Commentaires</h3><button class="close" data-close="commentModal">×</button></div><div id="modalComments"></div></div></div>
-<div class="story-viewer" id="storyViewer"></div>
-<div class="toast" id="toast"></div>
+
+<div id="app"></div>
+
 <script>
-'use strict';
-const SUPABASE_URL="https://bdzdaceiettpiosstxkp.supabase.co";
-const SUPABASE_ANON_KEY="sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
-const VAPID_PUBLIC_KEY='VOTRE_CLE_VAPID_PUBLIQUE'; // générée pour les notifications push (voir README)
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-/* ---------- FICHIER UNIQUE : manifest PWA + service worker générés en mémoire ---------- */
-const MANIFEST_JSON={"name":"AIDABA World Industrie","short_name":"AIDABA","start_url":".","display":"standalone","background_color":"#eef1f5","theme_color":"#111111","icons":[]};
-document.getElementById('manifestLink').href=URL.createObjectURL(new Blob([JSON.stringify(MANIFEST_JSON)],{type:'application/manifest+json'}));
-const SW_SOURCE=`
-self.addEventListener('install', e => self.skipWaiting());
-self.addEventListener('activate', e => self.clients.claim());
-self.addEventListener('push', event => {
-  let data = {};
-  try { data = event.data ? event.data.json() : {}; } catch (e) { data = { title: 'AIDABA', body: event.data && event.data.text() || '' }; }
-  const title = data.title || 'AIDABA World Industrie';
-  const options = { body: data.body || 'Nouvelle notification', icon: data.icon || '', badge: data.icon || '', data: { url: data.url || './' }, vibrate: [80,40,80] };
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-self.addEventListener('notificationclick', event => {
-  event.notification.close();
-  const url = (event.notification.data && event.notification.data.url) || './';
-  event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(list=>{
-    for (const c of list) { if ('focus' in c) return c.focus(); }
-    if (clients.openWindow) return clients.openWindow(url);
-  }));
-});
-`;
-let SW_BLOB_URL=null;
-function getServiceWorkerUrl(){if(!SW_BLOB_URL)SW_BLOB_URL=URL.createObjectURL(new Blob([SW_SOURCE],{type:'text/javascript'}));return SW_BLOB_URL}
-let user=null,profile=null,posts=[],stories=[],notifications=[],friendRequests=[],friendsList=[],favorites=[],activeVideo=null,mode='text',selectedFile=null,storyFile=null,feedSort='recent',friendTab='suggest',viewedPosts=new Set(),notifChannel=null,postChannel=null;
-const $=id=>document.getElementById(id); const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-function toast(m){$('toast').textContent=m;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2200)}
-function initial(p){p=p||profile;return (p?.first_name||p?.username||user?.email||'A').trim().charAt(0).toUpperCase()||'A'}
-function nameOf(p){return [p?.first_name,p?.last_name].filter(Boolean).join(' ')||p?.username||'Utilisateur'}
-function timeAgo(d){let s=(Date.now()-new Date(d).getTime())/1000;if(s<60)return 'à l’instant';if(s<3600)return Math.floor(s/60)+' min';if(s<86400)return Math.floor(s/3600)+' h';if(s<604800)return Math.floor(s/86400)+' j';return new Date(d).toLocaleDateString('fr-FR')}
+const SUPABASE_URL = "https://llmftxuasvysawaazedm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_fzGII8rJsleL-jGQb491Ag_0jMkE_46";
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+  );
 
-async function getProfile(){if(!user)return;let {data,error}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(error)throw error;if(!data){const x={id:user.id,first_name:user.user_metadata?.first_name||'',last_name:user.user_metadata?.last_name||'',username:user.email?.split('@')[0]||'user',email:user.email};let r=await sb.from('profiles').upsert(x).select().single();if(r.error)throw r.error;data=r.data}profile=data}
-async function uploadFile(file,folder){const ext=(file.name.split('.').pop()||'bin').toLowerCase();const path=`${user.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;const {error}=await sb.storage.from('media').upload(`${folder}/${path}`,file,{upsert:false,contentType:file.type});if(error)throw error;const {data}=sb.storage.from('media').getPublicUrl(`${folder}/${path}`);return data.publicUrl}
+let currentUser = null;
+let currentProfile = null;
+let posts = [];
+let stories = [];
 
-/* ---------- PUBLICATIONS ---------- */
-function openPost(type='text'){mode=type;selectedFile=null;$('postText').value='';$('mediaInput').value='';$('mediaInput').accept=type==='photo'?'image/*':type==='video'?'video/*':'image/*,video/*';$('mediaInput').style.display=type==='text'?'none':'block';$('modalTitle').textContent=type==='photo'?'Publier une photo':type==='video'?'Publier une vidéo':'Créer une publication';$('mediaPreview').style.display='none';$('videoPreview').style.display='none';$('postModal').classList.add('show')}
-$('mediaInput').onchange=e=>{selectedFile=e.target.files?.[0]||null;if(!selectedFile)return;let u=URL.createObjectURL(selectedFile);if(selectedFile.type.startsWith('video')){$('videoPreview').src=u;$('videoPreview').style.display='block'}else{$('mediaPreview').src=u;$('mediaPreview').style.display='block'}};
-async function publish(){if(!user)return;let text=$('postText').value.trim();if(!text&&!selectedFile)return toast('Ajoutez un texte ou un fichier');try{$('publishBtn').disabled=true;let media_url=null,media_type=null;if(selectedFile){media_type=selectedFile.type.startsWith('video')?'video':'image';media_url=await uploadFile(selectedFile,'posts')}let row={user_id:user.id,content:text,media_url,media_type};let r=await sb.from('posts').insert(row).select().single();if(r.error)throw r.error;$('postModal').classList.remove('show');toast('Publication publiée');await loadPosts()}catch(e){console.error(e);toast('Publication impossible : '+(e.message||'erreur'))}finally{$('publishBtn').disabled=false}}
+/* =========================================================
+   HELPERS
+========================================================= */
 
-async function loadPosts(){let r;if(feedSort==='algo'){r=await sb.rpc('get_ranked_feed',{p_limit:60})}else{r=await sb.from('posts').select('*').order('created_at',{ascending:false}).limit(60)}
-  if(r.error){console.error(r.error);$('feed').innerHTML='<div class="empty">Impossible de charger les publications.</div>';return}
-  let rows=r.data||[];
-  if(rows.length){let ids=[...new Set(rows.map(p=>p.user_id))];let pr=await sb.from('profiles').select('id,first_name,last_name,username,avatar_url').in('id',ids);let map={};(pr.data||[]).forEach(p=>map[p.id]=p);rows.forEach(p=>p.profiles=map[p.user_id])}
-  posts=rows;
-  let favR=await sb.from('favorites').select('post_id').eq('user_id',user.id);favorites=new Set((favR.data||[]).map(f=>f.post_id));
-  let likeR=await sb.from('likes').select('post_id').eq('user_id',user.id);let myLikes=new Set((likeR.data||[]).map(f=>f.post_id));posts.forEach(p=>p._liked=myLikes.has(p.id));
-  renderFeed();renderShorts();renderProfile();renderFavorites()}
+const $ = id => document.getElementById(id);
 
-function postCard(p,short=false){let prof=p.profiles||{};let mine=p.user_id===user.id;let liked=p._liked;let fav=favorites.has(p.id);let media=p.media_url?(p.media_type==='video'?`<div class="media"><video class="feed-video" data-id="${p.id}" src="${esc(p.media_url)}" playsinline preload="metadata"></video></div>`:`<div class="media"><img src="${esc(p.media_url)}" loading="lazy"></div>`):'';
-return `<article class="post glass" id="post-${p.id}" data-post="${p.id}"><div class="head"><div class="avatar">${esc((prof.first_name||prof.username||'A').charAt(0).toUpperCase())}</div><div class="who"><div class="name">${esc(nameOf(prof))}</div><div class="meta">${timeAgo(p.created_at)} · Public</div></div>${mine?`<button class="more" data-delete="${p.id}">⋮</button>`:''}</div>${p.content?`<div class="text">${esc(p.content)}</div>`:''}${media}<div class="stats"><span>♥ <b class="likes-count">${p.likes_count||0}</b></span><span>◉ <b class="views-count">${p.views_count||0}</b> · <b>${p.comments_count||0}</b> commentaires · <b>${p.shares_count||0}</b> partages</span></div><div class="actions"><button class="${liked?'on':''}" data-like="${p.id}">♥ J'aime</button><button data-comment="${p.id}">● Commenter</button><button class="${fav?'on':''}" data-favorite="${p.id}">☆ Favori</button><button data-share="${p.id}">↗ Partager</button></div><div class="comments" id="comments-${p.id}"></div></article>`}
-function renderFeed(){if(!posts.length){$('feed').innerHTML='<div class="glass empty">Aucune publication pour le moment. Soyez le premier à partager.</div>';return}$('feed').innerHTML=posts.map(p=>postCard(p)).join('');observeVideos();observeViews()}
-function renderShorts(){let v=posts.filter(p=>p.media_type==='video'&&p.media_url);$('shorts').innerHTML=v.length?v.map(p=>`<article class="short" data-short="${p.id}"><video class="short-video" src="${esc(p.media_url)}" playsinline loop preload="metadata"></video><div class="shade"><b>${esc(nameOf(p.profiles))}</b><div>${esc(p.content||'')}</div></div><div class="s-actions"><button class="${p._liked?'on':''}" data-like="${p.id}">♥</button><button data-comment="${p.id}">●</button><button class="${favorites.has(p.id)?'on':''}" data-favorite="${p.id}">☆</button><button data-share="${p.id}">↗</button><button data-sound="${p.id}">🔇</button></div></article>`).join(''):'<div class="empty">Aucun Short disponible.</div>';observeShorts()}
-function renderFavorites(){let f=posts.filter(p=>favorites.has(p.id));$('favorites').innerHTML=f.length?f.map(p=>postCard(p)).join(''):'<div class="glass empty">Aucun favori pour le moment. Touchez ☆ sur une publication.</div>'}
-function renderProfile(){let mine=posts.filter(p=>p.user_id===user.id);$('profileName').textContent=nameOf(profile);$('profileBio').textContent=profile?.bio||profile?.email||user.email||'';$('profileAvatar').textContent=initial();$('myMini').textContent=initial();$('profileStats').textContent=`${mine.length} publication${mine.length>1?'s':''} · ${profile?.friends_count||0} amis`;$('profilePosts').innerHTML=mine.length?mine.map(p=>postCard(p)).join(''):'<div class="glass empty">Vous n’avez encore rien publié.</div>';observeVideos()}
-function stopVideos(){document.querySelectorAll('video').forEach(v=>{v.pause();v.muted=true});activeVideo=null}
-function observeVideos(){let io=new IntersectionObserver(es=>es.forEach(e=>{let v=e.target;if(!e.isIntersecting||e.intersectionRatio<.65){v.pause();v.muted=true;if(activeVideo===v)activeVideo=null}else if(document.querySelector('#page-feed.active,#page-profile.active,#page-favorites.active')){stopVideos();v.muted=false;v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});activeVideo=v}}),{threshold:[.2,.65,.9]});document.querySelectorAll('.feed-video').forEach(v=>io.observe(v));document.querySelectorAll('.feed-video').forEach(v=>v.onclick=()=>{if(v.paused){stopVideos();v.muted=false;v.play().catch(()=>{});activeVideo=v}else v.muted=!v.muted})}
-function observeShorts(){let io=new IntersectionObserver(es=>es.forEach(e=>{let v=e.target;if(!document.querySelector('#page-shorts.active')){v.pause();return}if(e.isIntersecting&&e.intersectionRatio>.7){document.querySelectorAll('.short-video').forEach(x=>{if(x!==v){x.pause();x.muted=true}});v.muted=false;v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});activeVideo=v;let id=v.closest('.short')?.dataset.short;if(id)markViewed(id)}else v.pause()}),{threshold:.7});document.querySelectorAll('.short-video').forEach(v=>{io.observe(v);v.onclick=()=>{v.muted=!v.muted;if(v.paused)v.play().catch(()=>{})}})}
-function observeViews(){let io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&e.intersectionRatio>.6){let id=e.target.dataset.post;if(id)markViewed(id)}}),{threshold:.6});document.querySelectorAll('.post[data-post]').forEach(el=>io.observe(el))}
-function markViewed(id){if(viewedPosts.has(id))return;viewedPosts.add(id);sb.rpc('increment_post_view',{p_post_id:id}).catch(()=>{})}
+function escapeHTML(value=""){
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
 
-/* ---------- ALGORITHME DE TRI ---------- */
-$('feedSeg').addEventListener('click',e=>{let b=e.target.closest('button[data-sort]');if(!b)return;feedSort=b.dataset.sort;document.querySelectorAll('#feedSeg button').forEach(x=>x.classList.toggle('on',x===b));loadPosts()});
+function avatar(profile){
+  return profile?.avatar_url ||
+    "https://placehold.co/100x100/png?text=👤";
+}
 
-/* ---------- ACTIONS SUR PUBLICATIONS ---------- */
-async function like(id){let p=posts.find(x=>x.id===id);if(p){p._liked=!p._liked;p.likes_count=(p.likes_count||0)+(p._liked?1:-1)}renderFeed();renderShorts();renderFavorites();let r=await sb.rpc('toggle_post_like',{p_post_id:id});if(r.error){console.error(r.error);toast('Like indisponible');await loadPosts()}}
-async function comment(id){let box=$(`comments-${id}`);if(!box)return;box.classList.toggle('open');if(box.dataset.loaded==='1')return;await loadCommentsInto(box,id);box.dataset.loaded='1'}
-async function loadCommentsInto(box,id){let r=await sb.from('comments').select('*').eq('post_id',id).order('created_at');if(r.error)return toast('Commentaires indisponibles');let rows=r.data||[];if(rows.length){let ids=[...new Set(rows.map(c=>c.user_id))];let pr=await sb.from('profiles').select('id,first_name,last_name,username').in('id',ids);let map={};(pr.data||[]).forEach(p=>map[p.id]=p);rows.forEach(c=>c.profiles=map[c.user_id])}
-box.innerHTML=rows.map(c=>`<div class="comment"><div class="avatar">${esc((c.profiles?.first_name||'A').charAt(0).toUpperCase())}</div><div class="bubble"><b>${esc(nameOf(c.profiles))}</b>${esc(c.content)}</div>${c.user_id===user.id?`<button class="cdel" data-delcomment="${c.id}" data-post="${id}">×</button>`:''}</div>`).join('')+`<div class="comment-form"><input id="ci-${id}" placeholder="Écrire ton point de vue…"><button data-sendcomment="${id}">↗</button></div>`}
-async function sendComment(id){let i=$(`ci-${id}`),content=i?.value.trim();if(!content)return;let r=await sb.from('comments').insert({post_id:id,user_id:user.id,content});if(r.error){console.error(r.error);return toast('Commentaire impossible : '+r.error.message)}i.value='';let p=posts.find(x=>x.id===id);if(p)p.comments_count=(p.comments_count||0)+1;renderFeed();renderShorts();let b=$(`comments-${id}`);if(b){b.classList.add('open');await loadCommentsInto(b,id);b.dataset.loaded='1'}}
-async function deleteComment(cid,pid){let r=await sb.from('comments').delete().eq('id',cid);if(r.error)return toast('Suppression impossible');let p=posts.find(x=>x.id===pid);if(p)p.comments_count=Math.max(0,(p.comments_count||0)-1);renderFeed();let b=$(`comments-${pid}`);if(b)await loadCommentsInto(b,pid)}
-async function share(id){try{let p=posts.find(x=>x.id===id);if(navigator.share){await navigator.share({title:'AIDABA World Industrie',text:p?.content||'Publication AIDABA',url:location.origin+location.pathname+'#post-'+id})}else{await navigator.clipboard.writeText(location.origin+location.pathname+'#post-'+id);toast('Lien copié')}}catch(e){}let r=await sb.rpc('increment_post_share',{p_post_id:id});if(!r.error){let p=posts.find(x=>x.id===id);if(p)p.shares_count=(p.shares_count||0)+1;renderFeed();renderShorts()}}
-async function favorite(id){let p=posts.find(x=>x.id===id);let willFav=!favorites.has(id);if(willFav){favorites.add(id);if(p)p.favorites_count=(p.favorites_count||0)+1}else{favorites.delete(id);if(p)p.favorites_count=Math.max(0,(p.favorites_count||0)-1)}renderFeed();renderShorts();renderFavorites();let r=await sb.rpc('toggle_post_favorite',{p_post_id:id});if(r.error)toast('Favori indisponible');else toast(willFav?'Ajouté aux favoris':'Retiré des favoris')}
-async function deletePost(id){if(!confirm('Supprimer cette publication ?'))return;let r=await sb.from('posts').delete().eq('id',id).eq('user_id',user.id);if(r.error)return toast('Suppression impossible');await loadPosts();toast('Publication supprimée')}
+function formatDate(date){
+  const d = new Date(date);
+  return d.toLocaleDateString("fr-FR",{
+    day:"numeric",
+    month:"short",
+    hour:"2-digit",
+    minute:"2-digit"
+  });
+}
 
-/* ---------- STORIES ---------- */
-async function loadStories(){let r=await sb.from('stories').select('*').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false});if(r.error){stories=[];renderStories();return}let rows=r.data||[];if(rows.length){let ids=[...new Set(rows.map(s=>s.user_id))];let pr=await sb.from('profiles').select('id,first_name,last_name,username').in('id',ids);let map={};(pr.data||[]).forEach(p=>map[p.id]=p);rows.forEach(s=>s.profiles=map[s.user_id])}
-let byUser={};rows.forEach(s=>{(byUser[s.user_id]=byUser[s.user_id]||[]).push(s)});stories=Object.values(byUser);renderStories()}
-function renderStories(){let mine=stories.find(g=>g[0].user_id===user.id);let others=stories.filter(g=>g[0].user_id!==user.id);let html=`<div class="story" id="addStory"><div class="ring"><div class="plus">＋</div></div><small>Votre story</small></div>`;
-if(mine)html=`<div class="story" data-viewgroup="${mine[0].user_id}"><div class="ring"><div class="plus">${esc(initial(mine[0].profiles))}</div></div><small>Votre story</small></div>`;
-html+=others.map(g=>`<div class="story" data-viewgroup="${g[0].user_id}"><div class="ring"><div class="plus">${esc((g[0].profiles?.first_name||'A').charAt(0).toUpperCase())}</div></div><small>${esc(nameOf(g[0].profiles))}</small></div>`).join('');
-$('stories').innerHTML=html;$('addStory')&&($('addStory').onclick=openStoryModal)}
-function openStoryModal(){storyFile=null;$('storyInput').value='';$('storyCaption').value='';$('storyPreview').style.display='none';$('storyVideoPreview').style.display='none';$('storyModal').classList.add('show')}
-$('storyInput').onchange=e=>{storyFile=e.target.files?.[0]||null;if(!storyFile)return;let u=URL.createObjectURL(storyFile);if(storyFile.type.startsWith('video')){$('storyVideoPreview').src=u;$('storyVideoPreview').style.display='block'}else{$('storyPreview').src=u;$('storyPreview').style.display='block'}};
-$('publishStoryBtn').onclick=async()=>{if(!storyFile)return toast('Choisissez une photo ou vidéo');try{$('publishStoryBtn').disabled=true;let media_type=storyFile.type.startsWith('video')?'video':'image';let media_url=await uploadFile(storyFile,'stories');let r=await sb.from('stories').insert({user_id:user.id,media_url,media_type,caption:$('storyCaption').value.trim()||null});if(r.error)throw r.error;$('storyModal').classList.remove('show');toast('Story publiée');await loadStories()}catch(e){console.error(e);toast('Publication impossible')}finally{$('publishStoryBtn').disabled=false}};
-function viewStoryGroup(uid){let group=stories.find(g=>g[0].user_id===uid);if(!group)return;let idx=0;const v=$('storyViewer');
-function render(){let s=group[idx];v.innerHTML=`<div class="sv-bars">${group.map((x,i)=>`<i><b style="width:${i<idx?'100':i===idx?'0':'0'}%"></b></i>`).join('')}</div><div class="sv-head"><div class="avatar">${esc((s.profiles?.first_name||'A').charAt(0).toUpperCase())}</div><b style="font-size:13px">${esc(nameOf(s.profiles))}</b><span style="font-size:11px;opacity:.8">${timeAgo(s.created_at)}</span><button class="sv-close" id="svClose">×</button></div>${s.media_type==='video'?`<video class="sv-media" id="svMedia" src="${esc(s.media_url)}" autoplay playsinline></video>`:`<img class="sv-media" id="svMedia" src="${esc(s.media_url)}">`}${s.caption?`<div class="sv-cap">${esc(s.caption)}</div>`:''}<div class="sv-tap left" id="svLeft"></div><div class="sv-tap right" id="svRight"></div>`;
-sb.from('story_views').insert({story_id:s.id,viewer_id:user.id}).then(()=>{}).catch(()=>{});
-let bar=v.querySelectorAll('.sv-bars i b')[idx];let dur=s.media_type==='video'?15000:5000;let start=Date.now();
-function tick(){let p=Math.min(100,((Date.now()-start)/dur)*100);if(bar)bar.style.width=p+'%';if(p>=100){next()}else st=requestAnimationFrame(tick)}
-let st=requestAnimationFrame(tick);
-v.querySelector('#svClose').onclick=close;v.querySelector('#svLeft').onclick=()=>{cancelAnimationFrame(st);prev()};v.querySelector('#svRight').onclick=()=>{cancelAnimationFrame(st);next()};
-function cleanup(){cancelAnimationFrame(st)}
-render.cleanup=cleanup}
-function next(){render.cleanup?.();if(idx<group.length-1){idx++;render()}else close()}
-function prev(){render.cleanup?.();if(idx>0){idx--;render()}else close()}
-function close(){render.cleanup?.();v.classList.remove('show');v.innerHTML=''}
-render();v.classList.add('show')}
+function showModal(html){
+  const old=document.querySelector(".modal");
+  if(old) old.remove();
 
-/* ---------- AMIS ---------- */
-async function loadFriends(){let [reqR,frR]=await Promise.all([
-  sb.from('friend_requests').select('*').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
-  sb.from('friend_requests').select('sender_id,receiver_id').eq('status','accepted').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-]);
-let allReq=reqR.data||[];friendRequests=allReq.filter(r=>r.receiver_id===user.id&&r.status==='pending');
-let acceptedIds=new Set();(frR.data||[]).forEach(r=>acceptedIds.add(r.sender_id===user.id?r.receiver_id:r.sender_id));
-let engagedIds=new Set(allReq.map(r=>r.sender_id===user.id?r.receiver_id:r.sender_id));
-let pr=await sb.from('profiles').select('id,first_name,last_name,username').neq('id',user.id).limit(60);
-let all=pr.data||[];friendsList=all.filter(p=>acceptedIds.has(p.id));
-let suggestions=all.filter(p=>!engagedIds.has(p.id));
-let reqProfiles={};if(friendRequests.length){let ids=friendRequests.map(r=>r.sender_id);let pp=await sb.from('profiles').select('id,first_name,last_name,username').in('id',ids);(pp.data||[]).forEach(p=>reqProfiles[p.id]=p)}
-friendRequests.forEach(r=>r.profiles=reqProfiles[r.sender_id]);
-$('reqBadge').textContent=friendRequests.length?` (${friendRequests.length})`:'';
-$('notifBadge').style.display=friendRequests.length?'none':$('notifBadge').style.display;
-window._friendData={suggestions};
-renderFriendsPage()}
-function renderFriendsPage(){document.querySelectorAll('#friendTabs button').forEach(b=>b.classList.toggle('on',b.dataset.ft===friendTab));
-if(friendTab==='suggest'){let s=window._friendData?.suggestions||[];$('friends').innerHTML=s.length?s.map(x=>`<div class="fr-row"><div class="avatar">${esc((x.first_name||x.username||'A').charAt(0).toUpperCase())}</div><div class="who"><div class="name">${esc(nameOf(x))}</div></div><button class="btn-sm btn-accept" data-addfriend="${x.id}">＋ Ajouter</button></div>`).join(''):'<div class="empty">Aucune suggestion.</div>'}
-else if(friendTab==='requests'){$('friends').innerHTML=friendRequests.length?friendRequests.map(r=>`<div class="fr-row"><div class="avatar">${esc((r.profiles?.first_name||'A').charAt(0).toUpperCase())}</div><div class="who"><div class="name">${esc(nameOf(r.profiles))}</div><div class="meta">Souhaite devenir votre ami</div></div><div class="fr-actions"><button class="btn-sm btn-accept" data-fraccept="${r.id}">Accepter</button><button class="btn-sm btn-decline" data-frdecline="${r.id}">Ignorer</button></div></div>`).join(''):'<div class="empty">Aucune demande en attente.</div>'}
-else{$('friends').innerHTML=friendsList.length?friendsList.map(x=>`<div class="fr-row"><div class="avatar">${esc((x.first_name||x.username||'A').charAt(0).toUpperCase())}</div><div class="who"><div class="name">${esc(nameOf(x))}</div></div></div>`).join(''):'<div class="empty">Vous n’avez pas encore d’amis.</div>'}}
-$('friendTabs').addEventListener('click',e=>{let b=e.target.closest('button[data-ft]');if(!b)return;friendTab=b.dataset.ft;renderFriendsPage()});
-async function addFriend(id){let r=await sb.from('friend_requests').insert({sender_id:user.id,receiver_id:id,status:'pending'});if(r.error)toast('Demande impossible : '+r.error.message);else{toast('Demande envoyée');await loadFriends()}}
-async function respondFriend(reqId,accept){let r=await sb.rpc('respond_friend_request',{p_request_id:reqId,p_accept:accept});if(r.error)return toast('Action impossible');toast(accept?'Ami ajouté':'Demande ignorée');await loadFriends();await getProfile();renderProfile()}
+  document.body.insertAdjacentHTML(
+    "beforeend",
+    `<div class="modal" onclick="if(event.target===this)this.remove()">
+      <div class="modal-card">${html}</div>
+    </div>`
+  );
+}
 
-/* ---------- NOTIFICATIONS ---------- */
-async function loadNotifications(){let r=await sb.from('notifications').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(50);if(r.error){$('notifications').innerHTML='<div class="empty">Aucune notification récente.</div>';return}let rows=r.data||[];if(rows.length){let ids=[...new Set(rows.filter(n=>n.actor_id).map(n=>n.actor_id))];let pr=ids.length?await sb.from('profiles').select('id,first_name,last_name,username').in('id',ids):{data:[]};let map={};(pr.data||[]).forEach(p=>map[p.id]=p);rows.forEach(n=>n.actor=map[n.actor_id])}
-notifications=rows;renderNotifications();updateNotifBadge()}
-function renderNotifications(){$('notifications').innerHTML=notifications.length?notifications.map(n=>`<div class="notif-row ${n.is_read?'':'unread'}" data-notif="${n.id}" data-post="${n.post_id||''}"><div class="avatar">${esc((n.actor?.first_name||'A').charAt(0).toUpperCase())}</div><div class="txt"><b>${esc(nameOf(n.actor))}</b> ${esc(n.message)}<time>${timeAgo(n.created_at)}</time></div></div>`).join(''):'<div class="empty">Aucune notification récente.</div>'}
-function updateNotifBadge(){let n=notifications.filter(x=>!x.is_read).length;$('notifBadge').style.display=n?'grid':'none';$('notifBadge').textContent=n>9?'9+':n}
-async function markNotifRead(id){let n=notifications.find(x=>x.id===id);if(n&&!n.is_read){n.is_read=true;await sb.from('notifications').update({is_read:true}).eq('id',id);updateNotifBadge()}}
-async function markAllNotifRead(){let unread=notifications.filter(x=>!x.is_read);if(!unread.length)return;notifications.forEach(n=>n.is_read=true);renderNotifications();updateNotifBadge();await sb.from('notifications').update({is_read:true}).eq('user_id',user.id).eq('is_read',false)}
-function subscribeRealtime(){notifChannel=sb.channel('notif-'+user.id).on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${user.id}`},payload=>{notifications.unshift(payload.new);renderNotifications();updateNotifBadge();toast(payload.new.message)}).subscribe();
-postChannel=sb.channel('posts-live').on('postgres_changes',{event:'UPDATE',schema:'public',table:'posts'},payload=>{let p=posts.find(x=>x.id===payload.new.id);if(p){Object.assign(p,{likes_count:payload.new.likes_count,comments_count:payload.new.comments_count,shares_count:payload.new.shares_count,favorites_count:payload.new.favorites_count,views_count:payload.new.views_count});renderFeed();renderShorts()}}).subscribe()}
+function closeModal(){
+  document.querySelector(".modal")?.remove();
+}
 
-/* ---------- NAVIGATION ---------- */
-function tab(t){stopVideos();document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelector(`#page-${t}`).classList.add('active');document.querySelectorAll('.bottom button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));window.scrollTo({top:0,behavior:'smooth'});if(t==='shorts')setTimeout(observeShorts,50);if(t==='notifications')setTimeout(markAllNotifRead,900)}
+/* =========================================================
+   AUTH
+========================================================= */
 
-/* ---------- PUSH ---------- */
-function urlBase64ToUint8Array(base64String){const padding='='.repeat((4-base64String.length%4)%4);const base64=(base64String+padding).replace(/-/g,'+').replace(/_/g,'/');const raw=atob(base64);return Uint8Array.from([...raw].map(c=>c.charCodeAt(0)))}
-async function enablePush(){if(!('serviceWorker' in navigator)||!('PushManager' in window))return toast('Notifications push non supportées sur cet appareil');
-try{const reg=await navigator.serviceWorker.register(getServiceWorkerUrl());const perm=await Notification.requestPermission();if(perm!=='granted')return toast('Autorisation refusée');
-const sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:urlBase64ToUint8Array(VAPID_PUBLIC_KEY)});
-const r=await sb.from('push_subscriptions').upsert({user_id:user.id,endpoint:sub.endpoint,subscription:sub.toJSON()});
-if(r.error)throw r.error;localStorage.setItem('aidaba_push','1');setPushSwitch(true);toast('Notifications push activées')}catch(e){console.error(e);toast('Impossible d’activer les notifications push')}}
-function setPushSwitch(on){$('pushSwitch').classList.toggle('on',on);$('pushSwitch2').classList.toggle('on',on)}
-$('pushSwitch').onclick=$('pushSwitch2').onclick=()=>{if($('pushSwitch').classList.contains('on')){setPushSwitch(false);localStorage.setItem('aidaba_push','0');toast('Notifications push désactivées (désinscrivez-vous aussi dans les réglages du navigateur)')}else enablePush()};
+function renderLogin(){
+  $("app").innerHTML=`
+    <main class="auth">
+      <section class="auth-card">
+        <div class="logo">AIDA<span>BA</span></div>
 
-/* ---------- INIT ---------- */
-async function init(){let s=await sb.auth.getSession();user=s.data.session?.user||null;if(!user)return;$('auth').style.display='none';$('app').style.display='block';try{await getProfile();await loadPosts();await loadStories();await loadFriends();await loadNotifications();subscribeRealtime();if(localStorage.getItem('aidaba_push')==='1')setPushSwitch(true);
-if(location.hash.startsWith('#post-')){let id=location.hash.replace('#post-','');setTimeout(()=>{let el=document.getElementById('post-'+id);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('flash')}},400)}
-}catch(e){console.error(e);toast('Erreur de connexion Supabase')}}
+        <p class="auth-subtitle">
+          Connecte-toi à ton réseau.
+        </p>
 
-$('regTab').onclick=()=>{$('regTab').classList.add('on');$('logTab').classList.remove('on');$('regBox').style.display='block';$('logBox').style.display='none'};$('logTab').onclick=()=>{$('logTab').classList.add('on');$('regTab').classList.remove('on');$('regBox').style.display='none';$('logBox').style.display='block'};
-$('register').onclick=async()=>{let f=$('fname').value.trim(),l=$('lname').value.trim(),email=$('email').value.trim(),pass=$('pass').value,pass2=$('pass2').value;if(!f||!l||!email||!pass)return toast('Remplissez les champs requis');if(pass!==pass2)return toast('Les mots de passe ne correspondent pas');let r=await sb.auth.signUp({email,password:pass,options:{data:{first_name:f,last_name:l,birth_date:$('birth').value,phone:$('phone').value}}});if(r.error)return toast(r.error.message);toast('Compte créé. Vérifiez votre email si demandé.');if(r.data.session){user=r.data.user;await init()}};
-$('login').onclick=async()=>{let r=await sb.auth.signInWithPassword({email:$('lemail').value.trim(),password:$('lpass').value});if(r.error)return toast(r.error.message);await init()};
-$('publishBtn').onclick=publish;$('composeTrigger').onclick=()=>openPost('text');$('textQuick').onclick=()=>openPost('text');$('photoQuick').onclick=()=>openPost('photo');$('videoQuick').onclick=()=>openPost('video');$('homeLogo').onclick=()=>tab('feed');document.querySelectorAll('.bottom button[data-tab]').forEach(b=>b.onclick=()=>tab(b.dataset.tab));$('settingsBtn').onclick=()=>$('settingsModal').classList.add('show');$('searchBtn').onclick=()=>toast('Recherche bientôt disponible');
-document.addEventListener('click',async e=>{
-  let sg=e.target.closest('[data-viewgroup]');if(sg){viewStoryGroup(sg.dataset.viewgroup);return}
-  let nr=e.target.closest('[data-notif]');if(nr){await markNotifRead(nr.dataset.notif);if(nr.dataset.post){tab('feed');setTimeout(()=>{let el=document.getElementById('post-'+nr.dataset.post);if(el){el.scrollIntoView({behavior:'smooth',block:'center'});el.classList.add('flash')}},300)}return}
-  let x=e.target.closest('[data-like],[data-comment],[data-share],[data-favorite],[data-delete],[data-sendcomment],[data-addfriend],[data-sound],[data-fraccept],[data-frdecline],[data-delcomment]');if(!x)return;
-  if(x.dataset.like)await like(x.dataset.like);
-  if(x.dataset.comment)await comment(x.dataset.comment);
-  if(x.dataset.sendcomment)await sendComment(x.dataset.sendcomment);
-  if(x.dataset.delcomment)await deleteComment(x.dataset.delcomment,x.dataset.post);
-  if(x.dataset.share)await share(x.dataset.share);
-  if(x.dataset.favorite)await favorite(x.dataset.favorite);
-  if(x.dataset.delete)await deletePost(x.dataset.delete);
-  if(x.dataset.addfriend)await addFriend(x.dataset.addfriend);
-  if(x.dataset.fraccept)await respondFriend(x.dataset.fraccept,true);
-  if(x.dataset.frdecline)await respondFriend(x.dataset.frdecline,false);
-  if(x.dataset.sound){let v=x.closest('.short')?.querySelector('video');if(v){v.muted=!v.muted;v.play().catch(()=>{})}}
-});
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>$(b.dataset.close).classList.remove('show'));
-function toggleDark(){document.body.classList.toggle('dark');let on=document.body.classList.contains('dark');localStorage.setItem('aidaba_dark',on?'1':'0');document.querySelectorAll('.switch').forEach(x=>{if(x.id!=='pushSwitch'&&x.id!=='pushSwitch2')x.classList.toggle('on',on)})}if(localStorage.getItem('aidaba_dark')==='1')document.body.classList.add('dark');$('darkSwitch').onclick=toggleDark;$('darkSwitch2').onclick=toggleDark;$('editProfile').onclick=$('editProfile2').onclick=()=>toast('Édition du profil à connecter à votre formulaire profile');
-async function logout(){if(!confirm('Voulez-vous vous déconnecter ?'))return;stopVideos();notifChannel&&sb.removeChannel(notifChannel);postChannel&&sb.removeChannel(postChannel);await sb.auth.signOut();location.reload()}$('logout').onclick=logout;$('logout2').onclick=logout;
-sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT'){stopVideos();location.reload()}});
-if('serviceWorker' in navigator)navigator.serviceWorker.register(getServiceWorkerUrl()).catch(()=>{});
-init();
-</script>
-<!--
-============================================================
- ANNEXES (à utiliser hors de ce fichier HTML)
- Ce fichier HTML est autonome (1 seul fichier) pour l'app cliente.
- Mais un réseau social a besoin d'une base de données : le SQL
- ci-dessous s'exécute UNE FOIS dans Supabase > SQL Editor (pas dans le HTML).
+        <input id="loginEmail"
+          class="input"
+          type="email"
+          placeholder="Adresse email">
 
-------------------------------------------------------------
-1) SCHEMA SQL SUPABASE — à coller dans SQL Editor
-------------------------------------------------------------
--- ============================================================
--- AIDABA World Industrie — Schéma Supabase complet
--- À exécuter dans Supabase > SQL Editor, du début à la fin.
--- ============================================================
+        <input id="loginPassword"
+          class="input"
+          type="password"
+          placeholder="Mot de passe">
 
-create extension if not exists "pgcrypto";
+        <button class="primary" onclick="login()">
+          Se connecter
+        </button>
 
--- ------------------------------------------------------------
--- 1. PROFILES
--- ------------------------------------------------------------
-alter table if exists public.profiles
-  add column if not exists avatar_url text,
-  add column if not exists cover_url text,
-  add column if not exists bio text,
-  add column if not exists friends_count int not null default 0;
+        <div class="auth-switch">
+          Pas encore de compte ?
+          <button onclick="renderSignup()">
+            Créer un compte
+          </button>
+        </div>
+      </section>
+    </main>
+  `;
+}
 
--- (si la table n'existe pas encore, décommentez et adaptez)
--- create table public.profiles (
---   id uuid primary key references auth.users(id) on delete cascade,
---   first_name text, last_name text, username text, email text,
---   avatar_url text, cover_url text, bio text,
---   friends_count int not null default 0,
---   created_at timestamptz not null default now()
--- );
+function renderSignup(){
+  $("app").innerHTML=`
+    <main class="auth">
+      <section class="auth-card">
+        <div class="logo">AIDA<span>BA</span></div>
 
-alter table public.profiles enable row level security;
-drop policy if exists "profiles_select_all" on public.profiles;
-create policy "profiles_select_all" on public.profiles for select using (true);
-drop policy if exists "profiles_update_own" on public.profiles;
-create policy "profiles_update_own" on public.profiles for update using (auth.uid() = id);
-drop policy if exists "profiles_insert_own" on public.profiles;
-create policy "profiles_insert_own" on public.profiles for insert with check (auth.uid() = id);
+        <p class="auth-subtitle">
+          Crée ton compte gratuitement.
+        </p>
 
--- ------------------------------------------------------------
--- 2. POSTS
--- ------------------------------------------------------------
-alter table if exists public.posts
-  add column if not exists favorites_count int not null default 0,
-  add column if not exists views_count int not null default 0,
-  add column if not exists shares_count int not null default 0,
-  add column if not exists likes_count int not null default 0,
-  add column if not exists comments_count int not null default 0;
+        <input id="signupFirst"
+          class="input"
+          placeholder="Prénom">
 
-alter table public.posts enable row level security;
-drop policy if exists "posts_select_all" on public.posts;
-create policy "posts_select_all" on public.posts for select using (true);
-drop policy if exists "posts_insert_own" on public.posts;
-create policy "posts_insert_own" on public.posts for insert with check (auth.uid() = user_id);
-drop policy if exists "posts_update_own" on public.posts;
-create policy "posts_update_own" on public.posts for update using (auth.uid() = user_id);
-drop policy if exists "posts_delete_own" on public.posts;
-create policy "posts_delete_own" on public.posts for delete using (auth.uid() = user_id);
+        <input id="signupLast"
+          class="input"
+          placeholder="Nom">
 
--- ------------------------------------------------------------
--- 3. LIKES / FAVORITES (tables de jonction -> compteurs fiables)
--- ------------------------------------------------------------
-create table if not exists public.likes (
-  post_id uuid not null references public.posts(id) on delete cascade,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (post_id, user_id)
-);
-alter table public.likes enable row level security;
-drop policy if exists "likes_select_all" on public.likes;
-create policy "likes_select_all" on public.likes for select using (true);
-drop policy if exists "likes_write_own" on public.likes;
-create policy "likes_write_own" on public.likes for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+        <input id="signupBirth"
+          class="input"
+          type="date">
 
-create table if not exists public.favorites (
-  post_id uuid not null references public.posts(id) on delete cascade,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (post_id, user_id)
-);
-alter table public.favorites enable row level security;
-drop policy if exists "favorites_select_own" on public.favorites;
-create policy "favorites_select_own" on public.favorites for select using (auth.uid() = user_id);
-drop policy if exists "favorites_write_own" on public.favorites;
-create policy "favorites_write_own" on public.favorites for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+        <input id="signupPhone"
+          class="input"
+          type="tel"
+          placeholder="Téléphone">
 
-create table if not exists public.shares (
-  post_id uuid not null references public.posts(id) on delete cascade,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now()
-);
-alter table public.shares enable row level security;
-drop policy if exists "shares_select_all" on public.shares;
-create policy "shares_select_all" on public.shares for select using (true);
-drop policy if exists "shares_insert_own" on public.shares;
-create policy "shares_insert_own" on public.shares for insert with check (auth.uid() = user_id);
+        <input id="signupEmail"
+          class="input"
+          type="email"
+          placeholder="Email">
 
-create table if not exists public.post_views (
-  post_id uuid not null references public.posts(id) on delete cascade,
-  user_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (post_id, user_id)
-);
-alter table public.post_views enable row level security;
-drop policy if exists "views_select_all" on public.post_views;
-create policy "views_select_all" on public.post_views for select using (true);
-drop policy if exists "views_insert_own" on public.post_views;
-create policy "views_insert_own" on public.post_views for insert with check (auth.uid() = user_id);
+        <input id="signupPassword"
+          class="input"
+          type="password"
+          placeholder="Mot de passe">
 
--- ------------------------------------------------------------
--- 4. COMMENTS
--- ------------------------------------------------------------
-alter table public.comments enable row level security;
-drop policy if exists "comments_select_all" on public.comments;
-create policy "comments_select_all" on public.comments for select using (true);
-drop policy if exists "comments_insert_own" on public.comments;
-create policy "comments_insert_own" on public.comments for insert with check (auth.uid() = user_id);
-drop policy if exists "comments_delete_own" on public.comments;
-create policy "comments_delete_own" on public.comments for delete using (auth.uid() = user_id);
+        <input id="signupPassword2"
+          class="input"
+          type="password"
+          placeholder="Confirmer le mot de passe">
 
--- ------------------------------------------------------------
--- 5. STORIES (expirent après 24h)
--- ------------------------------------------------------------
-create table if not exists public.stories (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,
-  media_url text not null,
-  media_type text not null default 'image', -- image | video
-  caption text,
-  created_at timestamptz not null default now(),
-  expires_at timestamptz not null default (now() + interval '24 hours')
-);
-alter table public.stories enable row level security;
-drop policy if exists "stories_select_active" on public.stories;
-create policy "stories_select_active" on public.stories for select using (expires_at > now());
-drop policy if exists "stories_insert_own" on public.stories;
-create policy "stories_insert_own" on public.stories for insert with check (auth.uid() = user_id);
-drop policy if exists "stories_delete_own" on public.stories;
-create policy "stories_delete_own" on public.stories for delete using (auth.uid() = user_id);
+        <button class="primary" onclick="signup()">
+          Créer mon compte
+        </button>
 
-create table if not exists public.story_views (
-  story_id uuid not null references public.stories(id) on delete cascade,
-  viewer_id uuid not null references auth.users(id) on delete cascade,
-  created_at timestamptz not null default now(),
-  primary key (story_id, viewer_id)
-);
-alter table public.story_views enable row level security;
-drop policy if exists "story_views_select_all" on public.story_views;
-create policy "story_views_select_all" on public.story_views for select using (true);
-drop policy if exists "story_views_insert_own" on public.story_views;
-create policy "story_views_insert_own" on public.story_views for insert with check (auth.uid() = viewer_id);
+        <div class="auth-switch">
+          J'ai déjà un compte.
+          <button onclick="renderLogin()">
+            Me connecter
+          </button>
+        </div>
+      </section>
+    </main>
+  `;
+}
 
--- ------------------------------------------------------------
--- 6. AMIS
--- ------------------------------------------------------------
-alter table public.friend_requests enable row level security;
-drop policy if exists "fr_select_involved" on public.friend_requests;
-create policy "fr_select_involved" on public.friend_requests for select
-  using (auth.uid() = sender_id or auth.uid() = receiver_id);
-drop policy if exists "fr_insert_own" on public.friend_requests;
-create policy "fr_insert_own" on public.friend_requests for insert with check (auth.uid() = sender_id);
-drop policy if exists "fr_update_involved" on public.friend_requests;
-create policy "fr_update_involved" on public.friend_requests for update
-  using (auth.uid() = sender_id or auth.uid() = receiver_id);
-drop policy if exists "fr_delete_involved" on public.friend_requests;
-create policy "fr_delete_involved" on public.friend_requests for delete
-  using (auth.uid() = sender_id or auth.uid() = receiver_id);
+async function login(){
+  const email=$("loginEmail").value.trim();
+  const password=$("loginPassword").value;
 
-create unique index if not exists fr_unique_pair
-  on public.friend_requests (least(sender_id, receiver_id), greatest(sender_id, receiver_id));
+  const {error}=await supabaseClient.auth.signInWithPassword({
+    email,
+    password
+  });
 
--- ------------------------------------------------------------
--- 7. NOTIFICATIONS
--- ------------------------------------------------------------
-create table if not exists public.notifications (
-  id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users(id) on delete cascade,   -- destinataire
-  actor_id uuid references auth.users(id) on delete set null,          -- auteur de l'action
-  type text not null,                                                  -- like|comment|friend_request|friend_accept|share
-  post_id uuid references public.posts(id) on delete cascade,
-  message text not null,
-  is_read boolean not null default false,
-  created_at timestamptz not null default now()
-);
-alter table public.notifications enable row level security;
-drop policy if exists "notif_select_own" on public.notifications;
-create policy "notif_select_own" on public.notifications for select using (auth.uid() = user_id);
-drop policy if exists "notif_update_own" on public.notifications;
-create policy "notif_update_own" on public.notifications for update using (auth.uid() = user_id);
--- Les insertions se font uniquement via les fonctions/triggers SECURITY DEFINER ci-dessous.
+  if(error){
+    alert(error.message);
+    return;
+  }
 
-alter publication supabase_realtime add table public.notifications;
-alter publication supabase_realtime add table public.posts;
-alter publication supabase_realtime add table public.comments;
+  await boot();
+}
 
--- ------------------------------------------------------------
--- 8. PUSH (notifications même app fermée)
--- ------------------------------------------------------------
-create table if not exists public.push_subscriptions (
-  user_id uuid not null references auth.users(id) on delete cascade,
-  endpoint text primary key,
-  subscription jsonb not null,
-  created_at timestamptz not null default now()
-);
-alter table public.push_subscriptions enable row level security;
-drop policy if exists "push_own" on public.push_subscriptions;
-create policy "push_own" on public.push_subscriptions for all
-  using (auth.uid() = user_id) with check (auth.uid() = user_id);
+async function signup(){
+  const first=$("signupFirst").value.trim();
+  const last=$("signupLast").value.trim();
+  const birth=$("signupBirth").value;
+  const phone=$("signupPhone").value.trim();
+  const email=$("signupEmail").value.trim();
+  const password=$("signupPassword").value;
+  const password2=$("signupPassword2").value;
 
--- ============================================================
--- FONCTIONS RPC
--- ============================================================
+  if(!first || !last || !email || !password){
+    alert("Remplis les champs obligatoires.");
+    return;
+  }
 
--- LIKE / UNLIKE ------------------------------------------------
-create or replace function public.toggle_post_like(p_post_id uuid)
-returns boolean
-language plpgsql security definer set search_path = public as $$
-declare v_liked boolean; v_owner uuid;
-begin
-  if exists (select 1 from likes where post_id = p_post_id and user_id = auth.uid()) then
-    delete from likes where post_id = p_post_id and user_id = auth.uid();
-    update posts set likes_count = greatest(0, likes_count - 1) where id = p_post_id;
-    v_liked := false;
-  else
-    insert into likes(post_id, user_id) values (p_post_id, auth.uid());
-    update posts set likes_count = likes_count + 1 where id = p_post_id;
-    v_liked := true;
-    select user_id into v_owner from posts where id = p_post_id;
-    if v_owner is not null and v_owner <> auth.uid() then
-      insert into notifications(user_id, actor_id, type, post_id, message)
-      values (v_owner, auth.uid(), 'like', p_post_id, 'a aimé votre publication');
-    end if;
-  end if;
-  return v_liked;
-end $$;
+  if(password!==password2){
+    alert("Les mots de passe ne correspondent pas.");
+    return;
+  }
 
--- FAVORI ---------------------------------------------------------
-create or replace function public.toggle_post_favorite(p_post_id uuid)
-returns boolean
-language plpgsql security definer set search_path = public as $$
-declare v_fav boolean;
-begin
-  if exists (select 1 from favorites where post_id = p_post_id and user_id = auth.uid()) then
-    delete from favorites where post_id = p_post_id and user_id = auth.uid();
-    update posts set favorites_count = greatest(0, favorites_count - 1) where id = p_post_id;
-    v_fav := false;
-  else
-    insert into favorites(post_id, user_id) values (p_post_id, auth.uid());
-    update posts set favorites_count = favorites_count + 1 where id = p_post_id;
-    v_fav := true;
-  end if;
-  return v_fav;
-end $$;
+  const {error}=await supabaseClient.auth.signUp({
+    email,
+    password,
+    options:{
+      data:{
+        first_name:first,
+        last_name:last,
+        phone,
+        birth_date:birth
+      }
+    }
+  });
 
--- PARTAGE ----------------------------------------------------------
-create or replace function public.increment_post_share(p_post_id uuid)
-returns void
-language plpgsql security definer set search_path = public as $$
-begin
-  insert into shares(post_id, user_id) values (p_post_id, auth.uid());
-  update posts set shares_count = shares_count + 1 where id = p_post_id;
-end $$;
+  if(error){
+    alert(error.message);
+    return;
+  }
 
--- VUE (une seule fois par utilisateur) ------------------------------
-create or replace function public.increment_post_view(p_post_id uuid)
-returns void
-language plpgsql security definer set search_path = public as $$
-begin
-  insert into post_views(post_id, user_id) values (p_post_id, auth.uid())
-  on conflict do nothing;
-  if found then
-    update posts set views_count = views_count + 1 where id = p_post_id;
-  end if;
-end $$;
+  alert(
+    "Compte créé. Vérifie ton email si la confirmation est activée."
+  );
 
--- COMMENTAIRE -> notification ---------------------------------------
-create or replace function public.notify_on_comment()
-returns trigger language plpgsql security definer set search_path = public as $$
-declare v_owner uuid;
-begin
-  update posts set comments_count = comments_count + 1 where id = new.post_id;
-  select user_id into v_owner from posts where id = new.post_id;
-  if v_owner is not null and v_owner <> new.user_id then
-    insert into notifications(user_id, actor_id, type, post_id, message)
-    values (v_owner, new.user_id, 'comment', new.post_id, 'a commenté votre publication');
-  end if;
-  return new;
-end $$;
-drop trigger if exists trg_notify_comment on public.comments;
-create trigger trg_notify_comment after insert on public.comments
-for each row execute function public.notify_on_comment();
+  await boot();
+}
 
-create or replace function public.decrement_comment_count()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  update posts set comments_count = greatest(0, comments_count - 1) where id = old.post_id;
-  return old;
-end $$;
-drop trigger if exists trg_decrement_comment on public.comments;
-create trigger trg_decrement_comment after delete on public.comments
-for each row execute function public.decrement_comment_count();
+async function logout(){
+  showModal(`
+    <h2>Déconnexion</h2>
+    <p>Voulez-vous vraiment vous déconnecter ?</p>
 
--- DEMANDE D'AMI -> notification --------------------------------------
-create or replace function public.notify_friend_request()
-returns trigger language plpgsql security definer set search_path = public as $$
-begin
-  if new.status = 'pending' then
-    insert into notifications(user_id, actor_id, type, message)
-    values (new.receiver_id, new.sender_id, 'friend_request', 'vous a envoyé une demande d''ami');
-  end if;
-  return new;
-end $$;
-drop trigger if exists trg_notify_friend_request on public.friend_requests;
-create trigger trg_notify_friend_request after insert on public.friend_requests
-for each row execute function public.notify_friend_request();
+    <div class="modal-actions">
+      <button onclick="closeModal()">Annuler</button>
+      <button class="confirm"
+        onclick="confirmLogout()">
+        Oui, me déconnecter
+      </button>
+    </div>
+  `);
+}
 
-create or replace function public.respond_friend_request(p_request_id uuid, p_accept boolean)
-returns void
-language plpgsql security definer set search_path = public as $$
-declare v_sender uuid; v_receiver uuid;
-begin
-  select sender_id, receiver_id into v_sender, v_receiver
-  from friend_requests where id = p_request_id and receiver_id = auth.uid();
-  if v_sender is null then raise exception 'Demande introuvable'; end if;
+async function confirmLogout(){
+  await supabaseClient.auth.signOut();
+  closeModal();
+  currentUser=null;
+  currentProfile=null;
+  renderLogin();
+}
 
-  if p_accept then
-    update friend_requests set status = 'accepted' where id = p_request_id;
-    update profiles set friends_count = friends_count + 1 where id = v_sender;
-    update profiles set friends_count = friends_count + 1 where id = v_receiver;
-    insert into notifications(user_id, actor_id, type, message)
-    values (v_sender, v_receiver, 'friend_accept', 'a accepté votre demande d''ami');
-  else
-    update friend_requests set status = 'declined' where id = p_request_id;
-  end if;
-end $$;
+/* =========================================================
+   PROFILE
+========================================================= */
 
--- ALGORITHME DE CLASSEMENT DU FIL (score d'engagement + fraîcheur) ----
-create or replace function public.get_ranked_feed(p_limit int default 40)
-returns setof public.posts
-language sql stable as $$
-  select p.* from posts p
-  order by
-    ( (p.likes_count * 3) + (p.comments_count * 4) + (p.shares_count * 5) + (p.favorites_count * 2)
-      - (extract(epoch from (now() - p.created_at)) / 3600.0) * 0.8
-    ) desc,
-    p.created_at desc
-  limit p_limit;
-$$;
+async function loadProfile(){
+  const {data,error}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id",currentUser.id)
+    .single();
 
--- NETTOYAGE AUTOMATIQUE DES STORIES EXPIRÉES (nécessite pg_cron) -----
--- Activez l'extension pg_cron dans Database > Extensions, puis :
--- select cron.schedule('cleanup-stories', '0 * * * *', $$ delete from public.stories where expires_at < now(); $$);
+  if(error){
+    console.error(error);
+    return;
+  }
 
--- ============================================================
--- STORAGE : créez un bucket "media" (Storage > New bucket, Public)
--- puis policy : autoriser insert/select aux utilisateurs authentifiés.
--- ============================================================
+  currentProfile=data;
+}
 
+/* =========================================================
+   FEED
+========================================================= */
 
-------------------------------------------------------------
-2) FONCTION EDGE "send-push" (Deno) — pour les notifications
-   push même app fermée. À déployer avec :
-   supabase functions deploy send-push
-------------------------------------------------------------
-// Supabase Edge Function: send-push
-// Déploiement : supabase functions deploy send-push
-// Secrets requis : VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY, VAPID_SUBJECT (mailto:vous@exemple.com),
-//                  SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
-// Déclenchement : Database > Webhooks > sur INSERT dans "notifications" -> appelle cette fonction.
+async function loadFeed(){
+  const {data,error}=await supabaseClient
+    .from("posts")
+    .select(`
+      *,
+      profiles:user_id(
+        id,
+        first_name,
+        last_name,
+        username,
+        avatar_url
+      )
+    `)
+    .eq("visibility","public")
+    .order("created_at",{ascending:false})
+    .limit(50);
 
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import webpush from "https://esm.sh/web-push@3.6.7";
+  if(error){
+    console.error(error);
+    return;
+  }
 
-const supabase = createClient(
-  Deno.env.get("SUPABASE_URL")!,
-  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-);
+  posts=data || [];
+}
 
-webpush.setVapidDetails(
-  Deno.env.get("VAPID_SUBJECT")!,
-  Deno.env.get("VAPID_PUBLIC_KEY")!,
-  Deno.env.get("VAPID_PRIVATE_KEY")!
-);
+async function loadStories(){
+  const {data,error}=await supabaseClient
+    .from("stories")
+    .select(`
+      *,
+      profiles:user_id(
+        id,
+        first_name,
+        last_name,
+        avatar_url
+      )
+    `)
+    .gt("expires_at",new Date().toISOString())
+    .order("created_at",{ascending:false});
 
-Deno.serve(async (req) => {
-  try {
-    const payload = await req.json();
-    const notif = payload.record; // ligne insérée dans "notifications"
-    if (!notif) return new Response("ok", { status: 200 });
+  if(error){
+    console.error(error);
+    return;
+  }
 
-    const { data: subs } = await supabase
-      .from("push_subscriptions")
-      .select("endpoint, subscription")
-      .eq("user_id", notif.user_id);
+  stories=data || [];
+}
 
-    if (!subs?.length) return new Response("no subscription", { status: 200 });
+/* =========================================================
+   FEED UI
+========================================================= */
 
-    const body = JSON.stringify({
-      title: "AIDABA World Industrie",
-      body: notif.message,
-      url: notif.post_id ? `/index.html#post-${notif.post_id}` : "/index.html"
+async function renderHome(){
+  await loadFeed();
+  await loadStories();
+
+  $("app").innerHTML=`
+    <header class="topbar">
+      <div class="brand">AIDABA</div>
+
+      <div class="header-actions">
+        <button class="icon-btn"
+          onclick="openSearch()">⌕</button>
+
+        <button class="icon-btn"
+          onclick="openMenu()">☰</button>
+      </div>
+    </header>
+
+    <main class="page">
+
+      <section class="create">
+        <div class="create-row">
+          <img class="avatar"
+            src="${avatar(currentProfile)}">
+
+          <button class="create-input"
+            onclick="openComposer()">
+            Quoi de neuf ?
+          </button>
+        </div>
+
+        <div class="create-actions">
+          <button class="action-small"
+            onclick="openComposer('image')">
+            📷 Photo
+          </button>
+
+          <button class="action-small"
+            onclick="openComposer('video')">
+            🎬 Vidéo
+          </button>
+
+          <button class="action-small"
+            onclick="openStoryComposer()">
+            ✦ Story
+          </button>
+        </div>
+      </section>
+
+      <section class="stories">
+        <div class="story create-story"
+          onclick="openStoryComposer()">
+          <div class="plus">+</div>
+          <strong>Créer une story</strong>
+        </div>
+
+        ${renderStories()}
+      </section>
+
+      <section id="feed">
+        ${posts.length
+          ? posts.map(renderPost).join("")
+          : emptyFeed()}
+      </section>
+
+    </main>
+
+    ${bottomNav("home")}
+  `;
+
+  observeVideos();
+}
+
+function emptyFeed(){
+  return `
+    <div style="text-align:center;padding:60px 20px;color:var(--muted)">
+      <h2>Bienvenue sur AIDABA</h2>
+      <p>
+        Ton fil d'actualité est encore vide.
+        Publie ton premier contenu.
+      </p>
+    </div>
+  `;
+}
+
+function renderStories(){
+  const groups={};
+
+  stories.forEach(s=>{
+    if(!groups[s.user_id]) groups[s.user_id]=[];
+    groups[s.user_id].push(s);
+  });
+
+  return Object.values(groups).map(group=>{
+    const s=group[0];
+    const p=s.profiles;
+
+    return `
+      <div class="story"
+        onclick='openStories(${JSON.stringify(group).replaceAll("'","&#39;")})'>
+
+        ${
+          s.media_type==="video"
+          ? `<video src="${escapeHTML(s.media_url)}"
+                    muted></video>`
+          : `<img src="${escapeHTML(s.media_url)}">`
+        }
+
+        <div class="story-name">
+          ${escapeHTML(
+            `${p?.first_name||""} ${p?.last_name||""}`
+          )}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderPost(post){
+  const p=post.profiles || {};
+
+  const media =
+    post.media_type==="video"
+    ? `
+      <video
+        class="post-media post-video"
+        src="${escapeHTML(post.media_url)}"
+        playsinline
+        muted
+        loop
+        preload="metadata"
+        data-video-post="${post.id}"
+        onclick="toggleVideo(this)">
+      </video>
+    `
+    : post.media_type==="image"
+    ? `
+      <img
+        class="post-media"
+        src="${escapeHTML(post.media_url)}"
+        loading="lazy">
+    `
+    : "";
+
+  return `
+    <article class="post"
+      data-post-id="${post.id}">
+
+      <header class="post-head">
+
+        <img class="avatar"
+          src="${avatar(p)}">
+
+        <div class="post-user">
+          <strong>
+            ${escapeHTML(
+              `${p.first_name||""} ${p.last_name||""}`
+            )}
+          </strong>
+
+          <small>${formatDate(post.created_at)}</small>
+        </div>
+
+        <button class="icon-btn">•••</button>
+      </header>
+
+      ${
+        post.content
+        ? `<div class="post-content">
+            ${escapeHTML(post.content)}
+           </div>`
+        : ""
+      }
+
+      ${media}
+
+      <div class="post-stats">
+        <span>
+          ${post.views_count||0} vues
+        </span>
+
+        <span>
+          ${post.likes_count||0} j'aime ·
+          ${post.comments_count||0} commentaires ·
+          ${post.shares_count||0} partages ·
+          ${post.saves_count||0} favoris
+        </span>
+      </div>
+
+      <div class="post-actions">
+
+        <button class="post-action"
+          onclick="toggleLike('${post.id}',this)">
+          ♡
+          <span>J'aime</span>
+        </button>
+
+        <button class="post-action"
+          onclick="openComments('${post.id}')">
+          ○
+          <span>Commenter</span>
+        </button>
+
+        <button class="post-action"
+          onclick="sharePost('${post.id}')">
+          ↗
+          <span>Partager</span>
+        </button>
+
+        <button class="post-action"
+          onclick="toggleSave('${post.id}',this)">
+          ♧
+          <span>Favori</span>
+        </button>
+
+      </div>
+
+      <div id="comments-${post.id}" class="comments hidden"></div>
+
+    </article>
+  `;
+}
+
+/* =========================================================
+   LIKE
+========================================================= */
+
+async function toggleLike(postId,button){
+  const {data}=await supabaseClient
+    .from("post_likes")
+    .select("post_id")
+    .eq("post_id",postId)
+    .eq("user_id",currentUser.id)
+    .maybeSingle();
+
+  if(data){
+    await supabaseClient
+      .from("post_likes")
+      .delete()
+      .eq("post_id",postId)
+      .eq("user_id",currentUser.id);
+
+    button.classList.remove("active");
+  }else{
+    await supabaseClient
+      .from("post_likes")
+      .insert({
+        post_id:postId,
+        user_id:currentUser.id
+      });
+
+    button.classList.add("active");
+
+    await createNotificationForPost(
+      postId,
+      "like",
+      "a aimé votre publication"
+    );
+  }
+
+  await refreshPostCounters(postId);
+}
+
+/* =========================================================
+   SAVE
+========================================================= */
+
+async function toggleSave(postId,button){
+  const {data}=await supabaseClient
+    .from("post_saves")
+    .select("post_id")
+    .eq("post_id",postId)
+    .eq("user_id",currentUser.id)
+    .maybeSingle();
+
+  if(data){
+    await supabaseClient
+      .from("post_saves")
+      .delete()
+      .eq("post_id",postId)
+      .eq("user_id",currentUser.id);
+
+    button.classList.remove("active");
+  }else{
+    await supabaseClient
+      .from("post_saves")
+      .insert({
+        post_id:postId,
+        user_id:currentUser.id
+      });
+
+    button.classList.add("active");
+  }
+
+  await refreshPostCounters(postId);
+}
+
+/* =========================================================
+   VIEWS
+========================================================= */
+
+async function registerView(postId){
+  const {data}=await supabaseClient
+    .from("post_views")
+    .select("post_id")
+    .eq("post_id",postId)
+    .eq("user_id",currentUser.id)
+    .maybeSingle();
+
+  if(!data){
+    await supabaseClient
+      .from("post_views")
+      .insert({
+        post_id:postId,
+        user_id:currentUser.id
+      });
+
+    refreshPostCounters(postId);
+  }
+}
+
+async function refreshPostCounters(postId){
+  const {data}=await supabaseClient
+    .from("posts")
+    .select(`
+      likes_count,
+      comments_count,
+      shares_count,
+      saves_count,
+      views_count
+    `)
+    .eq("id",postId)
+    .single();
+
+  const el=document.querySelector(
+    `[data-post-id="${postId}"]`
+  );
+
+  if(!el || !data) return;
+
+  const stat=el.querySelector(".post-stats");
+
+  stat.innerHTML=`
+    <span>${data.views_count||0} vues</span>
+    <span>
+      ${data.likes_count||0} j'aime ·
+      ${data.comments_count||0} commentaires ·
+      ${data.shares_count||0} partages ·
+      ${data.saves_count||0} favoris
+    </span>
+  `;
+}
+
+/* =========================================================
+   AUTOPLAY VIDEO
+========================================================= */
+
+function observeVideos(){
+  const videos=document.querySelectorAll(".post-video");
+
+  if(!videos.length) return;
+
+  const observer=new IntersectionObserver(
+    entries=>{
+      entries.forEach(entry=>{
+        const video=entry.target;
+
+        if(entry.isIntersecting && entry.intersectionRatio>=.65){
+          video.play().catch(()=>{});
+          registerView(
+            video.dataset.videoPost
+          );
+        }else{
+          video.pause();
+          video.currentTime=video.currentTime;
+        }
+      });
+    },
+    {
+      threshold:[0,.65,1]
+    }
+  );
+
+  videos.forEach(video=>observer.observe(video));
+}
+
+function toggleVideo(video){
+  if(video.paused){
+    video.play().catch(()=>{});
+  }else{
+    video.pause();
+  }
+}
+
+/* =========================================================
+   SHORTS
+========================================================= */
+
+async function openShorts(){
+  const videos=posts.filter(
+    p=>p.media_type==="video"
+  );
+
+  if(!videos.length){
+    alert("Aucune vidéo disponible.");
+    return;
+  }
+
+  const html=`
+    <section class="shorts" id="shortsFeed">
+
+      <div class="short-top">
+        <div class="short-title">Shorts</div>
+
+        <button
+          onclick="closeShorts()"
+          style="color:white;font-size:30px">
+          ×
+        </button>
+      </div>
+
+      ${videos.map(p=>`
+        <article class="short"
+          data-short-post="${p.id}">
+
+          <video
+            src="${escapeHTML(p.media_url)}"
+            playsinline
+            loop
+            muted
+            preload="metadata"
+            onclick="toggleVideo(this)">
+          </video>
+
+          <div class="short-side">
+
+            <button class="short-button"
+              onclick="toggleLike('${p.id}',this)">
+              ♡
+              <span>${p.likes_count||0}</span>
+            </button>
+
+            <button class="short-button"
+              onclick="openComments('${p.id}')">
+              ○
+              <span>${p.comments_count||0}</span>
+            </button>
+
+            <button class="short-button"
+              onclick="sharePost('${p.id}')">
+              ↗
+              <span>${p.shares_count||0}</span>
+            </button>
+
+            <button class="short-button"
+              onclick="toggleSave('${p.id}',this)">
+              ♧
+              <span>${p.saves_count||0}</span>
+            </button>
+
+          </div>
+
+          <div class="short-info">
+            <strong>
+              ${escapeHTML(
+                `${p.profiles?.first_name||""} ${p.profiles?.last_name||""}`
+              )}
+            </strong>
+
+            <div>
+              ${escapeHTML(p.content||"")}
+            </div>
+          </div>
+
+        </article>
+      `).join("")}
+
+    </section>
+  `;
+
+  document.body.insertAdjacentHTML("beforeend",html);
+
+  const container=$("shortsFeed");
+
+  const observer=new IntersectionObserver(
+    entries=>{
+      entries.forEach(entry=>{
+        const video=entry.target.querySelector("video");
+
+        if(entry.isIntersecting){
+          document.querySelectorAll(".short video")
+            .forEach(v=>{
+              if(v!==video) v.pause();
+            });
+
+          video.play().catch(()=>{});
+
+          registerView(
+            entry.target.dataset.shortPost
+          );
+        }else{
+          video.pause();
+        }
+      });
+    },
+    {threshold:.7}
+  );
+
+  document.querySelectorAll(".short")
+    .forEach(el=>observer.observe(el));
+}
+
+function closeShorts(){
+  document.querySelector(".shorts")?.remove();
+}
+
+/* =========================================================
+   COMMENTS
+========================================================= */
+
+async function openComments(postId){
+  const box=$(`comments-${postId}`);
+
+  if(box){
+    box.classList.toggle("hidden");
+
+    if(!box.classList.contains("hidden")){
+      await loadComments(postId);
+    }
+
+    return;
+  }
+
+  showModal(`
+    <h2>Commentaires</h2>
+
+    <div id="modalComments">
+      Chargement...
+    </div>
+
+    <form
+      onsubmit="sendComment(event,'${postId}')"
+      class="comment-form"
+      style="margin-top:15px">
+
+      <input
+        id="commentInput"
+        placeholder="Écrire un commentaire...">
+
+      <button class="primary"
+        style="width:auto;padding:12px 18px">
+        Envoyer
+      </button>
+
+    </form>
+  `);
+
+  await loadCommentsModal(postId);
+}
+
+async function loadCommentsModal(postId){
+  const {data}=await supabaseClient
+    .from("post_comments")
+    .select(`
+      *,
+      profiles:user_id(
+        first_name,
+        last_name,
+        avatar_url
+      )
+    `)
+    .eq("post_id",postId)
+    .order("created_at",{ascending:true});
+
+  const box=$("modalComments");
+
+  if(!box) return;
+
+  box.innerHTML=(data||[]).map(c=>`
+    <div class="comment">
+      <img class="avatar"
+        src="${avatar(c.profiles)}">
+
+      <div class="comment-body">
+        <strong>
+          ${escapeHTML(
+            `${c.profiles?.first_name||""} ${c.profiles?.last_name||""}`
+          )}
+        </strong>
+
+        <div>
+          ${escapeHTML(c.content)}
+        </div>
+      </div>
+    </div>
+  `).join("") || "Aucun commentaire.";
+}
+
+async function loadComments(postId){
+  const box=$(`comments-${postId}`);
+
+  const {data}=await supabaseClient
+    .from("post_comments")
+    .select(`
+      *,
+      profiles:user_id(
+        first_name,
+        last_name,
+        avatar_url
+      )
+    `)
+    .eq("post_id",postId)
+    .order("created_at",{ascending:true});
+
+  box.innerHTML=(data||[]).map(c=>`
+    <div class="comment">
+      <img class="avatar"
+        src="${avatar(c.profiles)}">
+
+      <div class="comment-body">
+        <strong>
+          ${escapeHTML(
+            `${c.profiles?.first_name||""} ${c.profiles?.last_name||""}`
+          )}
+        </strong>
+
+        <div>${escapeHTML(c.content)}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+async function sendComment(event,postId){
+  event.preventDefault();
+
+  const input=$("commentInput");
+  const content=input.value.trim();
+
+  if(!content) return;
+
+  const {error}=await supabaseClient
+    .from("post_comments")
+    .insert({
+      post_id:postId,
+      user_id:currentUser.id,
+      content
     });
 
-    await Promise.all(subs.map(async (s) => {
-      try {
-        await webpush.sendNotification(s.subscription, body);
-      } catch (err) {
-        // abonnement expiré -> on le supprime
-        if (err.statusCode === 404 || err.statusCode === 410) {
-          await supabase.from("push_subscriptions").delete().eq("endpoint", s.endpoint);
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  input.value="";
+
+  await createNotificationForPost(
+    postId,
+    "comment",
+    "a commenté votre publication"
+  );
+
+  await loadCommentsModal(postId);
+  await refreshPostCounters(postId);
+}
+
+/* =========================================================
+   SHARE
+========================================================= */
+
+async function sharePost(postId){
+  showModal(`
+    <h2>Partager</h2>
+
+    <p>
+      Choisis comment tu veux partager cette publication.
+    </p>
+
+    <div class="modal-actions">
+
+      <button onclick="shareExternal('${postId}')">
+        Partager
+      </button>
+
+      <button class="confirm"
+        onclick="shareToFriends('${postId}')">
+        Envoyer à mes amis
+      </button>
+
+    </div>
+  `);
+}
+
+async function shareExternal(postId){
+  const url=location.origin+
+    location.pathname+
+    "?post="+postId;
+
+  try{
+    await navigator.share({
+      title:"AIDABA",
+      text:"Regarde cette publication",
+      url
+    });
+  }catch(e){}
+
+  await recordShare(postId);
+  closeModal();
+}
+
+async function recordShare(postId){
+  await supabaseClient
+    .from("post_shares")
+    .insert({
+      post_id:postId,
+      user_id:currentUser.id
+    });
+
+  await refreshPostCounters(postId);
+}
+
+async function shareToFriends(postId){
+  const {data:friends}=await supabaseClient
+    .from("friendships")
+    .select(`
+      id,
+      requester_id,
+      addressee_id
+    `)
+    .eq("status","accepted")
+    .or(
+      `requester_id.eq.${currentUser.id},addressee_id.eq.${currentUser.id}`
+    );
+
+  if(!friends?.length){
+    alert("Tu n'as pas encore d'amis.");
+    return;
+  }
+
+  const ids=friends.map(f=>
+    f.requester_id===currentUser.id
+      ? f.addressee_id
+      : f.requester_id
+  );
+
+  await supabaseClient
+    .from("post_shares")
+    .insert(
+      ids.map(id=>({
+        post_id:postId,
+        user_id:currentUser.id,
+        shared_to_user_id:id
+      }))
+    );
+
+  await recordShare(postId);
+
+  alert("Publication partagée avec tes amis.");
+  closeModal();
+}
+
+/* =========================================================
+   NOTIFICATIONS
+========================================================= */
+
+async function createNotificationForPost(
+  postId,
+  type,
+  text
+){
+  const {data:post}=await supabaseClient
+    .from("posts")
+    .select("user_id,content")
+    .eq("id",postId)
+    .single();
+
+  if(!post || post.user_id===currentUser.id)
+    return;
+
+  const actor=
+    `${currentProfile?.first_name||""} ${currentProfile?.last_name||""}`
+      .trim();
+
+  await supabaseClient
+    .from("notifications")
+    .insert({
+      user_id:post.user_id,
+      actor_id:currentUser.id,
+      type,
+      post_id:postId,
+      message:`${actor} ${text}: "${(post.content||"Publication").slice(0,80)}"`
+    });
+}
+
+async function openNotifications(){
+  const {data}=await supabaseClient
+    .from("notifications")
+    .select(`
+      *,
+      profiles:actor_id(
+        first_name,
+        last_name,
+        avatar_url
+      )
+    `)
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false})
+    .limit(100);
+
+  showModal(`
+    <h2>Notifications</h2>
+
+    ${
+      (data||[]).map(n=>`
+        <div style="
+          padding:14px 0;
+          border-bottom:1px solid var(--line);
+        ">
+          <div style="display:flex;gap:10px">
+            <img class="avatar"
+              src="${avatar(n.profiles)}">
+
+            <div>
+              <strong>
+                ${escapeHTML(
+                  `${n.profiles?.first_name||""} ${n.profiles?.last_name||""}`
+                )}
+              </strong>
+
+              <div>
+                ${escapeHTML(n.message)}
+              </div>
+
+              <small style="color:var(--muted)">
+                ${formatDate(n.created_at)}
+              </small>
+            </div>
+          </div>
+        </div>
+      `).join("")
+      || `<p>Aucune notification.</p>`
+    }
+
+    <button
+      class="primary"
+      style="margin-top:18px"
+      onclick="closeModal()">
+      Fermer
+    </button>
+  `);
+
+  await supabaseClient
+    .from("notifications")
+    .update({is_read:true})
+    .eq("user_id",currentUser.id)
+    .eq("is_read",false);
+}
+
+/* =========================================================
+   COMPOSER
+========================================================= */
+
+function openComposer(type=""){
+  showModal(`
+    <h2>Créer une publication</h2>
+
+    <textarea
+      id="postText"
+      class="input"
+      rows="5"
+      placeholder="Que veux-tu partager ?"></textarea>
+
+    <input
+      id="postFile"
+      class="input"
+      type="file"
+      accept="${
+        type==="video"
+        ? "video/*"
+        : type==="image"
+        ? "image/*"
+        : "image/*,video/*"
+      }">
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Annuler</button>
+
+      <button
+        class="confirm"
+        onclick="publishPost()">
+        Publier
+      </button>
+    </div>
+  `);
+}
+
+async function publishPost(){
+  const text=$("postText").value.trim();
+  const file=$("postFile").files[0];
+
+  if(!text && !file){
+    alert("Ajoute une photo, une vidéo ou une description.");
+    return;
+  }
+
+  let media_url=null;
+  let media_type=null;
+
+  if(file){
+    const ext=file.name.split(".").pop();
+    const path=
+      `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
+
+    const {error}=await supabaseClient
+      .storage
+      .from("posts")
+      .upload(path,file,{
+        upsert:false
+      });
+
+    if(error){
+      alert(error.message);
+      return;
+    }
+
+    const {data:urlData}=
+      supabaseClient
+      .storage
+      .from("posts")
+      .getPublicUrl(path);
+
+    media_url=urlData.publicUrl;
+
+    media_type=file.type.startsWith("video")
+      ? "video"
+      : "image";
+  }
+
+  const hashtags=
+    [...text.matchAll(/#[\p{L}\p{N}_]+/gu)]
+      .map(x=>x[0].toLowerCase());
+
+  const {error}=await supabaseClient
+    .from("posts")
+    .insert({
+      user_id:currentUser.id,
+      content:text,
+      media_url,
+      media_type,
+      hashtags
+    });
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  closeModal();
+  await renderHome();
+}
+
+/* =========================================================
+   STORY
+========================================================= */
+
+function openStoryComposer(){
+  showModal(`
+    <h2>Créer une story</h2>
+
+    <input
+      id="storyFile"
+      class="input"
+      type="file"
+      accept="image/*,video/*">
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Annuler</button>
+
+      <button class="confirm"
+        onclick="publishStory()">
+        Publier
+      </button>
+    </div>
+  `);
+}
+
+async function publishStory(){
+  const file=$("storyFile").files[0];
+
+  if(!file){
+    alert("Sélectionne une photo ou une vidéo.");
+    return;
+  }
+
+  const ext=file.name.split(".").pop();
+
+  const path=
+    `${currentUser.id}/${crypto.randomUUID()}.${ext}`;
+
+  const {error}=await supabaseClient
+    .storage
+    .from("stories")
+    .upload(path,file);
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  const {data:urlData}=
+    supabaseClient
+    .storage
+    .from("stories")
+    .getPublicUrl(path);
+
+  await supabaseClient
+    .from("stories")
+    .insert({
+      user_id:currentUser.id,
+      media_url:urlData.publicUrl,
+      media_type:file.type.startsWith("video")
+        ? "video"
+        : "image"
+    });
+
+  closeModal();
+  await renderHome();
+}
+
+function openStories(group){
+  const first=group[0];
+
+  showModal(`
+    <h2>
+      ${escapeHTML(
+        `${first.profiles?.first_name||""} ${first.profiles?.last_name||""}`
+      )}
+    </h2>
+
+    <div id="storyViewer"
+      style="
+        position:relative;
+        height:70vh;
+        background:#000;
+        border-radius:22px;
+        overflow:hidden;
+      ">
+    </div>
+  `);
+
+  let index=0;
+
+  function display(){
+    const s=group[index];
+
+    const box=$("storyViewer");
+
+    if(s.media_type==="video"){
+      box.innerHTML=`
+        <video
+          src="${escapeHTML(s.media_url)}"
+          autoplay
+          controls
+          playsinline
+          style="width:100%;height:100%;object-fit:contain">
+        </video>
+      `;
+    }else{
+      box.innerHTML=`
+        <img
+          src="${escapeHTML(s.media_url)}"
+          style="width:100%;height:100%;object-fit:contain">
+      `;
+    }
+
+    supabaseClient
+      .from("story_views")
+      .insert({
+        story_id:s.id,
+        user_id:currentUser.id
+      })
+      .then(()=>{});
+  }
+
+  display();
+
+  $("storyViewer").onclick=()=>{
+    index++;
+
+    if(index>=group.length){
+      closeModal();
+    }else{
+      display();
+    }
+  };
+}
+
+/* =========================================================
+   PROFILE
+========================================================= */
+
+async function openProfile(){
+  await loadProfile();
+
+  const {data:userPosts}=await supabaseClient
+    .from("posts")
+    .select(`
+      *,
+      profiles:user_id(
+        first_name,
+        last_name,
+        avatar_url
+      )
+    `)
+    .eq("user_id",currentUser.id)
+    .order("created_at",{ascending:false});
+
+  $("app").innerHTML=`
+    <header class="topbar">
+      <div class="brand">Profil</div>
+
+      <button class="icon-btn"
+        onclick="openMenu()">
+        ⚙
+      </button>
+    </header>
+
+    <main class="profile">
+
+      <div class="cover">
+        ${
+          currentProfile.cover_url
+          ? `<img src="${escapeHTML(currentProfile.cover_url)}">`
+          : ""
+        }
+      </div>
+
+      <div class="profile-main">
+
+        <img class="profile-avatar"
+          src="${avatar(currentProfile)}">
+
+        <div class="profile-name">
+          ${escapeHTML(
+            `${currentProfile.first_name||""} ${currentProfile.last_name||""}`
+          )}
+        </div>
+
+        <div class="profile-bio">
+          ${escapeHTML(currentProfile.bio||"")}
+        </div>
+
+        <button
+          class="profile-tab"
+          style="margin-top:15px"
+          onclick="editProfile()">
+          Modifier mon profil
+        </button>
+
+        <div class="profile-tabs">
+          <button class="profile-tab">
+            Publications
+          </button>
+
+          <button class="profile-tab">
+            Vidéos
+          </button>
+        </div>
+
+      </div>
+
+      ${
+        (userPosts||[]).map(renderPost).join("")
+      }
+
+    </main>
+
+    ${bottomNav("profile")}
+  `;
+
+  observeVideos();
+}
+
+function editProfile(){
+  showModal(`
+    <h2>Informations personnelles</h2>
+
+    <input id="editFirst"
+      class="input"
+      value="${escapeHTML(currentProfile.first_name||"")}"
+      placeholder="Prénom">
+
+    <input id="editLast"
+      class="input"
+      value="${escapeHTML(currentProfile.last_name||"")}"
+      placeholder="Nom">
+
+    <textarea id="editBio"
+      class="input"
+      rows="4"
+      placeholder="Biographie">${escapeHTML(currentProfile.bio||"")}</textarea>
+
+    <input id="editAvatar"
+      class="input"
+      type="file"
+      accept="image/*">
+
+    <input id="editCover"
+      class="input"
+      type="file"
+      accept="image/*">
+
+    <div class="modal-actions">
+      <button onclick="closeModal()">Annuler</button>
+
+      <button class="confirm"
+        onclick="saveProfile()">
+        Enregistrer
+      </button>
+    </div>
+  `);
+}
+
+async function saveProfile(){
+  let avatar_url=currentProfile.avatar_url;
+  let cover_url=currentProfile.cover_url;
+
+  const avatarFile=$("editAvatar").files[0];
+  const coverFile=$("editCover").files[0];
+
+  if(avatarFile){
+    const ext=avatarFile.name.split(".").pop();
+
+    const path=
+      `${currentUser.id}/avatar.${ext}`;
+
+    await supabaseClient
+      .storage
+      .from("avatars")
+      .upload(path,avatarFile,{upsert:true});
+
+    avatar_url=
+      supabaseClient
+      .storage
+      .from("avatars")
+      .getPublicUrl(path).data.publicUrl;
+  }
+
+  if(coverFile){
+    const ext=coverFile.name.split(".").pop();
+
+    const path=
+      `${currentUser.id}/cover.${ext}`;
+
+    await supabaseClient
+      .storage
+      .from("covers")
+      .upload(path,coverFile,{upsert:true});
+
+    cover_url=
+      supabaseClient
+      .storage
+      .from("covers")
+      .getPublicUrl(path).data.publicUrl;
+  }
+
+  await supabaseClient
+    .from("profiles")
+    .update({
+      first_name:$("editFirst").value.trim(),
+      last_name:$("editLast").value.trim(),
+      bio:$("editBio").value.trim(),
+      avatar_url,
+      cover_url,
+      updated_at:new Date().toISOString()
+    })
+    .eq("id",currentUser.id);
+
+  closeModal();
+
+  await loadProfile();
+  await openProfile();
+}
+
+/* =========================================================
+   MENU
+========================================================= */
+
+function openMenu(){
+  $("app").insertAdjacentHTML(
+    "beforeend",
+    `
+    <section class="menu-panel">
+
+      <div class="menu-head">
+        <h1>Menu</h1>
+
+        <button class="icon-btn"
+          onclick="document.querySelector('.menu-panel').remove()">
+          ×
+        </button>
+      </div>
+
+      <button class="menu-item"
+        onclick="document.querySelector('.menu-panel').remove();openProfile()">
+        👤
+        <strong>
+          ${escapeHTML(
+            `${currentProfile?.first_name||""} ${currentProfile?.last_name||""}`
+          )}
+        </strong>
+      </button>
+
+      <button class="menu-item"
+        onclick="openNotifications()">
+        🔔
+        Notifications
+      </button>
+
+      <button class="menu-item"
+        onclick="openFriends()">
+        👥
+        Ami(e)s
+      </button>
+
+      <button class="menu-item"
+        onclick="toggleDarkMode()">
+        🌒
+        Mode sombre
+      </button>
+
+      <button class="menu-item"
+        onclick="editProfile()">
+        ⚙
+        Paramètres et confidentialité
+      </button>
+
+      <button class="menu-item logout"
+        onclick="logout()">
+        ⇥
+        Déconnexion
+      </button>
+
+    </section>
+    `
+  );
+}
+
+function toggleDarkMode(){
+  document.body.classList.toggle("dark");
+
+  localStorage.setItem(
+    "aidaba_dark",
+    document.body.classList.contains("dark")
+      ? "1"
+      : "0"
+  );
+}
+
+/* =========================================================
+   FRIENDS
+========================================================= */
+
+async function openFriends(){
+  const {data}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .neq("id",currentUser.id)
+    .limit(100);
+
+  showModal(`
+    <h2>Personnes</h2>
+
+    ${
+      (data||[]).map(p=>`
+        <div style="
+          display:flex;
+          align-items:center;
+          gap:12px;
+          padding:12px 0;
+          border-bottom:1px solid var(--line)
+        ">
+
+          <img class="avatar"
+            src="${avatar(p)}">
+
+          <div style="flex:1">
+            <strong>
+              ${escapeHTML(
+                `${p.first_name||""} ${p.last_name||""}`
+              )}
+            </strong>
+          </div>
+
+          <button
+            class="primary"
+            style="width:auto;padding:9px 13px"
+            onclick="sendFriendRequest('${p.id}')">
+            Ajouter
+          </button>
+
+        </div>
+      `).join("")
+    }
+
+    <button
+      class="primary"
+      style="margin-top:18px"
+      onclick="closeModal()">
+      Fermer
+    </button>
+  `);
+}
+
+async function sendFriendRequest(userId){
+  const {data}=await supabaseClient
+    .from("friendships")
+    .select("id")
+    .or(
+      `and(requester_id.eq.${currentUser.id},addressee_id.eq.${userId}),and(requester_id.eq.${userId},addressee_id.eq.${currentUser.id})`
+    )
+    .maybeSingle();
+
+  if(data){
+    alert("Une relation existe déjà.");
+    return;
+  }
+
+  const {data:friendship,error}=await supabaseClient
+    .from("friendships")
+    .insert({
+      requester_id:currentUser.id,
+      addressee_id:userId
+    })
+    .select()
+    .single();
+
+  if(error){
+    alert(error.message);
+    return;
+  }
+
+  await supabaseClient
+    .from("notifications")
+    .insert({
+      user_id:userId,
+      actor_id:currentUser.id,
+      type:"friend_request",
+      friendship_id:friendship.id,
+      message:`${currentProfile.first_name} ${currentProfile.last_name} vous a envoyé une demande d'ami.`
+    });
+
+  alert("Demande envoyée.");
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+async function openSearch(){
+  showModal(`
+    <h2>Rechercher</h2>
+
+    <input id="searchInput"
+      class="input"
+      placeholder="Nom ou prénom..."
+      oninput="searchUsers()">
+
+    <div id="searchResults"></div>
+  `);
+}
+
+async function searchUsers(){
+  const q=$("searchInput").value.trim();
+
+  if(q.length<2){
+    $("searchResults").innerHTML="";
+    return;
+  }
+
+  const {data}=await supabaseClient
+    .from("profiles")
+    .select("*")
+    .or(
+      `first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%`
+    )
+    .limit(20);
+
+  $("searchResults").innerHTML=
+    (data||[]).map(p=>`
+      <div style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        padding:12px 0;
+        border-bottom:1px solid var(--line)
+      ">
+        <img class="avatar" src="${avatar(p)}">
+
+        <strong>
+          ${escapeHTML(
+            `${p.first_name||""} ${p.last_name||""}`
+          )}
+        </strong>
+      </div>
+    `).join("");
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function bottomNav(active){
+  return `
+    <nav class="bottom-nav">
+
+      <button class="nav-btn ${active==="home"?"active":""}"
+        onclick="renderHome()">
+        ⌂
+        <span class="nav-label">Accueil</span>
+      </button>
+
+      <button class="nav-btn"
+        onclick="openShorts()">
+        ▷
+        <span class="nav-label">Shorts</span>
+      </button>
+
+      <button class="nav-btn"
+        onclick="openFriends()">
+        ♧
+        <span class="nav-label">Amis</span>
+      </button>
+
+      <button class="nav-btn"
+        onclick="openNotifications()">
+        ♢
+        <span class="nav-label">Notifications</span>
+      </button>
+
+      <button class="nav-btn ${active==="profile"?"active":""}"
+        onclick="openProfile()">
+        <img
+          src="${avatar(currentProfile)}"
+          style="width:30px;height:30px;border-radius:50%;object-fit:cover">
+        <span class="nav-label">Profil</span>
+      </button>
+
+    </nav>
+  `;
+}
+
+/* =========================================================
+   REALTIME
+========================================================= */
+
+function subscribeRealtime(){
+
+  supabaseClient
+    .channel("aidaba-posts")
+    .on(
+      "postgres_changes",
+      {
+        event:"*",
+        schema:"public",
+        table:"posts"
+      },
+      async()=>{
+        await loadFeed();
+
+        if(document.querySelector("#feed")){
+          renderHome();
         }
       }
-    }));
+    )
+    .subscribe();
 
-    return new Response("sent", { status: 200 });
-  } catch (e) {
-    console.error(e);
-    return new Response("error", { status: 500 });
+  supabaseClient
+    .channel("aidaba-notifications")
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"notifications",
+        filter:`user_id=eq.${currentUser.id}`
+      },
+      payload=>{
+        console.log(
+          "Nouvelle notification",
+          payload.new
+        );
+      }
+    )
+    .subscribe();
+}
+
+/* =========================================================
+   PUSH WEB
+========================================================= */
+
+async function enablePushNotifications(){
+
+  if(!("Notification" in window)){
+    return;
   }
-});
 
+  if(!("serviceWorker" in navigator)){
+    return;
+  }
 
-------------------------------------------------------------
-3) ÉTAPES RAPIDES
-------------------------------------------------------------
-1. Exécutez le SQL ci-dessus dans Supabase (SQL Editor).
-2. Storage > New bucket > "media" > cochez Public.
-3. Remplacez SUPABASE_URL / SUPABASE_ANON_KEY en haut du <script>.
-4. (Optionnel push) npx web-push generate-vapid-keys, collez la
-   clé publique dans VAPID_PUBLIC_KEY, déployez send-push, puis
-   Database > Webhooks > INSERT sur "notifications" -> send-push.
-============================================================
--->
-</body></html>
+  const permission=
+    await Notification.requestPermission();
+
+  if(permission!=="granted"){
+    return;
+  }
+
+  const registration=
+    await navigator.serviceWorker.register(
+      "/sw.js"
+    );
+
+  /*
+    Ici il faudra ajouter ta clé publique VAPID.
+    Elle ne doit PAS être ta clé service_role.
+  */
+
+  console.log(
+    "Service Worker enregistré",
+    registration
+  );
+}
+
+/* =========================================================
+   BOOT
+========================================================= */
+
+async function boot(){
+
+  const {
+    data:{session}
+  }=await supabaseClient.auth.getSession();
+
+  if(!session){
+    renderLogin();
+    return;
+  }
+
+  currentUser=session.user;
+
+  await loadProfile();
+
+  if(localStorage.getItem("aidaba_dark")==="1"){
+    document.body.classList.add("dark");
+  }
+
+  await renderHome();
+
+  subscribeRealtime();
+
+  /*
+    Activation à faire lorsque ton Web Push est configuré.
+  */
+  // enablePushNotifications();
+}
+
+supabaseClient.auth.onAuthStateChange(
+  async(event,session)=>{
+    if(session){
+      currentUser=session.user;
+    }
+  }
+);
+
+boot();
+
+</script>
+
+</body>
+</html>
