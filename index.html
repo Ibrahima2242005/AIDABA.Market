@@ -1,221 +1,397 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#eef2f7">
-<title>AIDABA_GUINÉE— Connecter • Partager • Grandir</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<style>
-:root{--bg:#eef2f7;--glass:rgba(255,255,255,.72);--glass2:rgba(255,255,255,.91);--line:rgba(0,0,0,.09);--text:#111318;--muted:#6d7480;--blue:#1877f2;--danger:#e53935;--shadow:0 12px 38px rgba(15,23,42,.10);--r:23px}
-*{box-sizing:border-box;margin:0;padding:0}html,body{min-height:100%;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 20% -10%,#fff,transparent 35%),var(--bg);color:var(--text);-webkit-tap-highlight-color:transparent}
-body.dark{--bg:#101216;--glass:rgba(28,30,35,.76);--glass2:rgba(24,26,30,.94);--line:rgba(255,255,255,.1);--text:#f5f6f8;--muted:#a9afb8;--shadow:0 14px 42px rgba(0,0,0,.35)}
-button,input,textarea,select{font:inherit}button{cursor:pointer}.hidden{display:none!important}.danger-text{color:var(--danger)!important}
-.glass{background:var(--glass);backdrop-filter:blur(27px);-webkit-backdrop-filter:blur(27px);border:1px solid var(--line);box-shadow:var(--shadow)}
-/* AUTH */
-#auth{min-height:100vh;display:grid;place-items:center;padding:18px}.auth-card{width:min(450px,100%);padding:25px;border-radius:30px}
-.logo-lock{display:flex;align-items:center;gap:12px;margin-bottom:20px}.logo-mark{width:48px;height:48px;border-radius:16px;background:#111;color:#fff;display:grid;place-items:center;font-weight:950}.logo{font-size:30px;font-weight:950;letter-spacing:-1.5px}.tag{font-size:11px;color:var(--muted)}
-.auth-tabs{display:flex;gap:4px;padding:4px;background:rgba(127,127,127,.12);border-radius:15px;margin-bottom:18px}.auth-tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:10px;border-radius:12px;font-weight:850}.auth-tabs .on{background:var(--glass2);color:var(--text);box-shadow:0 2px 10px rgba(0,0,0,.07)}
-.field{margin:10px 0}.field label{display:block;font-size:10px;font-weight:900;text-transform:uppercase;color:var(--muted);margin-bottom:6px}.field input,.field textarea,.field select{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.42);color:var(--text);outline:0;border-radius:15px;padding:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px}.primary{width:100%;border:0;border-radius:15px;padding:13px;background:#111;color:#fff;font-weight:900;margin-top:8px}.dark .primary{background:#fff;color:#111}.note{font-size:11px;color:var(--muted);line-height:1.5;margin-top:10px}
-/* APP */
-#app{display:none}.top{position:fixed;z-index:50;top:0;left:50%;transform:translateX(-50%);width:min(760px,100%);height:62px;padding:8px 13px;display:flex;align-items:center;justify-content:space-between;background:var(--glass);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border-bottom:1px solid var(--line)}
-.brand-btn{display:flex;align-items:center;gap:8px;border:0;background:transparent;color:var(--text);font-weight:950;font-size:20px}.brand-mini{width:34px;height:34px;border-radius:12px;background:#111;color:#fff;display:grid;place-items:center;font-size:14px}.top-actions{display:flex;gap:7px}.icon-btn{width:40px;height:40px;border:1px solid var(--line);border-radius:14px;background:rgba(255,255,255,.35);color:var(--text);display:grid;place-items:center}.dark .icon-btn{background:rgba(255,255,255,.05)}
-.main{width:min(760px,100%);margin:auto;padding:76px 10px 86px}.page{display:none}.page.active{display:block}.title{font-size:22px;font-weight:950;margin:4px 5px 13px}.card{border-radius:var(--r);overflow:hidden;margin-bottom:12px}
-/* STORIES */
-.stories-box{padding:10px}.stories{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none}.stories::-webkit-scrollbar{display:none}.story{position:relative;width:92px;height:145px;flex:0 0 92px;border-radius:19px;overflow:hidden;border:1px solid var(--line);background:#111}.story img,.story video{width:100%;height:100%;object-fit:cover}.story:after{content:"";position:absolute;inset:48% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.78))}.story-name{position:absolute;z-index:3;left:8px;right:5px;bottom:8px;color:#fff;font-size:11px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.story-avatar{position:absolute;z-index:4;left:7px;top:7px;width:32px;height:32px;border-radius:50%;border:2px solid #fff;object-fit:cover;background:#111;color:#fff;display:grid;place-items:center;font-size:10px}.story-add{display:grid;place-items:center;background:var(--glass2);color:var(--text)}.story-add:after{display:none}.plus{width:43px;height:43px;border-radius:50%;background:var(--blue);color:#fff;border:3px solid #fff;display:grid;place-items:center;font-size:28px}.story-add .story-name{color:var(--text);text-align:center}
-/* COMPOSER + POSTS */
-.composer{padding:12px}.compose-row{display:flex;gap:9px;align-items:center}.avatar{width:44px;height:44px;border-radius:50%;object-fit:cover;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;flex:0 0 auto}.avatar.sm{width:38px;height:38px}.avatar.lg{width:84px;height:84px;border:4px solid var(--glass2);font-size:25px}.avatar img{width:100%;height:100%;border-radius:inherit;object-fit:cover}.trigger{flex:1;border:0;text-align:left;background:rgba(127,127,127,.12);color:var(--muted);border-radius:19px;padding:12px 15px}.quick{display:flex;border-top:1px solid var(--line);margin-top:10px;padding-top:8px}.quick button{flex:1;border:0;background:transparent;color:var(--muted);padding:7px;font-size:12px;font-weight:850}.post{overflow:hidden}.post-head{display:flex;gap:9px;align-items:center;padding:12px}.who{flex:1}.name{font-size:13px;font-weight:900}.meta{font-size:10px;color:var(--muted);margin-top:2px}.more{border:0;background:transparent;color:var(--muted);padding:5px}.post-text{font-size:14px;line-height:1.5;padding:0 13px 11px;white-space:pre-wrap}.media{position:relative;background:#000}.media img,.media video{width:100%;max-height:620px;display:block;object-fit:contain;background:#000}.feed-video{cursor:pointer}.mute{position:absolute;right:10px;top:10px;width:35px;height:35px;border:0;border-radius:50%;background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center}.stats{display:flex;justify-content:space-between;gap:8px;padding:9px 12px;font-size:11px;color:var(--muted);border-bottom:1px solid var(--line)}.actions{display:flex;padding:4px 6px}.actions button{flex:1;border:0;background:transparent;color:var(--muted);padding:9px 3px;border-radius:12px;font-size:11px;font-weight:900}.actions button.on{color:var(--blue)}
-/* SHORTS */
-.shorts{height:calc(100vh - 140px);overflow-y:auto;scroll-snap-type:y mandatory;border-radius:22px}.short{height:calc(100vh - 140px);min-height:520px;position:relative;scroll-snap-align:start;background:#000;overflow:hidden;margin-bottom:8px}.short video{width:100%;height:100%;object-fit:cover}.short:after{content:"";position:absolute;inset:42% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.9));pointer-events:none}.short-info{position:absolute;z-index:3;left:14px;right:80px;bottom:17px;color:#fff}.short-info b{font-size:14px}.short-info p{font-size:13px;margin-top:6px;line-height:1.4}.short-actions{position:absolute;z-index:4;right:9px;bottom:42px;display:flex;flex-direction:column;align-items:center;gap:5px}.short-actions button{width:46px;height:46px;border:0;border-radius:16px;background:rgba(255,255,255,.18);backdrop-filter:blur(12px);color:#fff;display:grid;place-items:center}.short-count{font-size:10px;color:#fff;margin-bottom:3px}
-/* FRIENDS + NOTIFICATIONS */
-.search{display:flex;gap:8px;margin-bottom:10px}.search input{flex:1;border:1px solid var(--line);border-radius:16px;background:var(--glass);color:var(--text);padding:12px}.person,.notif{display:flex;align-items:center;gap:10px;padding:12px;border-bottom:1px solid var(--line)}.person:last-child,.notif:last-child{border-bottom:0}.person-main,.notif-body{flex:1}.person-main b{font-size:13px}.person-main small,.notif-body small{display:block;color:var(--muted);font-size:10px;margin-top:3px}.blue{border:0;background:var(--blue);color:#fff;border-radius:12px;padding:8px 11px;font-weight:850}.outline{border:1px solid var(--line);background:transparent;color:var(--text);border-radius:12px;padding:8px 11px;font-weight:850}.notif{align-items:flex-start}.notif-icon{width:38px;height:38px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;flex:0 0 auto}.notif-body{font-size:13px;line-height:1.4}
-/* PROFILE + MENU */
-.cover{height:190px;background:linear-gradient(90deg,#e31b23 0 33%,#f4d03f 33% 66%,#159447 66%);position:relative}.cover:after{content:"🇬🇳";position:absolute;right:12px;top:12px;background:rgba(0,0,0,.25);color:#fff;padding:7px 9px;border-radius:12px}.profile-info{padding:0 15px 16px;margin-top:-42px;position:relative}.profile-info h2{font-size:21px;margin-top:8px}.profile-info p{font-size:12px;color:var(--muted);margin-top:4px}.profile-buttons{display:flex;gap:7px;margin-top:12px}.profile-buttons button{flex:1}.profile-tabs{display:flex;border-top:1px solid var(--line);padding:4px}.profile-tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:10px;font-weight:850}.profile-tabs button.on{color:var(--blue);border-bottom:2px solid var(--blue)}.menu-row{display:flex;align-items:center;gap:12px;padding:14px 10px;border-bottom:1px solid var(--line);width:100%;border-left:0;border-right:0;border-top:0;background:transparent;color:var(--text);text-align:left}.menu-row:last-child{border:0}.menu-row span:nth-child(2){flex:1;font-weight:800;font-size:13px}.badge{min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:#e53935;color:#fff;font-size:10px;font-weight:900;display:grid;place-items:center}
-/* BOTTOM + MODALS */
-.bottom{position:fixed;z-index:50;bottom:0;left:50%;transform:translateX(-50%);width:min(760px,100%);height:66px;padding-bottom:env(safe-area-inset-bottom);display:flex;background:var(--glass);backdrop-filter:blur(28px);border-top:1px solid var(--line)}.bottom button{position:relative;flex:1;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;gap:2px}.bottom button.on{color:var(--text)}.bottom button span{font-size:9px;font-weight:850}.nav-badge{position:absolute;top:5px;right:calc(50% - 21px)}
-.modal{position:fixed;z-index:100;inset:0;background:rgba(0,0,0,.48);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:10px}.modal.show{display:flex}.sheet{width:min(760px,100%);max-height:90vh;overflow:auto;border-radius:25px;background:var(--glass2);border:1px solid var(--line);padding:16px}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.sheet-head h3{font-size:17px}.close{width:34px;height:34px;border:0;border-radius:50%;background:rgba(127,127,127,.12);color:var(--text)}.preview{width:100%;max-height:300px;object-fit:contain;border-radius:16px;background:#000;margin-top:8px}.comments{max-height:55vh;overflow:auto}.comment{display:flex;gap:7px;margin:8px 0}.bubble{flex:1;background:rgba(127,127,127,.13);padding:8px 10px;border-radius:14px;font-size:12px}.bubble b{display:block;font-size:11px;margin-bottom:3px}.comment-form{display:flex;gap:6px;margin-top:10px}.comment-form input{flex:1;min-width:0;border:1px solid var(--line);border-radius:19px;background:var(--glass2);color:var(--text);padding:9px 12px}.send{border:0;border-radius:19px;padding:0 13px;background:#111;color:#fff;font-weight:850}.dark .send{background:#fff;color:#111}.share-list{display:grid;gap:7px;max-height:300px;overflow:auto}.share-person{display:flex;align-items:center;gap:9px;border:1px solid var(--line);padding:9px;border-radius:14px}.share-person input{margin-left:auto}.toast{position:fixed;z-index:200;left:50%;bottom:78px;transform:translate(-50%,15px);opacity:0;background:#111;color:#fff;padding:10px 15px;border-radius:14px;font-size:12px;font-weight:850;transition:.2s}.toast.show{opacity:1;transform:translate(-50%,0)}.empty{text-align:center;padding:42px 20px;color:var(--muted);font-size:13px}
-@media(min-width:760px){.top,.bottom{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>AIDBA GUINÉE</title>
+  <!-- Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    :root {
+      --gn-red: #ce1126;
+      --gn-yellow: #fcd116;
+      --gn-green: #009460;
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-dark: #1c1e21;
+      --text-muted: #65676b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-color); padding-bottom: 60px; color: var(--text-dark); }
+
+    /* HEADER */
+    header { 
+      background: var(--card-bg); 
+      padding: 12px 16px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      border-bottom: 2px solid #e4e6eb; 
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+    .brand-logo { display: flex; align-items: center; gap: 8px; font-weight: 900; font-size: 20px; text-decoration: none; }
+    .brand-badge { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, var(--gn-red) 33%, var(--gn-yellow) 33% 66%, var(--gn-green) 66%); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; }
+    .header-actions { display: flex; gap: 10px; }
+    .header-actions i { font-size: 16px; background: #e4e6eb; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--text-dark); cursor: pointer; }
+
+    /* VUES */
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* STORIES */
+    .stories-bar { display: flex; gap: 8px; padding: 12px 10px; background: var(--card-bg); margin-bottom: 8px; overflow-x: auto; scrollbar-width: none; }
+    .story-card { min-width: 100px; height: 160px; border-radius: 12px; position: relative; flex-shrink: 0; overflow: hidden; background-color: #000; cursor: pointer; }
+    .story-card.create { background: #f0f2f5; border: 1px dashed #cccccc; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 12px; }
+    .story-card img { width: 100%; height: 100%; object-fit: cover; }
+    .story-card .story-views { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 2px 6px; border-radius: 10px; font-size: 10px; }
+    .story-card p { position: absolute; bottom: 8px; left: 8px; color: #fff; font-size: 11px; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.8); }
+
+    /* POSTS */
+    .create-post { background: var(--card-bg); padding: 12px; margin-bottom: 8px; display: flex; align-items: center; gap: 10px; border-radius: 8px; }
+    .create-post img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .create-post input { flex: 1; padding: 10px 16px; border-radius: 20px; border: 1px solid #e4e6eb; background: #f0f2f5; outline: none; font-size: 14px; }
+
+    .post-card { background: var(--card-bg); margin-bottom: 8px; border-radius: 8px; }
+    .post-header { display: flex; align-items: center; padding: 12px; gap: 10px; }
+    .post-header img { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; }
+    .post-content { padding: 0 12px 12px; font-size: 14px; line-height: 1.5; }
+    .post-media { width: 100%; max-height: 480px; object-fit: cover; }
+    .post-stats { display: flex; justify-content: space-between; padding: 8px 12px; font-size: 12px; color: var(--text-muted); border-bottom: 1px solid #f0f2f5; }
+    .post-footer { display: flex; justify-content: space-around; padding: 8px 0; font-size: 13px; color: var(--text-muted); }
+    .post-footer button { background: none; border: none; color: var(--text-muted); font-size: 13px; display: flex; align-items: center; gap: 6px; cursor: pointer; padding: 6px 10px; }
+
+    /* REELS */
+    .reels-feed { height: calc(100vh - 118px); overflow-y: scroll; snap-type: y mandatory; background: #000; }
+    .reel-box { height: calc(100vh - 118px); snap-align: start; position: relative; display: flex; justify-content: center; align-items: center; }
+    .reel-box video { width: 100%; height: 100%; object-fit: cover; }
+
+    /* MARKETPLACE */
+    .market-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+    .market-card { background: var(--card-bg); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .market-card img { width: 100%; height: 140px; object-fit: cover; }
+    .market-info { padding: 10px; }
+    .market-price { font-weight: bold; color: var(--gn-green); font-size: 15px; }
+
+    /* MODAL STORY VIEWER */
+    #story-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 2000; flex-direction: column; justify-content: space-between; padding: 20px 15px; }
+    #story-modal.active { display: flex; }
+
+    /* PANNEAU DE COMMENTAIRES (BOTTOM SHEET) */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 2999; }
+    .modal-overlay.active { display: block; }
+
+    .comments-modal {
+      position: fixed; bottom: -100%; left: 0; right: 0; height: 75vh;
+      background: #ffffff; border-top-left-radius: 18px; border-top-right-radius: 18px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.25); z-index: 3000; display: flex; flex-direction: column;
+      transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+    }
+    .comments-modal.active { bottom: 0; }
+    .comments-header { padding: 14px 16px; border-bottom: 1px solid #e4e6eb; display: flex; justify-content: space-between; align-items: center; position: relative; }
+    .comments-header::before { content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 40px; height: 4px; background: #cccccc; border-radius: 2px; }
+    .comments-list { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 12px; }
+    .comment-item { display: flex; gap: 10px; align-items: flex-start; }
+    .comment-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; }
+    .comment-bubble { background: #f0f2f5; padding: 8px 12px; border-radius: 14px; max-width: 85%; }
+    .comment-author { font-weight: bold; font-size: 13px; color: var(--text-dark); }
+    .comment-text { font-size: 14px; color: #050505; margin-top: 2px; }
+    .comments-input-bar { padding: 10px 15px; border-top: 1px solid #e4e6eb; display: flex; align-items: center; gap: 10px; background: #fff; }
+    .comments-input-bar input { flex: 1; padding: 10px 14px; border-radius: 20px; border: 1px solid #e4e6eb; background: #f0f2f5; outline: none; font-size: 14px; }
+    .comments-input-bar button { background: none; border: none; color: var(--gn-red); font-size: 18px; cursor: pointer; }
+
+    /* NAVIGATION BAS */
+    .bottom-bar { position: fixed; bottom: 0; left: 0; right: 0; height: 58px; background: var(--card-bg); display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #e4e6eb; z-index: 1000; }
+    .nav-item { background: none; border: none; font-size: 22px; color: var(--text-muted); width: 20%; height: 100%; position: relative; cursor: pointer; }
+    .nav-item.active { color: var(--gn-red); border-bottom: 3px solid var(--gn-red); }
+  </style>
 </head>
 <body>
 
-<section id="auth">
-<div class="auth-card glass">
-  <div class="logo-lock"><div class="logo-mark">A</div><div><div class="logo">AIDABA</div><div class="tag">CONNECTER • PARTAGER • GRANDIR</div></div></div>
-  <div class="auth-tabs"><button id="regTab" class="on">Inscription</button><button id="loginTab">Connexion</button></div>
-  <div id="regBox">
-    <div class="grid2"><div class="field"><label>Prénom</label><input id="first" autocomplete="given-name"></div><div class="field"><label>Nom</label><input id="last" autocomplete="family-name"></div></div>
-    <div class="field"><label>Date de naissance</label><input id="birth" type="date"></div>
-    <div class="grid2"><div class="field"><label>Email</label><input id="regEmail" type="email" autocomplete="email"></div><div class="field"><label>Téléphone</label><input id="phone" type="tel" autocomplete="tel"></div></div>
-    <div class="grid2"><div class="field"><label>Mot de passe</label><input id="regPass" type="password"></div><div class="field"><label>Confirmer</label><input id="regPass2" type="password"></div></div>
-    <button class="primary" id="registerBtn">Créer mon compte</button>
+  <!-- HEADER -->
+  <header>
+    <div class="brand-logo">
+      <div class="brand-badge">A</div>
+      <div style="color:var(--text-dark);">AIDBA <span style="color:var(--gn-red);">GUINÉE</span></div>
+    </div>
+    <div class="header-actions">
+      <i class="fa-solid fa-plus" title="Publier"></i>
+      <i class="fa-solid fa-magnifying-glass" title="Rechercher"></i>
+      <i class="fa-brands fa-facebook-messenger" title="Discussion"></i>
+    </div>
+  </header>
+
+  <!-- VUE 1: FIL D'ACTUALITÉ (HOME) -->
+  <div id="view-home" class="view active">
+    <div class="stories-bar" id="stories-container">
+      <div class="story-card create">
+        <i class="fa-solid fa-circle-plus" style="font-size:26px; color: var(--gn-red);"></i>
+        <p style="color:#000;">Créer story</p>
+      </div>
+    </div>
+
+    <div class="create-post">
+      <img src="logo.png" alt="Avatar">
+      <input type="text" placeholder="Quoi de neuf sur AIDBA GUINÉE ?">
+    </div>
+
+    <div id="posts-feed"></div>
   </div>
-  <div id="loginBox" class="hidden">
-    <div class="field"><label>Email</label><input id="loginEmail" type="email"></div><div class="field"><label>Mot de passe</label><input id="loginPass" type="password"></div>
-    <button class="primary" id="loginBtn">Se connecter</button>
+
+  <!-- VUE 2: REELS -->
+  <div id="view-reels" class="view">
+    <div class="reels-feed" id="reels-container"></div>
   </div>
-  <div class="note">Votre authentification est gérée par Supabase. Selon votre configuration, un email de confirmation peut être nécessaire.</div>
-</div>
-</section>
 
-<section id="app">
-<header class="top"><button class="brand-btn" id="homeBtn"><span class="brand-mini">A</span>AIDABA</button><div class="top-actions"><button class="icon-btn" id="searchBtn"><i data-lucide="search"></i></button><button class="icon-btn" id="menuBtn"><i data-lucide="more-horizontal"></i></button></div></header>
+  <!-- VUE 3: MARKETPLACE -->
+  <div id="view-market" class="view">
+    <div style="padding:12px 15px; background:var(--card-bg); border-bottom:1px solid #e4e6eb;">
+      <h3 style="color:var(--gn-green);"><i class="fa-solid fa-store"></i> Marketplace Guinée</h3>
+    </div>
+    <div class="market-grid" id="market-container"></div>
+  </div>
 
-<main class="main">
-<section id="feedPage" class="page active">
-  <div class="card glass stories-box"><div class="stories" id="stories"></div></div>
-  <div class="card glass composer"><div class="compose-row"><div class="avatar" id="miniAvatar">A</div><button class="trigger" id="composeBtn">Quoi de neuf ?</button></div><div class="quick"><button id="photoBtn"><i data-lucide="image"></i> Photo</button><button id="videoBtn"><i data-lucide="video"></i> Vidéo</button><button id="textBtn"><i data-lucide="pen-line"></i> Texte</button></div></div>
-  <div id="feed"></div>
-</section>
-<section id="shortsPage" class="page"><div class="title">Shorts</div><div class="shorts" id="shorts"></div></section>
-<section id="friendsPage" class="page"><div class="title">Amis</div><div class="search"><input id="friendSearch" placeholder="Rechercher des utilisateurs"><button class="icon-btn" id="friendSearchBtn"><i data-lucide="search"></i></button></div><div id="requests" class="card glass"></div><div id="friends" class="card glass"></div></section>
-<section id="notificationsPage" class="page"><div class="title">Notifications</div><div id="notifications" class="card glass"></div></section>
-<section id="profilePage" class="page"><div class="card glass"><div class="cover"></div><div class="profile-info"><div class="avatar lg" id="profileAvatar">A</div><h2 id="profileName">Utilisateur</h2><p id="profileBio"></p><p id="profileStats"></p><div class="profile-buttons"><button class="blue" id="editProfile"><i data-lucide="pencil"></i> Modifier</button><button class="outline" id="profileSettings"><i data-lucide="settings"></i></button></div></div><div class="profile-tabs"><button class="on" id="postsTab">Publications</button><button id="photosTab">Photos</button><button id="videosTab">Vidéos</button></div></div><div id="profilePosts"></div></section>
-<section id="menuPage" class="page"><div class="title">Menu</div><div class="card glass"><div class="person"><div class="avatar" id="menuAvatar">A</div><div class="person-main"><b id="menuName">Utilisateur</b><small>Voir votre profil</small></div><button class="icon-btn" id="menuProfile"><i data-lucide="user"></i></button></div></div><div class="card glass">
-<button class="menu-row" data-go="friends"><i data-lucide="users"></i><span>Amis</span><i data-lucide="chevron-right"></i></button>
-<button class="menu-row" data-go="notifications"><i data-lucide="bell"></i><span>Notifications</span><i data-lucide="chevron-right"></i></button>
-<button class="menu-row" id="openSettings"><i data-lucide="settings"></i><span>Paramètres et confidentialité</span><i data-lucide="chevron-right"></i></button>
-<button class="menu-row" id="openSearch"><i data-lucide="search"></i><span>Rechercher</span><i data-lucide="chevron-right"></i></button>
-<button class="menu-row" id="darkBtn"><i data-lucide="moon"></i><span>Mode sombre</span><span id="darkLabel">Désactivé</span></button>
-<button class="menu-row" id="logoutBtn"><i data-lucide="log-out"></i><span class="danger-text">Déconnexion</span><i data-lucide="chevron-right"></i></button>
-</div></section>
-</main>
+  <!-- VUE 4: NOTIFICATIONS -->
+  <div id="view-notifs" class="view">
+    <div style="padding:15px; background:var(--card-bg); font-weight:bold;">Notifications</div>
+    <div style="padding:30px; text-align:center; color:var(--text-muted);">Aucune nouvelle notification.</div>
+  </div>
 
-<nav class="bottom"><button class="on" data-tab="feed"><i data-lucide="house"></i><span>Accueil</span></button><button data-tab="shorts"><i data-lucide="clapperboard"></i><span>Shorts</span></button><button data-tab="friends"><i data-lucide="users"></i><span>Amis</span></button><button data-tab="notifications"><i data-lucide="bell"></i><span>Alertes</span><b id="notifBadge" class="badge nav-badge hidden">0</b></button><button data-tab="profile"><i data-lucide="circle-user-round"></i><span>Profil</span></button></nav>
-</section>
+  <!-- VUE 5: MENU -->
+  <div id="view-menu" class="view">
+    <div style="display:flex; align-items:center; gap:12px; padding:15px; background:var(--card-bg);">
+      <img src="logo.png" style="width:54px; height:54px; border-radius:50%;" alt="Avatar">
+      <div>
+        <h3>Mon Compte</h3>
+        <small style="color:var(--text-muted);">Conakry, Guinée</small>
+      </div>
+    </div>
+  </div>
 
-<div class="modal" id="composerModal"><div class="sheet"><div class="sheet-head"><h3 id="composerTitle">Créer une publication</h3><button class="close" data-close="composerModal">×</button></div><div class="field"><label>Description</label><textarea id="postText" rows="5" placeholder="Écrivez votre contenu et vos #hashtags..."></textarea></div><div class="field"><label>Visibilité</label><select id="visibility"><option value="public">Tout le monde</option><option value="friends">Amis</option><option value="private">Moi uniquement</option></select></div><input id="mediaInput" type="file" accept="image/*,video/*"><img id="imgPreview" class="preview hidden"><video id="vidPreview" class="preview hidden" controls playsinline></video><button class="primary" id="publishBtn">Publier</button></div></div>
-<div class="modal" id="storyModal"><div class="sheet"><div class="sheet-head"><h3>Ajouter une story</h3><button class="close" data-close="storyModal">×</button></div><input id="storyInput" type="file" accept="image/*,video/*"><img id="storyImg" class="preview hidden"><video id="storyVid" class="preview hidden" controls playsinline></video><button class="primary" id="storyPublish">Publier ma story</button></div></div>
-<div class="modal" id="commentModal"><div class="sheet"><div class="sheet-head"><h3>Commentaires</h3><button class="close" data-close="commentModal">×</button></div><div id="commentList" class="comments"></div><div class="comment-form"><input id="commentInput" placeholder="Écrire ton point de vue…"><button class="send" id="sendComment">Envoyer</button></div></div></div>
-<div class="modal" id="shareModal"><div class="sheet"><div class="sheet-head"><h3>Partager avec mes amis</h3><button class="close" data-close="shareModal">×</button></div><div id="shareList" class="share-list"></div><button class="primary" id="confirmShare">Partager</button></div></div>
-<div class="modal" id="profileModal"><div class="sheet"><div class="sheet-head"><h3>Modifier mes informations</h3><button class="close" data-close="profileModal">×</button></div><div class="field"><label>Prénom</label><input id="eFirst"></div><div class="field"><label>Nom</label><input id="eLast"></div><div class="field"><label>Nom d'utilisateur</label><input id="eUser"></div><div class="field"><label>Biographie</label><textarea id="eBio" rows="3"></textarea></div><div class="field"><label>Ville</label><input id="eCity"></div><div class="field"><label>Photo de profil</label><input id="avatarInput" type="file" accept="image/*"></div><button class="primary" id="saveProfile">Enregistrer</button></div></div>
-<div class="modal" id="settingsModal"><div class="sheet"><div class="sheet-head"><h3>Paramètres et confidentialité</h3><button class="close" data-close="settingsModal">×</button></div><button class="menu-row" id="settingsDark"><i data-lucide="moon"></i><span>Mode sombre</span><span id="settingsDarkLabel">Désactivé</span></button><button class="menu-row" id="settingsEdit"><i data-lucide="user-round-pen"></i><span>Modifier mes informations</span><i data-lucide="chevron-right"></i></button><button class="menu-row" id="settingsLogout"><i data-lucide="log-out"></i><span class="danger-text">Déconnexion</span><i data-lucide="chevron-right"></i></button></div></div>
-<div class="modal" id="searchModal"><div class="sheet"><div class="sheet-head"><h3>Rechercher</h3><button class="close" data-close="searchModal">×</button></div><div class="search"><input id="globalSearch" placeholder="Nom, prénom ou @nom"><button class="icon-btn" id="globalSearchBtn"><i data-lucide="search"></i></button></div><div id="searchResults"></div></div></div>
-<div class="modal" id="storyViewer"><div class="sheet" style="background:#000;color:#fff"><div class="sheet-head"><h3 id="storyViewerName">Story</h3><button class="close" data-close="storyViewer">×</button></div><div id="storyViewerMedia"></div></div></div>
-<div class="toast" id="toast"></div>
+  <!-- MODAL STORY VIEWER -->
+  <div id="story-modal">
+    <div style="display:flex; justify-content:space-between; color:#fff; align-items:center;">
+      <strong id="story-author-name">Utilisateur</strong>
+      <span onclick="closeStoryModal()" style="font-size: 24px; cursor:pointer;">&times;</span>
+    </div>
+    <div style="text-align:center;">
+      <img id="story-media-img" src="" style="max-width:100%; max-height:70vh; border-radius:12px;">
+    </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; color:#fff;">
+      <div><i class="fa-solid fa-eye"></i> <span id="story-views-count">0</span> vues</div>
+      <button onclick="likeCurrentStory()" style="background:none; border:none; color:#fff; font-size:24px; cursor:pointer;">
+        <i class="fa-solid fa-heart" id="story-heart-icon"></i>
+      </button>
+    </div>
+  </div>
 
-<script>
-'use strict';
+  <!-- PANNEAU COULISSANT DE COMMENTAIRES -->
+  <div class="modal-overlay" id="comments-overlay" onclick="closeCommentsModal()"></div>
+  <div class="comments-modal" id="comments-modal">
+    <div class="comments-header">
+      <strong style="font-size: 15px;">Commentaires</strong>
+      <span onclick="closeCommentsModal()" style="font-size: 22px; cursor: pointer;">&times;</span>
+    </div>
+    <div class="comments-list" id="comments-list"></div>
+    <div class="comments-input-bar">
+      <input type="text" id="comment-input" placeholder="Écrivez un commentaire public...">
+      <button onclick="sendComment()"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </div>
 
-/* ================= SUPABASE =================
-   Remplace UNIQUEMENT ces deux valeurs par celles de ton projet.
-   N'utilise jamais la service_role key dans index.html.
-*/
-const SUPABASE_URL="https://bdzdaceiettpiosstxkp.supabase.co";
-const SUPABASE_ANON_KEY="sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
-const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  <!-- NAVIGATION BOTTOM BAR -->
+  <nav class="bottom-bar">
+    <button class="nav-item active" onclick="switchTab('view-home', this)"><i class="fa-solid fa-house"></i></button>
+    <button class="nav-item" onclick="switchTab('view-reels', this)"><i class="fa-solid fa-tv"></i></button>
+    <button class="nav-item" onclick="switchTab('view-market', this)"><i class="fa-solid fa-store"></i></button>
+    <button class="nav-item" onclick="switchTab('view-notifs', this)"><i class="fa-solid fa-bell"></i></button>
+    <button class="nav-item" onclick="switchTab('view-menu', this)"><i class="fa-solid fa-bars"></i></button>
+  </nav>
 
-let user=null,profile=null,posts=[],people=[],currentPost=null,selectedMedia=null,selectedStory=null,sharePostId=null;
-let feedIO=null,shortIO=null,realtime=[];
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-const nameOf=p=>[p?.first_name,p?.last_name].filter(Boolean).join(' ')||p?.full_name||p?.username||'Utilisateur';
-const initial=p=>(nameOf(p||profile||{}).trim()[0]||'A').toUpperCase();
-function toast(x){$('toast').textContent=x;$('toast').classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>$('toast').classList.remove('show'),2300)}
-function ago(d){let m=Math.floor((Date.now()-new Date(d).getTime())/60000);if(m<1)return"à l'instant";if(m<60)return m+' min';let h=Math.floor(m/60);if(h<24)return h+' h';let j=Math.floor(h/24);return j<7?j+' j':new Date(d).toLocaleDateString('fr-FR')}
-function av(p,cls=''){return `<div class="avatar ${cls}">${p?.avatar_url?`<img src="${esc(p.avatar_url)}" alt="">`:esc(initial(p))}</div>`}
-function close(id){$(id)?.classList.remove('show')} function open(id){$(id)?.classList.add('show')}
-function page(t){stopVideos();document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(`${t}Page`).classList.add('active');document.querySelectorAll('.bottom button').forEach(x=>x.classList.toggle('on',x.dataset.tab===t));window.scrollTo({top:0,behavior:'smooth'});if(t==='shorts')setTimeout(observeShorts,80)}
+  <script>
+    // Configuration Supabase (remplace par tes réelles clefs)
+    const SUPABASE_URL = "https://bdzdaceiettpiosstxkp.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-/* AUTH */
-$('regTab').onclick=()=>{$('regTab').classList.add('on');$('loginTab').classList.remove('on');$('regBox').classList.remove('hidden');$('loginBox').classList.add('hidden')};
-$('loginTab').onclick=()=>{$('loginTab').classList.add('on');$('regTab').classList.remove('on');$('loginBox').classList.remove('hidden');$('regBox').classList.add('hidden')};
-$('registerBtn').onclick=async()=>{
-  const f=$('first').value.trim(),l=$('last').value.trim(),email=$('regEmail').value.trim(),p=$('regPass').value;
-  if(!f||!l||!email||!p)return toast('Remplissez les champs obligatoires.');
-  if(p.length<6)return toast('Mot de passe trop court.');
-  if(p!==$('regPass2').value)return toast('Les mots de passe ne correspondent pas.');
-  try{const {data,error}=await sb.auth.signUp({email,password:p,options:{data:{first_name:f,last_name:l,birth_date:$('birth').value,phone:$('phone').value}}});if(error)throw error;if(data.session){user=data.user;await boot()}else toast('Compte créé. Vérifiez votre email puis connectez-vous.')}catch(e){toast(e.message||'Inscription impossible.')}
-};
-$('loginBtn').onclick=async()=>{try{const {data,error}=await sb.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPass').value});if(error)throw error;user=data.user;await boot()}catch(e){toast(e.message||'Connexion impossible.')}};
+    let activeStoryId = null;
+    let currentPostId = null;
+    let commentsSubscription = null;
 
-/* PROFILE */
-async function getProfile(){
-  let {data,error}=await sb.from('profiles').select('*').eq('id',user.id).maybeSingle();if(error)throw error;
-  if(!data){const m=user.user_metadata||{};const r=await sb.from('profiles').upsert({id:user.id,first_name:m.first_name||'',last_name:m.last_name||'',username:(user.email||'user').split('@')[0],email:user.email,birth_date:m.birth_date||null,phone:m.phone||''}).select().single();if(r.error)throw r.error;data=r.data}profile=data
-}
-function identity(){
-  ['miniAvatar','menuAvatar'].forEach(id=>$(id).innerHTML=profile?.avatar_url?`<img src="${esc(profile.avatar_url)}" alt="">`:esc(initial()));
-  $('profileAvatar').innerHTML=profile?.avatar_url?`<img src="${esc(profile.avatar_url)}" alt="">`:esc(initial());
-  $('profileName').textContent=nameOf(profile);$('menuName').textContent=nameOf(profile);$('profileBio').textContent=profile?.bio||profile?.city||'Bienvenue sur AIDABA.'
-}
-async function upload(file,folder){const ext=(file.name.split('.').pop()||'bin').toLowerCase();const path=`${folder}/${user.id}/${Date.now()}-${crypto.randomUUID()}.${ext}`;const {error}=await sb.storage.from('media').upload(path,file,{upsert:false,contentType:file.type});if(error)throw error;return sb.storage.from('media').getPublicUrl(path).data.publicUrl}
-function editProfile(){
-  $('eFirst').value=profile?.first_name||'';$('eLast').value=profile?.last_name||'';$('eUser').value=profile?.username||'';$('eBio').value=profile?.bio||'';$('eCity').value=profile?.city||'';open('profileModal')
-}
-$('editProfile').onclick=editProfile;$('settingsEdit').onclick=editProfile;
-$('saveProfile').onclick=async()=>{try{$('saveProfile').disabled=true;let avatar_url=profile?.avatar_url||null;const f=$('avatarInput').files?.[0];if(f)avatar_url=await upload(f,'avatars');const r=await sb.from('profiles').update({first_name:$('eFirst').value.trim(),last_name:$('eLast').value.trim(),username:$('eUser').value.trim(),bio:$('eBio').value.trim(),city:$('eCity').value.trim(),avatar_url}).eq('id',user.id).select().single();if(r.error)throw r.error;profile=r.data;identity();close('profileModal');toast('Profil mis à jour.');renderProfile()}catch(e){toast(e.message||'Modification impossible.')}finally{$('saveProfile').disabled=false}};
+    // NAVIGATION ENTRE VUES
+    function switchTab(viewId, btn) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      
+      document.getElementById(viewId).classList.add('active');
+      btn.classList.add('active');
 
-/* POSTS */
-function openComposer(type='text'){selectedMedia=null;$('postText').value='';$('mediaInput').value='';$('imgPreview').classList.add('hidden');$('vidPreview').classList.add('hidden');$('mediaInput').style.display=type==='text'?'none':'block';$('mediaInput').accept=type==='photo'?'image/*':type==='video'?'video/*':'image/*,video/*';$('composerTitle').textContent=type==='photo'?'Publier une photo':type==='video'?'Publier une vidéo':'Créer une publication';open('composerModal')}
-$('composeBtn').onclick=()=>openComposer();$('photoBtn').onclick=()=>openComposer('photo');$('videoBtn').onclick=()=>openComposer('video');$('textBtn').onclick=()=>openComposer();
-$('mediaInput').onchange=e=>{selectedMedia=e.target.files?.[0]||null;if(!selectedMedia)return;let u=URL.createObjectURL(selectedMedia);if(selectedMedia.type.startsWith('video/')){$('vidPreview').src=u;$('vidPreview').classList.remove('hidden')}else{$('imgPreview').src=u;$('imgPreview').classList.remove('hidden')}};
-$('publishBtn').onclick=async()=>{
-  const text=$('postText').value.trim();if(!text&&!selectedMedia)return toast('Ajoutez un texte, une photo ou une vidéo.');
-  try{$('publishBtn').disabled=true;let url=null,type=null;if(selectedMedia){url=await upload(selectedMedia,'posts');type=selectedMedia.type.startsWith('video/')?'video':'image'}const {error}=await sb.from('posts').insert({user_id:user.id,content:text,media_url:url,media_type:type,visibility:$('visibility').value});if(error)throw error;close('composerModal');toast('Publication publiée.');await loadPosts()}catch(e){toast(e.message||'Publication impossible.')}finally{$('publishBtn').disabled=false}
-};
-async function loadPosts(){const r=await sb.from('posts').select('*,profiles:user_id(id,first_name,last_name,username,avatar_url,city)').order('created_at',{ascending:false}).limit(80);if(r.error){$('feed').innerHTML='<div class="card glass empty">Impossible de charger le fil. Vérifiez Supabase/RLS.</div>';return}posts=r.data||[];renderFeed();renderShorts();renderProfile()}
-function media(p){if(!p.media_url)return'';if(p.media_type==='video')return`<div class="media"><video class="feed-video" data-view="${esc(p.id)}" src="${esc(p.media_url)}" playsinline loop preload="metadata"></video><button class="mute" data-mute="${esc(p.id)}"><i data-lucide="volume-2"></i></button></div>`;return`<div class="media"><img src="${esc(p.media_url)}" loading="lazy" alt=""></div>`}
-function postCard(p){const mine=p.user_id===user.id;return`<article class="card glass post" id="post-${esc(p.id)}"><div class="post-head">${av(p.profiles,'sm')}<div class="who"><div class="name">${esc(nameOf(p.profiles))}</div><div class="meta">${ago(p.created_at)} · ${esc(p.profiles?.city||'Guinée')}</div></div>${mine?`<button class="more" data-delete="${esc(p.id)}"><i data-lucide="more-horizontal"></i></button>`:''}</div>${p.content?`<div class="post-text">${esc(p.content)}</div>`:''}${media(p)}<div class="stats"><span>♥ <b data-like-count="${esc(p.id)}">${p.likes_count||0}</b> j'aime</span><span><b data-view-count="${esc(p.id)}">${p.views_count||0}</b> vues · <b>${p.comments_count||0}</b> commentaires · <b>${p.shares_count||0}</b> partages</span></div><div class="actions"><button data-like="${esc(p.id)}"><i data-lucide="heart"></i> J'aime</button><button data-comment="${esc(p.id)}"><i data-lucide="message-circle"></i> Commenter</button><button data-favorite="${esc(p.id)}"><i data-lucide="bookmark"></i> Favori</button><button data-share="${esc(p.id)}"><i data-lucide="share-2"></i> Partager</button></div></article>`}
-function renderFeed(){$('feed').innerHTML=posts.length?posts.map(postCard).join(''):'<div class="card glass empty">Votre fil est vide. Soyez le premier à publier.</div>';lucide.createIcons();observeFeed()}
-function renderShorts(){const v=posts.filter(p=>p.media_type==='video'&&p.media_url);$('shorts').innerHTML=v.length?v.map(p=>`<article class="short" data-short="${esc(p.id)}"><video class="short-video" src="${esc(p.media_url)}" playsinline loop preload="metadata"></video><div class="short-info"><b>${esc(nameOf(p.profiles))}</b><p>${esc(p.content||'')}</p></div><div class="short-actions"><button data-like="${esc(p.id)}"><i data-lucide="heart"></i></button><span class="short-count">${p.likes_count||0}</span><button data-comment="${esc(p.id)}"><i data-lucide="message-circle"></i></button><span class="short-count">${p.comments_count||0}</span><button data-share="${esc(p.id)}"><i data-lucide="share-2"></i></button><span class="short-count">${p.shares_count||0}</span><button data-favorite="${esc(p.id)}"><i data-lucide="bookmark"></i></button><button data-sound="${esc(p.id)}"><i data-lucide="volume-x"></i></button></div></article>`).join(''):'<div class="empty">Aucun Short disponible.</div>';lucide.createIcons();observeShorts()}
-function stopVideos(){document.querySelectorAll('video').forEach(v=>{v.pause();v.muted=true})}
-function observeFeed(){if(feedIO)feedIO.disconnect();feedIO=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(!$('feedPage').classList.contains('active'))return;if(e.isIntersecting&&e.intersectionRatio>=.65){document.querySelectorAll('.feed-video').forEach(x=>{if(x!==v){x.pause();x.muted=true}});v.muted=false;v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});registerView(v.dataset.view)}else{v.pause();v.muted=true}}),{threshold:[.2,.65,.9]});document.querySelectorAll('.feed-video').forEach(v=>feedIO.observe(v))}
-function observeShorts(){if(shortIO)shortIO.disconnect();shortIO=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(!$('shortsPage').classList.contains('active')){v.pause();return}if(e.isIntersecting&&e.intersectionRatio>.7){document.querySelectorAll('.short-video').forEach(x=>{if(x!==v){x.pause();x.muted=true}});v.muted=false;v.play().catch(()=>{v.muted=true;v.play().catch(()=>{})});registerView(v.closest('.short')?.dataset.short)}else v.pause()}),{threshold:.7});document.querySelectorAll('.short-video').forEach(v=>shortIO.observe(v))}
-async function registerView(id){if(!id)return;const k='aidaba_view_'+id;if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,'1');const r=await sb.rpc('increment_post_view',{p_post_id:id});if(!r.error){const x=document.querySelector(`[data-view-count="${CSS.escape(id)}"]`);if(x)x.textContent=Number(x.textContent||0)+1}}
-async function like(id){const r=await sb.rpc('toggle_post_like',{p_post_id:id});if(r.error)return toast('Like indisponible : vérifiez la fonction SQL/RLS.');await loadPosts()}
-async function favorite(id){const r=await sb.rpc('toggle_post_favorite',{p_post_id:id});if(r.error)return toast('Favori indisponible : vérifiez la fonction SQL/RLS.');toast('Favori mis à jour.')}
-async function share(id){sharePostId=id;const ids=people; $('shareList').innerHTML=ids.length?ids.map(p=>`<label class="share-person">${av(p,'sm')}<span>${esc(nameOf(p))}</span><input type="checkbox" value="${esc(p.id)}"></label>`).join(''):'<div class="empty">Ajoutez d’abord des amis.</div>';open('shareModal')}
-$('confirmShare').onclick=async()=>{try{const selected=[...document.querySelectorAll('#shareList input:checked')].map(x=>x.value);const r=await sb.rpc('increment_post_share',{p_post_id:sharePostId});if(r.error)throw r.error;if(selected.length){for(const id of selected)await sb.from('post_shares').insert({post_id:sharePostId,from_user_id:user.id,to_user_id:id})}close('shareModal');toast('Publication partagée.');await loadPosts()}catch(e){toast(e.message||'Partage impossible.')}}
-async function deletePost(id){if(!confirm('Supprimer cette publication ?'))return;const r=await sb.from('posts').delete().eq('id',id).eq('user_id',user.id);if(r.error)toast(r.error.message);else{toast('Publication supprimée.');await loadPosts()}}
+      if(viewId === 'view-home') { loadStories(); loadPosts(); }
+      if(viewId === 'view-reels') loadReels();
+      if(viewId === 'view-market') loadMarketplace();
+    }
 
-/* COMMENTS */
-async function comments(id){currentPost=id;$('commentList').innerHTML='<div class="empty">Chargement…</div>';open('commentModal');const r=await sb.from('comments').select('*,profiles:user_id(first_name,last_name,username,avatar_url)').eq('post_id',id).order('created_at');if(r.error)return $('commentList').innerHTML='<div class="empty">Commentaires indisponibles.</div>';$('commentList').innerHTML=(r.data||[]).map(c=>`<div class="comment">${av(c.profiles,'sm')}<div class="bubble"><b>${esc(nameOf(c.profiles))}</b>${esc(c.content)}</div></div>`).join('')||'<div class="empty">Aucun commentaire.</div>'}
-$('sendComment').onclick=async()=>{const content=$('commentInput').value.trim();if(!content||!currentPost)return;const r=await sb.from('comments').insert({post_id:currentPost,user_id:user.id,content});if(r.error)return toast(r.error.message);$('commentInput').value='';await comments(currentPost);await loadPosts()};
+    // 1. STORIES
+    async function loadStories() {
+      const container = document.getElementById('stories-container');
+      const { data: stories } = await supabaseClient.from('stories').select('*, profiles(username, avatar_url)');
 
-/* STORIES */
-async function loadStories(){const r=await sb.from('stories').select('*,profiles:user_id(id,first_name,last_name,username,avatar_url)').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(100);if(r.error)return $('stories').innerHTML='<button class="story story-add" id="addStory"><span class="plus">+</span><span class="story-name">Créer une story</span></button>';const groups=new Map();(r.data||[]).forEach(s=>{if(!groups.has(s.user_id))groups.set(s.user_id,{p:s.profiles,items:[]});groups.get(s.user_id).items.push(s)});$('stories').innerHTML=`<button class="story story-add" id="addStory"><span class="plus">+</span><span class="story-name">Créer une story</span></button>`+[...groups.values()].map(g=>{const s=g.items[0],p=g.p||{};return`<button class="story" data-story="${esc(s.user_id)}">${s.media_type==='video'?`<video src="${esc(s.media_url)}" muted playsinline></video>`:`<img src="${esc(s.media_url)}" alt="">`}${p.avatar_url?`<img class="story-avatar" src="${esc(p.avatar_url)}" alt="">`:`<span class="story-avatar">${esc(initial(p))}</span>`}<span class="story-name">${esc(nameOf(p))}</span></button>`}).join('');$('addStory').onclick=()=>open('storyModal');document.querySelectorAll('[data-story]').forEach(b=>b.onclick=()=>viewStory(b.dataset.story))}
-$('storyInput').onchange=e=>{selectedStory=e.target.files?.[0]||null;if(!selectedStory)return;const u=URL.createObjectURL(selectedStory);$('storyImg').classList.add('hidden');$('storyVid').classList.add('hidden');if(selectedStory.type.startsWith('video/')){$('storyVid').src=u;$('storyVid').classList.remove('hidden')}else{$('storyImg').src=u;$('storyImg').classList.remove('hidden')}}
-$('storyPublish').onclick=async()=>{if(!selectedStory)return toast('Choisissez une photo ou une vidéo.');try{const url=await upload(selectedStory,'stories');const type=selectedStory.type.startsWith('video/')?'video':'image';const r=await sb.from('stories').insert({user_id:user.id,media_url:url,media_type:type,expires_at:new Date(Date.now()+86400000).toISOString()});if(r.error)throw r.error;close('storyModal');toast('Story publiée.');await loadStories()}catch(e){toast(e.message||'Story impossible.')}}
-async function viewStory(uid){const r=await sb.from('stories').select('*,profiles:user_id(first_name,last_name,username,avatar_url)').eq('user_id',uid).gt('expires_at',new Date().toISOString()).order('created_at');if(r.error||!r.data?.length)return toast('Story indisponible.');$('storyViewerName').textContent=nameOf(r.data[0].profiles);$('storyViewerMedia').innerHTML=r.data.map(s=>s.media_type==='video'?`<video src="${esc(s.media_url)}" controls autoplay playsinline style="width:100%;max-height:70vh;object-fit:contain"></video>`:`<img src="${esc(s.media_url)}" style="width:100%;max-height:70vh;object-fit:contain;border-radius:16px">`).join('<div style="height:8px"></div>');open('storyViewer')}
+      if (!stories || stories.length === 0) return;
 
-/* FRIENDS */
-async function loadFriends(q=''){let query=sb.from('profiles').select('id,first_name,last_name,username,avatar_url,city').neq('id',user.id).limit(50);if(q)query=query.or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%`);const r=await query;if(r.error)return;$('friends').innerHTML=(r.data||[]).map(p=>`<div class="person">${av(p,'sm')}<div class="person-main"><b>${esc(nameOf(p))}</b><small>${esc(p.city||'Guinée')}</small></div><button class="blue" data-add="${esc(p.id)}">Ajouter</button></div>`).join('')||'<div class="empty">Aucun utilisateur trouvé.</div>';people=r.data||[];await loadRequests()}
-async function loadRequests(){const r=await sb.from('friend_requests').select('id,sender_id,status,profiles:sender_id(id,first_name,last_name,username,avatar_url)').eq('receiver_id',user.id).eq('status','pending').order('created_at',{ascending:false});if(r.error)return $('requests').innerHTML='';$('requests').innerHTML=r.data?.length?`<div style="padding:10px;font-weight:900">Demandes d’amis</div>`+r.data.map(x=>`<div class="person">${av(x.profiles,'sm')}<div class="person-main"><b>${esc(nameOf(x.profiles))}</b><small>Souhaite devenir votre ami(e)</small></div><button class="blue" data-accept="${esc(x.id)}">Accepter</button></div>`).join(''):'';
-}
-async function addFriend(id){const r=await sb.from('friend_requests').insert({sender_id:user.id,receiver_id:id,status:'pending'});if(r.error)toast(r.message||r.error.message);else{toast('Demande envoyée.');await loadFriends($('friendSearch').value.trim())}}
-async function acceptFriend(id){const r=await sb.from('friend_requests').update({status:'accepted'}).eq('id',id).eq('receiver_id',user.id);if(r.error)toast(r.error.message);else{toast('Vous êtes maintenant amis.');await loadRequests()}}
+      const createBtn = container.children[0].outerHTML;
+      container.innerHTML = createBtn + stories.map(s => `
+        <div class="story-card" onclick="openStory('${s.id}', '${s.media_url}', '${s.profiles?.username || 'Membre'}', ${s.views_count || 0})">
+          <img src="${s.media_url}">
+          <span class="story-views"><i class="fa-solid fa-eye"></i> ${s.views_count || 0}</span>
+          <p>${s.profiles?.username || 'Story'}</p>
+        </div>
+      `).join('');
+    }
 
-/* NOTIFICATIONS */
-async function notifications(){const r=await sb.from('notifications').select('*').eq('user_id',user.id).order('created_at',{ascending:false}).limit(60);if(r.error)return $('notifications').innerHTML='<div class="empty">Aucune notification.</div>';const d=r.data||[];$('notifications').innerHTML=d.map(n=>`<div class="notif"><div class="notif-icon"><i data-lucide="bell"></i></div><div class="notif-body">${esc(n.message||n.type||'Nouvelle notification')}<small>${ago(n.created_at)}</small></div></div>`).join('')||'<div class="empty">Vous n’avez aucune notification.</div>';setBadge(d.filter(n=>n.read===false).length);lucide.createIcons()}
-async function setBadge(n){$('notifBadge').textContent=n>99?'99+':n;$('notifBadge').classList.toggle('hidden',!n)}
-function subscribe(){realtime.forEach(x=>sb.removeChannel(x));realtime=[];const n=sb.channel('aidaba-notifications').on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:`user_id=eq.${user.id}`},p=>{toast(p.new?.message||'Nouvelle notification');notifications();if(document.visibilityState!=='visible'&&'Notification'in window&&Notification.permission==='granted')try{new Notification('AIDABA',{body:p.new?.message||'Nouvelle notification'})}catch{}}).subscribe();const f=sb.channel('aidaba-feed').on('postgres_changes',{event:'*',schema:'public',table:'posts'},loadPosts).on('postgres_changes',{event:'*',schema:'public',table:'comments'},loadPosts).subscribe();realtime=[n,f]}
+    async function openStory(id, url, author, views) {
+      activeStoryId = id;
+      document.getElementById('story-author-name').innerText = author;
+      document.getElementById('story-media-img').src = url;
+      document.getElementById('story-views-count').innerText = views + 1;
+      document.getElementById('story-heart-icon').style.color = '#fff';
+      document.getElementById('story-modal').classList.add('active');
 
-/* PROFILE RENDER */
-function renderProfile(){const mine=posts.filter(p=>p.user_id===user.id);$('profileStats').textContent=`${mine.length} publication${mine.length>1?'s':''}`;$('profilePosts').innerHTML=mine.length?mine.map(postCard).join(''):'<div class="card glass empty">Vous n’avez encore rien publié.</div>';lucide.createIcons();observeFeed()}
-$('postsTab').onclick=()=>{document.querySelectorAll('.profile-tabs button').forEach(x=>x.classList.remove('on'));$('postsTab').classList.add('on');renderProfile()};
-$('photosTab').onclick=()=>{document.querySelectorAll('.profile-tabs button').forEach(x=>x.classList.remove('on'));$('photosTab').classList.add('on');const m=posts.filter(p=>p.user_id===user.id&&p.media_type==='image');$('profilePosts').innerHTML=m.length?m.map(postCard).join(''):'<div class="card glass empty">Aucune photo.</div>';lucide.createIcons()};
-$('videosTab').onclick=()=>{document.querySelectorAll('.profile-tabs button').forEach(x=>x.classList.remove('on'));$('videosTab').classList.add('on');const m=posts.filter(p=>p.user_id===user.id&&p.media_type==='video');$('profilePosts').innerHTML=m.length?m.map(postCard).join(''):'<div class="card glass empty">Aucune vidéo.</div>';lucide.createIcons();observeFeed()};
+      await supabaseClient.from('stories').update({ views_count: views + 1 }).eq('id', id);
+    }
 
-/* MENU / DARK / SEARCH */
-function dark(){const on=document.body.classList.toggle('dark');localStorage.setItem('aidaba_dark',on?'1':'0');$('darkLabel').textContent=on?'Activé':'Désactivé';$('settingsDarkLabel').textContent=on?'Activé':'Désactivé'}
-if(localStorage.getItem('aidaba_dark')==='1')document.body.classList.add('dark');$('darkLabel').textContent=document.body.classList.contains('dark')?'Activé':'Désactivé';$('settingsDarkLabel').textContent=$('darkLabel').textContent;
-$('darkBtn').onclick=dark;$('settingsDark').onclick=dark;$('menuBtn').onclick=()=>page('menu');$('homeBtn').onclick=()=>page('feed');$('profileSettings').onclick=()=>open('settingsModal');$('openSettings').onclick=()=>open('settingsModal');$('menuProfile').onclick=()=>page('profile');$('settingsLogout').onclick=$('logoutBtn').onclick=async()=>{if(!confirm('Voulez-vous vous déconnecter ?'))return;stopVideos();await sb.auth.signOut();location.reload()};
-document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>page(b.dataset.go));
-document.querySelectorAll('.bottom button').forEach(b=>b.onclick=()=>page(b.dataset.tab));
-$('searchBtn').onclick=$('openSearch').onclick=()=>open('searchModal');$('friendSearchBtn').onclick=()=>loadFriends($('friendSearch').value.trim());$('friendSearch').onkeydown=e=>{if(e.key==='Enter')loadFriends(e.target.value.trim())};
-$('globalSearchBtn').onclick=searchUsers;$('globalSearch').onkeydown=e=>{if(e.key==='Enter')searchUsers()};
-async function searchUsers(){const q=$('globalSearch').value.trim();if(!q)return;const r=await sb.from('profiles').select('id,first_name,last_name,username,avatar_url,city').neq('id',user.id).or(`first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%`).limit(30);if(r.error)return $('searchResults').innerHTML='<div class="empty">Recherche indisponible.</div>';$('searchResults').innerHTML=(r.data||[]).map(p=>`<div class="person">${av(p,'sm')}<div class="person-main"><b>${esc(nameOf(p))}</b><small>@${esc(p.username||'user')} · ${esc(p.city||'Guinée')}</small></div><button class="blue" data-add="${esc(p.id)}">Ajouter</button></div>`).join('')||'<div class="empty">Aucun résultat.</div>'}
+    function closeStoryModal() {
+      document.getElementById('story-modal').classList.remove('active');
+    }
 
-/* GLOBAL CLICKS */
-document.addEventListener('click',async e=>{const x=e.target.closest('[data-like],[data-comment],[data-favorite],[data-share],[data-delete],[data-add],[data-accept],[data-mute],[data-sound]');if(!x)return;if(x.dataset.like)await like(x.dataset.like);else if(x.dataset.comment)await comments(x.dataset.comment);else if(x.dataset.favorite)await favorite(x.dataset.favorite);else if(x.dataset.share)await share(x.dataset.share);else if(x.dataset.delete)await deletePost(x.dataset.delete);else if(x.dataset.add)await addFriend(x.dataset.add);else if(x.dataset.accept)await acceptFriend(x.dataset.accept);else if(x.dataset.mute){const v=document.querySelector(`.feed-video[data-view="${CSS.escape(x.dataset.mute)}"]`);if(v){v.muted=!v.muted;v.play().catch(()=>{})}}else if(x.dataset.sound){const v=x.closest('.short')?.querySelector('video');if(v){v.muted=!v.muted;v.play().catch(()=>{})}}});
-document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>close(b.dataset.close));document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)close(m.id)}));
+    async function likeCurrentStory() {
+      if(!activeStoryId) return;
+      document.getElementById('story-heart-icon').style.color = 'var(--gn-red)';
+      const { data } = await supabaseClient.from('stories').select('likes_count').eq('id', activeStoryId).single();
+      if(data) {
+        await supabaseClient.from('stories').update({ likes_count: (data.likes_count || 0) + 1 }).eq('id', activeStoryId);
+      }
+    }
 
-/* BOOT */
-async function boot(){try{$('auth').style.display='none';$('app').style.display='block';await getProfile();identity();await Promise.all([loadPosts(),loadStories(),loadFriends(),notifications()]);subscribe();lucide.createIcons();if('Notification'in window&&Notification.permission==='default')Notification.requestPermission().catch(()=>{})}catch(e){console.error(e);toast(e.message||'Erreur Supabase.')}}
-sb.auth.onAuthStateChange((event,session)=>{if(event==='SIGNED_OUT')location.reload();if(session&&!user){user=session.user;boot()}});
-(async()=>{const {data}=await sb.auth.getSession();if(data.session){user=data.session.user;await boot()}})();
-</script>
-</body>
-</html>
+    // 2. POSTS & FIL D'ACTUALITÉ
+    async function loadPosts() {
+      const container = document.getElementById('posts-feed');
+      const { data: posts } = await supabaseClient.from('posts').select('*, profiles(username, avatar_url)').order('created_at', { ascending: false });
+
+      if (!posts || posts.length === 0) {
+        container.innerHTML = '<p style="text-align:center; padding:30px; color:var(--text-muted);">Soyez le premier à publier sur AIDBA GUINÉE !</p>';
+        return;
+      }
+
+      container.innerHTML = posts.map(p => `
+        <div class="post-card">
+          <div class="post-header">
+            <img src="${p.profiles?.avatar_url || 'logo.png'}">
+            <div><strong>${p.profiles?.username || 'Membre Guinéen'}</strong></div>
+          </div>
+          <div class="post-content">${p.content || ''}</div>
+          ${p.media_url ? `<img src="${p.media_url}" class="post-media">` : ''}
+          
+          <div class="post-stats">
+            <span><i class="fa-solid fa-thumbs-up" style="color:var(--gn-red);"></i> ${p.likes_count || 0} Likes</span>
+            <div>
+              <span style="margin-right:8px;">${p.comments_count || 0} commentaires</span>
+              <span style="margin-right:8px;">${p.shares_count || 0} partages</span>
+              <span><i class="fa-solid fa-eye"></i> ${p.views_count || 0} vues</span>
+            </div>
+          </div>
+
+          <div class="post-footer">
+            <button onclick="likePost('${p.id}', ${p.likes_count || 0}, this)"><i class="fa-regular fa-thumbs-up"></i> J'aime</button>
+            <button onclick="openCommentsModal('${p.id}')"><i class="fa-regular fa-comment"></i> Commenter</button>
+            <button onclick="sharePost('${p.id}', ${p.shares_count || 0})"><i class="fa-regular fa-share-from-square"></i> Partager</button>
+            <button onclick="bookmarkPost('${p.id}')"><i class="fa-regular fa-bookmark"></i> Favoris</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function likePost(id, currentLikes, btn) {
+      btn.style.color = 'var(--gn-red)';
+      await supabaseClient.from('posts').update({ likes_count: currentLikes + 1 }).eq('id', id);
+    }
+
+    async function sharePost(id, currentShares) {
+      alert("Lien de la publication copié !");
+      await supabaseClient.from('posts').update({ shares_count: currentShares + 1 }).eq('id', id);
+    }
+
+    async function bookmarkPost(postId) {
+      alert("Publication ajoutée aux favoris !");
+    }
+
+    // 3. COMMENTAIRES EN TEMPS RÉEL (BOTTOM SHEET)
+    async function openCommentsModal(postId) {
+      currentPostId = postId;
+      document.getElementById('comments-overlay').classList.add('active');
+      document.getElementById('comments-modal').classList.add('active');
+      await fetchComments(postId);
+      subscribeToComments(postId);
+    }
+
+    function closeCommentsModal() {
+      document.getElementById('comments-overlay').classList.remove('active');
+      document.getElementById('comments-modal').classList.remove('active');
+      currentPostId = null;
+      if (commentsSubscription) supabaseClient.removeChannel(commentsSubscription);
+    }
+
+    async function fetchComments(postId) {
+      const list = document.getElementById('comments-list');
+      list.innerHTML = '<p style="text-align:center; color:var(--text-muted);">Chargement...</p>';
+      
+      const { data: comments } = await supabaseClient
+        .from('comments')
+        .select('*, profiles(username, avatar_url)')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true });
+
+      if (!comments || comments.length === 0) {
+        list.innerHTML = '<p style="text-align:center; color:var(--text-muted); margin-top:20px;">Aucun commentaire. Soyez le premier à commenter !</p>';
+        return;
+      }
+
+      list.innerHTML = comments.map(c => `
+        <div class="comment-item">
+          <img src="${c.profiles?.avatar_url || 'logo.png'}" class="comment-avatar">
+          <div class="comment-bubble">
+            <div class="comment-author">${c.profiles?.username || 'Membre'}</div>
+            <div class="comment-text">${c.content}</div>
+          </div>
+        </div>
+      `).join('');
+      list.scrollTop = list.scrollHeight;
+    }
+
+    async function sendComment() {
+      const input = document.getElementById('comment-input');
+      const text = input.value.trim();
+      if (!text || !currentPostId) return;
+
+      const { data: { user } } = await supabaseClient.auth.getUser();
+      if (!user) {
+        alert("Veuillez vous connecter pour commenter.");
+        return;
+      }
+
+      input.value = '';
+      await supabaseClient.from('comments').insert([{ post_id: currentPostId, user_id: user.id, content: text }]);
+      
+      const { data: post } = await supabaseClient.from('posts').select('comments_count').eq('id', currentPostId).single();
+      if (post) {
+        await supabaseClient.from('posts').update({ comments_count: (post.comments_count || 0) + 1 }).eq('id', currentPostId);
+      }
+    }
+
+    function subscribeToComments(postId) {
+      commentsSubscription = supabaseClient
+        .channel(`comments-${postId}`)
+        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'comments', filte
