@@ -1,4657 +1,3362 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#ffffff">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
 <title>AIDBA GUINÉE</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
 <style>
-:root{
-  --red:#ce1126;
-  --yellow:#fcd116;
-  --green:#009460;
-  --blue:#1877f2;
-  --bg:#f0f2f5;
-  --card:#fff;
-  --text:#1c1e21;
-  --muted:#65676b;
-  --line:#e4e6eb;
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-*{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif
+:root{
+    --red:#d90429;
+    --green:#16a34a;
+    --blue:#2563eb;
+    --bg:#f1f3f6;
+    --card:#fff;
+    --text:#171717;
+    --muted:#6b7280;
+    --border:#e5e7eb;
 }
 
 body{
-  background:var(--bg);
-  color:var(--text);
-  padding-bottom:64px
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
-button,input,textarea,select{
-  font:inherit
+button,
+input,
+textarea{
+    font:inherit;
 }
 
 button{
-  cursor:pointer
+    cursor:pointer;
+    border:0;
 }
 
 .hidden{
-  display:none!important
+    display:none!important;
 }
 
-.screen{
-  min-height:100vh
-}
+/* =====================================================
+   AUTH
+===================================================== */
 
 #auth{
-  position:fixed;
-  inset:0;
-  background:#fff;
-  z-index:9000;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:18px;
-  overflow:auto
+    min-height:100vh;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
-.auth-card{
-  width:min(460px,100%);
-  padding:18px
+.auth-box{
+    width:100%;
+    max-width:430px;
+}
+
+.logo-big{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo-icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:900;
+    color:white;
+    background:linear-gradient(135deg,#e5092f 0 33%,#ffd600 33% 66%,#009b77 66%);
 }
 
 .brand{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  font-weight:900;
-  font-size:22px;
-  margin-bottom:22px
+    font-size:30px;
+    font-weight:900;
+    margin-top:12px;
 }
 
-.logo{
-  width:48px;
-  height:48px;
-  border-radius:13px;
-  background:
-    linear-gradient(
-      135deg,
-      var(--red) 0 33%,
-      var(--yellow) 33% 66%,
-      var(--green) 66%
-    );
-  display:grid;
-  place-items:center;
-  color:#fff;
-  font-weight:900;
-  font-size:25px;
-  box-shadow:0 3px 10px #0002
+.brand span{
+    color:var(--red);
 }
 
-.auth-title{
-  font-size:28px;
-  margin-bottom:5px
+.auth-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
 }
 
-.muted{
-  color:var(--muted)
+.auth-tabs{
+    display:flex;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--border);
 }
 
-.auth-sub{
-  font-size:14px;
-  margin-bottom:20px
+.auth-tabs button{
+    flex:1;
+    background:none;
+    padding:14px;
+    font-weight:bold;
+    color:var(--muted);
 }
 
-.form{
-  display:grid;
-  gap:11px
+.auth-tabs button.active{
+    color:var(--red);
+    border-bottom:3px solid var(--red);
 }
 
-.form input,
-.form select,
-.form textarea{
-  width:100%;
-  border:1px solid #ccd0d5;
-  border-radius:10px;
-  padding:13px;
-  background:#fff;
-  outline:none
+.form-group{
+    margin-bottom:14px;
 }
 
-.form input:focus,
-.form select:focus{
-  border-color:var(--blue);
-  box-shadow:0 0 0 2px #1877f21c
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
 }
 
-.row{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:13px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus{
+    border-color:var(--red);
 }
 
 .primary{
-  border:0;
-  background:var(--red);
-  color:#fff;
-  border-radius:9px;
-  padding:13px 16px;
-  font-weight:800
-}
-
-.primary:disabled{
-  opacity:.65;
-  cursor:not-allowed
+    width:100%;
+    padding:14px;
+    background:var(--red);
+    color:white;
+    border-radius:12px;
+    font-weight:bold;
+    margin-top:5px;
 }
 
 .secondary{
-  border:0;
-  background:#e4e6eb;
-  color:var(--text);
-  border-radius:9px;
-  padding:11px 16px;
-  font-weight:700
+    width:100%;
+    padding:13px;
+    background:#f3f4f6;
+    color:#111;
+    border-radius:12px;
+    font-weight:bold;
 }
 
-.link{
-  color:var(--blue);
-  font-weight:700;
-  cursor:pointer
+.auth-info{
+    color:var(--muted);
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
 }
 
-.center{
-  text-align:center
+/* =====================================================
+   APP
+===================================================== */
+
+#app{
+    min-height:100vh;
+    padding-bottom:78px;
 }
 
-.auth-switch{
-  margin-top:16px;
-  font-size:14px
+.topbar{
+    height:74px;
+    background:white;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:50;
 }
 
-.otp{
-  display:flex;
-  gap:8px;
-  justify-content:center;
-  margin:18px 0
+.brand-small{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:22px;
+    font-weight:900;
 }
 
-.otp input{
-  width:52px;
-  height:58px;
-  text-align:center;
-  font-size:24px;
-  font-weight:800;
-  border:2px solid #ddd;
-  border-radius:10px
+.brand-small .mini-logo{
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:25px;
+    font-weight:900;
+    background:linear-gradient(135deg,#e5092f 0 33%,#ffd600 33% 66%,#009b77 66%);
 }
 
-header{
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:#fff;
-  border-bottom:1px solid var(--line);
-  height:64px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:8px max(12px,calc((100vw - 1000px)/2));
-  box-shadow:0 1px 4px #0000000b
+.brand-small span{
+    color:var(--red);
 }
 
-.brand-mini{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  font-weight:900;
-  font-size:19px
-}
-
-.brand-mini .logo{
-  width:38px;
-  height:38px;
-  border-radius:10px;
-  font-size:19px
-}
-
-.header-actions{
-  display:flex;
-  gap:8px
+.top-actions{
+    display:flex;
+    gap:8px;
 }
 
 .icon-btn{
-  width:40px;
-  height:40px;
-  border:0;
-  border-radius:50%;
-  background:#f0f2f5;
-  position:relative;
-  color:#111
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#f3f4f6;
+    font-size:21px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-.badge{
-  position:absolute;
-  right:-2px;
-  top:-3px;
-  background:#e41e3f;
-  color:#fff;
-  border-radius:20px;
-  min-width:18px;
-  height:18px;
-  font-size:11px;
-  display:grid;
-  place-items:center;
-  border:2px solid #fff
+/* =====================================================
+   PAGES
+===================================================== */
+
+.page{
+    display:none;
 }
 
-main{
-  width:min(720px,100%);
-  margin:10px auto
+.page.active{
+    display:block;
 }
 
-.card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  margin-bottom:10px;
-  overflow:hidden
+.container{
+    max-width:720px;
+    margin:auto;
 }
 
-.composer{
-  padding:12px
+/* =====================================================
+   CREATE POST
+===================================================== */
+
+.create-card{
+    background:white;
+    margin:14px 0;
+    border-radius:20px;
+    border:1px solid var(--border);
+    overflow:hidden;
 }
 
-.composer-top{
-  display:flex;
-  gap:10px;
-  align-items:center
+.create-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px;
 }
 
 .avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#ddd
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#ddd;
 }
 
-.composer-input{
-  flex:1;
-  border:1px solid #ddd;
-  border-radius:24px;
-  background:#f0f2f5;
-  padding:11px 15px;
-  cursor:text;
-  color:#444
+.create-input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:25px;
+    padding:12px 17px;
+    color:#555;
+    background:#f7f7f8;
+    cursor:pointer;
 }
 
-.composer-actions{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  border-top:1px solid #eee;
-  margin-top:10px;
-  padding-top:8px
+.create-actions{
+    display:flex;
+    border-top:1px solid var(--border);
 }
 
-.composer-actions button{
-  border:0;
-  background:none;
-  padding:9px;
-  font-weight:700;
-  color:#333
+.create-actions button{
+    flex:1;
+    background:white;
+    padding:15px 5px;
+    font-weight:bold;
 }
 
-.composer-actions button i{
-  margin-right:6px
+.create-actions button:first-child{
+    color:#e11d48;
 }
 
-.composer-actions .live i{
-  color:#e41e3f
+.create-actions button:nth-child(2){
+    color:#16a34a;
 }
 
-.composer-actions .photo i{
-  color:#36a853
+.create-actions button:nth-child(3){
+    color:#2563eb;
 }
 
-.composer-actions .mood i{
-  color:#1877f2
+/* =====================================================
+   STORIES
+===================================================== */
+
+.stories-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.section-title h2{
+    font-size:20px;
+}
+
+.section-title button{
+    background:none;
+    color:#2563eb;
+    font-weight:bold;
 }
 
 .stories{
-  padding:12px
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scrollbar-width:none;
 }
 
-.section-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:10px
-}
-
-.section-head h3{
-  font-size:18px
-}
-
-.story-row{
-  display:flex;
-  gap:9px;
-  overflow-x:auto;
-  scrollbar-width:none
-}
-
-.story-row::-webkit-scrollbar{
-  display:none
+.stories::-webkit-scrollbar{
+    display:none;
 }
 
 .story{
-  width:110px;
-  height:110px;
-  min-width:110px;
-  aspect-ratio:1/1;
-  border-radius:13px;
-  overflow:hidden;
-  position:relative;
-  background:#e9eaec;
-  border:1px solid #ddd
+    min-width:110px;
+    width:110px;
+    height:175px;
+    border-radius:15px;
+    overflow:hidden;
+    position:relative;
+    background:#eee;
+    flex-shrink:0;
+    cursor:pointer;
+    border:1px solid #ddd;
 }
 
 .story img,
 .story video{
-  width:100%;
-  height:100%;
-  object-fit:cover
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.story-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(transparent 45%,rgba(0,0,0,.8));
 }
 
 .story-name{
-  position:absolute;
-  bottom:7px;
-  left:7px;
-  right:7px;
-  color:#fff;
-  font-weight:700;
-  font-size:12px;
-  text-shadow:0 1px 4px #000
+    position:absolute;
+    bottom:10px;
+    left:8px;
+    right:5px;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
 }
 
 .story-avatar{
-  position:absolute;
-  top:7px;
-  left:7px;
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  border:3px solid #1877f2;
-  object-fit:cover
+    position:absolute;
+    top:8px;
+    left:8px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:3px solid white;
+    object-fit:cover;
+    z-index:2;
 }
 
 .create-story{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-direction:column;
-  background:#fff
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:#fff;
 }
 
 .create-story .plus{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:#1877f2;
-  color:#fff;
-  display:grid;
-  place-items:center;
-  font-size:20px;
-  margin-bottom:5px
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    font-size:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:8px;
 }
 
+/* =====================================================
+   POST
+===================================================== */
+
 .post{
-  overflow:hidden
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    margin-bottom:14px;
+    overflow:hidden;
 }
 
 .post-head{
-  display:flex;
-  gap:10px;
-  padding:12px;
-  align-items:center
+    display:flex;
+    align-items:center;
+    padding:15px;
+    gap:10px;
 }
 
-.post-head .info{
-  flex:1
+.post-author{
+    flex:1;
 }
 
-.post-head strong{
-  display:block
+.post-author strong{
+    display:block;
 }
 
-.post-time{
-  font-size:12px;
-  color:var(--muted)
+.post-meta{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:3px;
 }
 
 .more{
-  border:0;
-  background:none;
-  font-size:18px;
-  color:#65676b
+    font-size:22px;
+    background:none;
 }
 
 .post-text{
-  padding:0 12px 12px;
-  white-space:pre-wrap;
-  word-break:break-word;
-  font-size:15px;
-  line-height:1.45
+    padding:0 15px 15px;
+    white-space:pre-wrap;
+    font-size:16px;
+    line-height:1.45;
 }
 
 .post-media{
-  display:block;
-  width:100%;
-  max-height:600px;
-  object-fit:cover;
-  background:#000
+    width:100%;
+    max-height:600px;
+    display:block;
+    object-fit:cover;
+    background:#111;
+}
+
+.post-video{
+    width:100%;
+    max-height:600px;
+    display:block;
+    background:#000;
 }
 
 .post-stats{
-  display:flex;
-  justify-content:space-between;
-  padding:9px 12px;
-  color:var(--muted);
-  font-size:13px;
-  border-bottom:1px solid #eee
+    display:flex;
+    justify-content:space-between;
+    padding:10px 15px;
+    color:#555;
+    font-size:14px;
 }
 
 .post-actions{
-  display:grid;
-  grid-template-columns:repeat(4,1fr)
+    border-top:1px solid var(--border);
+    display:flex;
 }
 
 .post-actions button{
-  border:0;
-  background:none;
-  padding:10px 4px;
-  color:#65676b;
-  font-weight:700
+    flex:1;
+    background:white;
+    padding:13px 4px;
+    font-weight:bold;
+    color:#555;
 }
 
-.post-actions button.active{
-  color:var(--blue)
-}
-
-.post-actions i{
-  margin-right:4px
-}
-
-.bottom{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  height:60px;
-  background:#fff;
-  border-top:1px solid var(--line);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:1200
-}
-
-.bottom button{
-  border:0;
-  background:#fff;
-  color:#65676b;
-  font-size:11px
-}
-
-.bottom button i{
-  display:block;
-  font-size:21px;
-  margin-bottom:2px
-}
-
-.bottom button.active{
-  color:var(--red);
-  font-weight:800
-}
-
-.view{
-  display:none
-}
-
-.view.active{
-  display:block
-}
-
-.reels{
-  height:calc(100vh - 124px);
-  overflow-y:auto;
-  background:#000;
-  scroll-snap-type:y mandatory
-}
-
-.reel{
-  height:calc(100vh - 124px);
-  position:relative;
-  scroll-snap-align:start;
-  background:#111
-}
-
-.reel video{
-  width:100%;
-  height:100%;
-  object-fit:cover
-}
-
-.reel-overlay{
-  position:absolute;
-  left:14px;
-  right:14px;
-  bottom:20px;
-  color:#fff;
-  text-shadow:0 1px 4px #000
-}
-
-.reel-actions{
-  position:absolute;
-  right:12px;
-  bottom:90px;
-  display:grid;
-  gap:12px
-}
-
-.reel-actions button{
-  border:0;
-  background:#0008;
-  color:#fff;
-  width:46px;
-  height:46px;
-  border-radius:50%
-}
-
-.market-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  padding:10px
-}
-
-.market-card{
-  background:#fff;
-  border-radius:12px;
-  overflow:hidden;
-  border:1px solid var(--line)
-}
-
-.market-card img{
-  width:100%;
-  height:150px;
-  object-fit:cover
-}
-
-.market-info{
-  padding:10px
-}
-
-.price{
-  color:var(--green);
-  font-weight:900
-}
-
-.menu{
-  padding:12px
-}
-
-.menu button{
-  width:100%;
-  margin-bottom:8px;
-  text-align:left
-}
-
-.profile-card{
-  background:#fff;
-  margin-bottom:10px
-}
-
-.cover{
-  height:180px;
-  background:#ddd center/cover no-repeat;
-  position:relative
-}
-
-.profile-avatar{
-  position:absolute;
-  left:18px;
-  bottom:-42px;
-  width:92px;
-  height:92px;
-  border-radius:50%;
-  border:4px solid #fff;
-  object-fit:cover
-}
-
-.profile-body{
-  padding:52px 16px 16px
-}
-
-.profile-body h2{
-  margin-bottom:3px
-}
-
-.modal-backdrop{
-  position:fixed;
-  inset:0;
-  background:#0008;
-  z-index:3000;
-  display:none
-}
-
-.modal-backdrop.active{
-  display:block
-}
-
-.sheet{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:-100%;
-  height:min(78vh,650px);
-  background:#fff;
-  z-index:3100;
-  border-radius:18px 18px 0 0;
-  display:flex;
-  flex-direction:column;
-  transition:.25s
-}
-
-.sheet.active{
-  bottom:0
-}
-
-.sheet-head{
-  padding:14px 16px;
-  border-bottom:1px solid var(--line);
-  display:flex;
-  justify-content:space-between
+.post-actions button.liked{
+    color:#2563eb;
 }
 
 .comments{
-  flex:1;
-  overflow:auto;
-  padding:14px
+    border-top:1px solid var(--border);
+    padding:12px 15px;
 }
 
 .comment{
-  display:flex;
-  gap:8px;
-  margin-bottom:12px
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
 }
 
-.comment img{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:cover
+.comment-body{
+    background:#f1f2f4;
+    border-radius:13px;
+    padding:8px 11px;
+    flex:1;
 }
 
-.bubble{
-  background:#f0f2f5;
-  border-radius:15px;
-  padding:8px 11px
+.comment-body strong{
+    font-size:13px;
 }
 
-.comment-input{
-  padding:10px;
-  border-top:1px solid var(--line);
-  display:flex;
-  gap:8px
+.comment-body div{
+    margin-top:3px;
 }
 
-.comment-input input{
-  flex:1;
-  border:0;
-  background:#f0f2f5;
-  border-radius:22px;
-  padding:11px
+.comment-form{
+    display:flex;
+    gap:7px;
 }
 
-.comment-input button{
-  border:0;
-  background:none;
-  color:var(--blue);
-  font-size:20px
+.comment-form input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:20px;
+    padding:9px 13px;
 }
 
-.story-viewer{
-  position:fixed;
-  inset:0;
-  background:#000;
-  z-index:5000;
-  display:none;
-  align-items:center;
-  justify-content:center
+.comment-form button{
+    width:42px;
+    border-radius:50%;
+    background:var(--blue);
+    color:white;
 }
 
-.story-viewer.active{
-  display:flex
+/* =====================================================
+   EMPTY / LOADING
+===================================================== */
+
+.state{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:35px 20px;
+    text-align:center;
+    color:var(--muted);
 }
 
-.story-viewer img,
-.story-viewer video{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain
+/* =====================================================
+   SHORTS
+===================================================== */
+
+.shorts-page{
+    max-width:720px;
+    margin:auto;
 }
 
-.story-close{
-  position:absolute;
-  right:18px;
-  top:18px;
-  color:#fff;
-  border:0;
-  background:#0008;
-  width:40px;
-  height:40px;
-  border-radius:50%;
-  z-index:2
+.short-card{
+    height:calc(100vh - 150px);
+    min-height:500px;
+    background:#000;
+    margin-bottom:10px;
+    position:relative;
+    overflow:hidden;
+    border-radius:16px;
 }
 
-.toast{
-  position:fixed;
-  left:50%;
-  bottom:78px;
-  transform:translateX(-50%);
-  background:#1c1e21;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:10px;
-  z-index:8000;
-  display:none;
-  max-width:90%;
-  text-align:center
+.short-card video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
-.toast.show{
-  display:block
+.short-info{
+    position:absolute;
+    left:15px;
+    right:75px;
+    bottom:20px;
+    color:white;
+    z-index:3;
+    text-shadow:0 1px 4px #000;
 }
 
-@media(min-width:800px){
-  body{
-    padding-bottom:0
-  }
+.short-actions{
+    position:absolute;
+    right:12px;
+    bottom:25px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    z-index:4;
+}
 
-  .bottom{
-    left:50%;
-    transform:translateX(-50%);
-    width:min(720px,100%);
-    border-radius:14px 14px 0 0
-  }
+.short-actions button{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:20px;
+}
 
-  .reels{
-    height:calc(100vh - 64px)
-  }
+/* =====================================================
+   PROFILE
+===================================================== */
 
-  .reel{
-    height:calc(100vh - 64px)
-  }
+.profile-card{
+    background:white;
+    margin-bottom:14px;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--border);
+}
+
+.cover{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+    background:#ddd;
+}
+
+.profile-info{
+    padding:0 18px 20px;
+    text-align:center;
+}
+
+.profile-avatar{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid white;
+    margin-top:-55px;
+    background:#ddd;
+}
+
+.profile-info h1{
+    margin-top:8px;
+}
+
+.profile-info p{
+    color:var(--muted);
+    margin-top:5px;
+}
+
+/* =====================================================
+   MODALS
+===================================================== */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:100;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal-box{
+    width:100%;
+    max-width:720px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:white;
+    border-radius:25px 25px 0 0;
+    padding:20px;
+}
+
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.close{
+    background:#f1f1f1;
+    width:36px;
+    height:36px;
+    border-radius:50%;
+}
+
+/* =====================================================
+   NAV
+===================================================== */
+
+.bottom-nav{
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:72px;
+    background:white;
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:60;
+}
+
+.bottom-nav button{
+    flex:1;
+    background:white;
+    color:#666;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:4px;
+}
+
+.bottom-nav button.active{
+    color:var(--red);
+    font-weight:bold;
+}
+
+.bottom-nav .nav-icon{
+    font-size:23px;
+}
+
+@media(max-width:480px){
+
+    .brand-small{
+        font-size:18px;
+    }
+
+    .brand-small .mini-logo{
+        width:40px;
+        height:40px;
+    }
+
+    .topbar{
+        padding:0 10px;
+    }
+
+    .icon-btn{
+        width:42px;
+        height:42px;
+    }
+
+    .container{
+        width:100%;
+    }
+
+    .create-card,
+    .stories-card,
+    .post,
+    .profile-card,
+    .state{
+        border-radius:15px;
+    }
+
+    .story{
+        width:105px;
+        min-width:105px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- ========================= AUTHENTIFICATION ========================= -->
+<!-- =====================================================
+     AUTH
+===================================================== -->
 
-<div id="auth">
-  <div class="auth-card">
+<section id="auth">
 
-    <div class="brand">
-      <div class="logo">A</div>
-      <span>AIDBA <b style="color:var(--red)">GUINÉE</b></span>
-    </div>
+<div class="auth-box">
 
-    <!-- CONNEXION -->
-    <section id="loginBox">
-
-      <h1 class="auth-title">Connexion</h1>
-
-      <p class="auth-sub muted">
-        Connectez-vous à votre compte AIDBA GUINÉE.
-      </p>
-
-      <form id="loginForm" class="form">
-
-        <input
-          id="loginEmail"
-          type="email"
-          placeholder="Adresse e-mail"
-          autocomplete="email"
-          required
-        >
-
-        <input
-          id="loginPassword"
-          type="password"
-          placeholder="Mot de passe"
-          autocomplete="current-password"
-          required
-        >
-
-        <button class="primary" type="submit">
-          Se connecter
-        </button>
-
-      </form>
-
-      <p class="auth-switch center">
-        Pas encore de compte ?
-        <span class="link" id="goRegister">
-          Créer un compte
-        </span>
-      </p>
-
-    </section>
-
-
-    <!-- INSCRIPTION -->
-    <section id="registerBox" class="hidden">
-
-      <!-- ETAPE 1 -->
-      <div id="reg1">
-
-        <h1 class="auth-title">
-          Créer votre compte
-        </h1>
-
-        <p class="auth-sub muted">
-          Entrez vos informations pour créer votre compte.
-        </p>
-
-        <form id="regForm" class="form">
-
-          <div class="row">
-            <input
-              id="firstName"
-              placeholder="Prénom"
-              autocomplete="given-name"
-              required
-            >
-
-            <input
-              id="lastName"
-              placeholder="Nom"
-              autocomplete="family-name"
-              required
-            >
-          </div>
-
-          <label class="muted">
-            Date de naissance
-          </label>
-
-          <input
-            id="dob"
-            type="date"
-            required
-          >
-
-          <input
-            id="regEmail"
-            type="email"
-            placeholder="Adresse e-mail"
-            autocomplete="email"
-            required
-          >
-
-          <div class="row">
-
-            <select id="country" required>
-              <option value="Guinée">Guinée</option>
-              <option value="Sénégal">Sénégal</option>
-              <option value="Côte d'Ivoire">Côte d'Ivoire</option>
-              <option value="Mali">Mali</option>
-              <option value="France">France</option>
-            </select>
-
-            <input
-              id="city"
-              placeholder="Ville / lieu"
-              required
-            >
-
-          </div>
-
-          <input
-            id="phone"
-            type="tel"
-            placeholder="+224 6XX XX XX XX"
-            autocomplete="tel"
-            required
-          >
-
-          <input
-            id="regPassword"
-            type="password"
-            minlength="6"
-            placeholder="Mot de passe"
-            autocomplete="new-password"
-            required
-          >
-
-          <input
-            id="regPassword2"
-            type="password"
-            minlength="6"
-            placeholder="Confirmer le mot de passe"
-            autocomplete="new-password"
-            required
-          >
-
-          <button
-            class="primary"
-            type="submit"
-          >
-            Continuer
-          </button>
-
-        </form>
-
-        <p class="auth-switch center">
-          Déjà inscrit ?
-          <span class="link" id="goLogin">
-            Se connecter
-          </span>
-        </p>
-
-      </div>
-
-
-      <!-- ETAPE 2 : EMAIL -->
-      <div id="reg2" class="hidden">
-
-        <h1 class="auth-title">
-          Confirmer votre e-mail
-        </h1>
-
-        <p class="auth-sub muted">
-          Entrez le code à 6 chiffres envoyé à
-          <b id="emailShown"></b>.
-        </p>
-
-        <div class="otp" id="emailOtp">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-        </div>
-
-        <button
-          class="primary"
-          id="verifyEmailBtn"
-          type="button"
-        >
-          Vérifier l'e-mail
-        </button>
-
-        <button
-          class="secondary"
-          id="resendEmailBtn"
-          type="button"
-          style="width:100%;margin-top:8px"
-        >
-          Renvoyer le code
-        </button>
-
-        <p class="auth-switch center">
-          <span class="link" id="backToLoginFromEmail">
-            Retour à la connexion
-          </span>
-        </p>
-
-      </div>
-
-
-      <!-- ETAPE 3 : TELEPHONE -->
-      <div id="reg3" class="hidden">
-
-        <h1 class="auth-title">
-          Confirmer votre téléphone
-        </h1>
-
-        <p class="auth-sub muted">
-          Un code SMS à 6 chiffres sera envoyé au
-          <b id="phoneShown"></b>.
-        </p>
-
-        <button
-          class="primary"
-          id="sendPhoneBtn"
-          type="button"
-        >
-          Envoyer le code SMS
-        </button>
-
-        <div class="otp" id="phoneOtp">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-          <input maxlength="1" inputmode="numeric">
-        </div>
-
-        <button
-          class="primary"
-          id="verifyPhoneBtn"
-          type="button"
-        >
-          Vérifier le téléphone
-        </button>
-
-      </div>
-
-
-      <!-- ETAPE 4 : PHOTOS -->
-      <div id="reg4" class="hidden">
-
-        <h1 class="auth-title">
-          Ajoutez vos photos
-        </h1>
-
-        <p class="auth-sub muted">
-          Votre profil est presque prêt.
-        </p>
-
-        <div class="form">
-
-          <label>
-            Photo de profil
-          </label>
-
-          <input
-            id="avatarFile"
-            type="file"
-            accept="image/*"
-          >
-
-          <label>
-            Photo de couverture
-          </label>
-
-          <input
-            id="coverFile"
-            type="file"
-            accept="image/*"
-          >
-
-          <button
-            class="primary"
-            id="finishRegistration"
-            type="button"
-          >
-            Terminer mon inscription
-          </button>
-
-        </div>
-
-      </div>
-
-    </section>
-
-  </div>
+<div class="logo-big">
+    <div class="logo-icon">A</div>
+    <div class="brand">AIDBA <span>GUINÉE</span></div>
 </div>
 
+<div class="auth-card">
 
-<!-- ========================= HEADER ========================= -->
-
-<header>
-
-  <div class="brand-mini">
-    <div class="logo">A</div>
-    <span>
-      AIDBA
-      <b style="color:var(--red)">GUINÉE</b>
-    </span>
-  </div>
-
-  <div class="header-actions">
-
-    <button class="icon-btn" id="searchBtn">
-      <i class="fa-solid fa-magnifying-glass"></i>
+<div class="auth-tabs">
+    <button id="loginTab" class="active" onclick="showAuth('login')">
+        Connexion
     </button>
 
-    <button class="icon-btn" id="messagesBtn">
-      <i class="fa-brands fa-facebook-messenger"></i>
-      <span class="badge hidden" id="msgBadge">0</span>
+    <button id="registerTab" onclick="showAuth('register')">
+        Inscription
     </button>
+</div>
 
-    <button class="icon-btn" id="notifBtn">
-      <i class="fa-regular fa-bell"></i>
-      <span class="badge hidden" id="notifBadge">0</span>
-    </button>
+<!-- LOGIN -->
 
-  </div>
+<form id="loginForm">
+
+<div class="form-group">
+<label>Email</label>
+<input id="loginEmail" type="email" required>
+</div>
+
+<div class="form-group">
+<label>Mot de passe</label>
+<input id="loginPassword" type="password" required>
+</div>
+
+<button class="primary" type="submit">
+Se connecter
+</button>
+
+<div class="auth-info">
+Tu dois avoir un compte pour publier, aimer, commenter et partager.
+</div>
+
+</form>
+
+<!-- REGISTER -->
+
+<form id="registerForm" class="hidden">
+
+<div class="form-group">
+<label>Prénom</label>
+<input id="regFirstName" required>
+</div>
+
+<div class="form-group">
+<label>Nom</label>
+<input id="regLastName" required>
+</div>
+
+<div class="form-group">
+<label>Nom d'utilisateur</label>
+<input id="regUsername" required>
+</div>
+
+<div class="form-group">
+<label>Email</label>
+<input id="regEmail" type="email" required>
+</div>
+
+<div class="form-group">
+<label>Numéro de téléphone</label>
+<input id="regPhone" type="tel" placeholder="+224...">
+</div>
+
+<div class="form-group">
+<label>Pays</label>
+<input id="regCountry" value="Guinée">
+</div>
+
+<div class="form-group">
+<label>Ville / lieu</label>
+<input id="regCity" placeholder="Conakry">
+</div>
+
+<div class="form-group">
+<label>Mot de passe</label>
+<input id="regPassword" type="password" minlength="6" required>
+</div>
+
+<button class="primary" type="submit">
+Créer mon compte
+</button>
+
+<div class="auth-info">
+Après inscription, confirme ton email si la confirmation email est activée dans Supabase.
+</div>
+
+</form>
+
+</div>
+</div>
+</section>
+
+<!-- =====================================================
+     APP
+===================================================== -->
+
+<section id="app" class="hidden">
+
+<header class="topbar">
+
+<div class="brand-small">
+<div class="mini-logo">A</div>
+<div>AIDBA <span>GUINÉE</span></div>
+</div>
+
+<div class="top-actions">
+
+<button class="icon-btn" onclick="openSearch()">🔎</button>
+
+<button class="icon-btn" onclick="showPage('messages')">
+💬
+</button>
+
+<button class="icon-btn" onclick="showPage('notifications')">
+🔔
+</button>
+
+</div>
 
 </header>
 
+<!-- =====================================================
+     ACCUEIL
+===================================================== -->
 
-<!-- ========================= APPLICATION ========================= -->
+<main id="homePage" class="page active">
 
-<main>
+<div class="container">
 
-  <!-- ACCUEIL -->
-  <section id="homeView" class="view active">
+<!-- CREATE -->
 
-    <!-- COMPOSER -->
-    <div class="card composer">
+<section class="create-card">
 
-      <div class="composer-top">
+<div class="create-top">
 
-        <img
-          class="avatar"
-          id="composerAvatar"
-          alt="Photo de profil"
-        >
+<img id="createAvatar" class="avatar">
 
-        <div
-          class="composer-input"
-          id="openComposer"
-        >
-          Quoi de neuf sur AIDBA GUINÉE ?
-        </div>
+<div
+class="create-input"
+onclick="openPostModal()">
+Quoi de neuf sur AIDBA GUINÉE ?
+</div>
 
-      </div>
+</div>
 
-      <div class="composer-actions">
+<div class="create-actions">
 
-        <button class="live">
-          <i class="fa-solid fa-video"></i>
-          En direct
-        </button>
+<button onclick="openPostModal('video')">
+🎥 En direct
+</button>
 
-        <button
-          class="photo"
-          id="composerPhoto"
-        >
-          <i class="fa-regular fa-image"></i>
-          Photo
-        </button>
+<button onclick="openPostModal('image')">
+🖼️ Photo
+</button>
 
-        <button class="mood">
-          <i class="fa-regular fa-face-smile"></i>
-          Humeur
-        </button>
+<button onclick="openPostModal()">
+😊 Humeur
+</button>
 
-      </div>
+</div>
 
-      <input
-        id="postFile"
-        type="file"
-        accept="image/*,video/*"
-        class="hidden"
-      >
+</section>
 
-    </div>
+<!-- STORIES -->
 
+<section class="stories-card">
 
-    <!-- STORIES -->
-    <div class="card stories">
+<div class="section-title">
 
-      <div class="section-head">
+<h2>Stories</h2>
 
-        <h3>
-          Stories
-        </h3>
+<button onclick="loadStories()">
+Voir tout
+</button>
 
-        <button
-          class="link"
-          id="seeAllStories"
-          style="border:0;background:none"
-          type="button"
-        >
-          Voir tout
-        </button>
+</div>
 
-      </div>
+<div id="stories" class="stories"></div>
 
-      <div
-        class="story-row"
-        id="storiesRow"
-      ></div>
+</section>
 
-    </div>
+<!-- FEED -->
 
+<div id="feed"></div>
 
-    <!-- FIL D'ACTUALITE -->
-    <div id="feed"></div>
-
-  </section>
-
-
-  <!-- SHORTS -->
-  <section id="reelsView" class="view">
-
-    <div
-      class="reels"
-      id="reels"
-    ></div>
-
-  </section>
-
-
-  <!-- BOUTIQUE -->
-  <section id="marketView" class="view">
-
-    <div
-      class="card"
-      style="padding:15px"
-    >
-
-      <h2>
-        <i
-          class="fa-solid fa-store"
-          style="color:var(--green)"
-        ></i>
-
-        Boutique Guinée
-      </h2>
-
-      <p
-        class="muted"
-        style="margin-top:4px"
-      >
-        Découvrez les offres publiées par la communauté.
-      </p>
-
-    </div>
-
-    <div
-      class="market-grid"
-      id="marketGrid"
-    ></div>
-
-  </section>
-
-
-  <!-- NOTIFICATIONS -->
-  <section id="notifView" class="view">
-
-    <div
-      class="card"
-      style="padding:15px"
-    >
-      <h2>
-        Notifications
-      </h2>
-    </div>
-
-    <div id="notifList"></div>
-
-  </section>
-
-
-  <!-- MENU / PROFIL -->
-  <section id="menuView" class="view">
-
-    <div class="card profile-card">
-
-      <div
-        class="cover"
-        id="profileCover"
-      >
-        <img
-          class="profile-avatar"
-          id="profileAvatar"
-          alt="Profil"
-        >
-      </div>
-
-      <div class="profile-body">
-
-        <h2 id="profileName">
-          Utilisateur
-        </h2>
-
-        <p
-          class="muted"
-          id="profilePlace"
-        >
-          Guinée
-        </p>
-
-        <button
-          class="secondary"
-          id="editProfileBtn"
-          style="margin-top:12px"
-        >
-          Modifier le profil
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="menu">
-
-      <button
-        class="secondary"
-        id="logoutBtn"
-      >
-        <i class="fa-solid fa-right-from-bracket"></i>
-        Se déconnecter
-      </button>
-
-    </div>
-
-  </section>
+</div>
 
 </main>
 
+<!-- =====================================================
+     SHORTS
+===================================================== -->
 
-<!-- ========================= NAVIGATION ========================= -->
+<main id="shortsPage" class="page">
 
-<nav class="bottom">
+<div class="shorts-page">
 
-  <button
-    class="active"
-    data-view="homeView"
-  >
-    <i class="fa-solid fa-house"></i>
-    Accueil
-  </button>
+<div id="shortsFeed"></div>
 
-  <button data-view="reelsView">
-    <i class="fa-solid fa-play"></i>
-    Shorts
-  </button>
+</div>
 
-  <button data-view="marketView">
-    <i class="fa-solid fa-store"></i>
-    Boutique
-  </button>
+</main>
 
-  <button data-view="notifView">
-    <i class="fa-regular fa-bell"></i>
-    Notifications
-  </button>
+<!-- =====================================================
+     PROFILE
+===================================================== -->
 
-  <button data-view="menuView">
-    <i class="fa-solid fa-bars"></i>
-    Menu
-  </button>
+<main id="profilePage" class="page">
+
+<div class="container">
+
+<div id="profileContent"></div>
+
+</div>
+
+</main>
+
+<!-- =====================================================
+     NOTIFICATIONS
+===================================================== -->
+
+<main id="notificationsPage" class="page">
+
+<div class="container">
+
+<div class="stories-card">
+
+<div class="section-title">
+<h2>Notifications</h2>
+</div>
+
+<div id="notifications"></div>
+
+</div>
+
+</div>
+
+</main>
+
+<!-- =====================================================
+     MESSAGES
+===================================================== -->
+
+<main id="messagesPage" class="page">
+
+<div class="container">
+
+<div class="stories-card">
+
+<div class="section-title">
+<h2>Messages</h2>
+</div>
+
+<div class="state">
+💬 Ta messagerie est prête.
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+<!-- =====================================================
+     MENU
+===================================================== -->
+
+<main id="menuPage" class="page">
+
+<div class="container">
+
+<div class="stories-card">
+
+<h2 style="margin-bottom:15px;">
+Menu
+</h2>
+
+<button
+class="secondary"
+style="margin-bottom:10px"
+onclick="showPage('profile')">
+👤 Mon profil
+</button>
+
+<button
+class="secondary"
+style="margin-bottom:10px"
+onclick="openProfileModal()">
+⚙️ Modifier mon profil
+</button>
+
+<button
+class="secondary"
+onclick="logout()">
+🚪 Déconnexion
+</button>
+
+</div>
+
+</div>
+
+</main>
+
+<!-- =====================================================
+     NAVIGATION
+===================================================== -->
+
+<nav class="bottom-nav">
+
+<button id="navHome"
+class="active"
+onclick="showPage('home')">
+<div class="nav-icon">🏠</div>
+<div>Accueil</div>
+</button>
+
+<button id="navShorts"
+onclick="showPage('shorts')">
+<div class="nav-icon">▶️</div>
+<div>Shorts</div>
+</button>
+
+<button onclick="alert('Boutique disponible prochainement')">
+<div class="nav-icon">🏪</div>
+<div>Boutique</div>
+</button>
+
+<button
+id="navNotifications"
+onclick="showPage('notifications')">
+<div class="nav-icon">🔔</div>
+<div>Notifications</div>
+</button>
+
+<button
+id="navMenu"
+onclick="showPage('menu')">
+<div class="nav-icon">☰</div>
+<div>Menu</div>
+</button>
 
 </nav>
 
+</section>
 
-<!-- ========================= COMMENTAIRES ========================= -->
+<!-- =====================================================
+     POST MODAL
+===================================================== -->
 
-<div
-  class="modal-backdrop"
-  id="backdrop"
-></div>
+<div id="postModal" class="modal hidden">
 
-<div
-  class="sheet"
-  id="commentsSheet"
->
+<div class="modal-box">
 
-  <div class="sheet-head">
+<div class="modal-head">
 
-    <b>
-      Commentaires
-    </b>
+<h2>Créer une publication</h2>
 
-    <button
-      class="more"
-      id="closeComments"
-    >
-      ×
-    </button>
-
-  </div>
-
-  <div
-    class="comments"
-    id="commentsList"
-  ></div>
-
-  <div class="comment-input">
-
-    <input
-      id="commentText"
-      placeholder="Écrivez un commentaire..."
-    >
-
-    <button id="sendComment">
-      <i class="fa-solid fa-paper-plane"></i>
-    </button>
-
-  </div>
+<button
+class="close"
+onclick="closeModal('postModal')">
+✕
+</button>
 
 </div>
 
+<div class="form-group">
 
-<!-- ========================= PUBLICATION ========================= -->
+<label>Votre publication</label>
 
-<div
-  class="sheet"
-  id="composerSheet"
->
-
-  <div class="sheet-head">
-
-    <b>
-      Créer une publication
-    </b>
-
-    <button
-      class="more"
-      id="closeComposer"
-    >
-      ×
-    </button>
-
-  </div>
-
-  <div
-    style="padding:15px;display:grid;gap:12px"
-  >
-
-    <textarea
-      id="postText"
-      rows="5"
-      placeholder="Quoi de neuf ?"
-    ></textarea>
-
-    <input
-      id="sheetFile"
-      type="file"
-      accept="image/*,video/*"
-    >
-
-    <button
-      class="primary"
-      id="publishBtn"
-    >
-      Publier
-    </button>
-
-  </div>
+<textarea
+id="postText"
+rows="5"
+placeholder="Quoi de neuf ?"></textarea>
 
 </div>
 
+<div class="form-group">
 
-<!-- ========================= PROFIL ========================= -->
+<label>Photo ou vidéo</label>
 
-<div
-  class="sheet"
-  id="profileSheet"
->
-
-  <div class="sheet-head">
-
-    <b>
-      Modifier mon profil
-    </b>
-
-    <button
-      class="more"
-      id="closeProfile"
-    >
-      ×
-    </button>
-
-  </div>
-
-  <div
-    style="padding:15px;display:grid;gap:10px"
-  >
-
-    <input
-      id="editName"
-      placeholder="Nom complet"
-    >
-
-    <input
-      id="editBio"
-      placeholder="Bio"
-    >
-
-    <label>
-      Photo de profil
-    </label>
-
-    <input
-      id="editAvatar"
-      type="file"
-      accept="image/*"
-    >
-
-    <label>
-      Photo de couverture
-    </label>
-
-    <input
-      id="editCover"
-      type="file"
-      accept="image/*"
-    >
-
-    <button
-      class="primary"
-      id="saveProfile"
-    >
-      Enregistrer
-    </button>
-
-  </div>
+<input
+id="postFile"
+type="file"
+accept="image/*,video/*">
 
 </div>
 
+<button
+id="publishButton"
+class="primary"
+onclick="publishPost()">
+Publier
+</button>
 
-<!-- ========================= STORY VIEWER ========================= -->
+</div>
+</div>
 
-<div
-  class="story-viewer"
-  id="storyViewer"
->
+<!-- =====================================================
+     STORY MODAL
+===================================================== -->
 
-  <button
-    class="story-close"
-    id="closeStory"
-  >
-    ×
-  </button>
+<div id="storyModal" class="modal hidden">
 
-  <div id="storyContent"></div>
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Créer une story</h2>
+
+<button
+class="close"
+onclick="closeModal('storyModal')">
+✕
+</button>
 
 </div>
 
+<div class="form-group">
 
-<div
-  class="toast"
-  id="toast"
-></div>
+<label>Photo ou vidéo</label>
 
+<input
+id="storyFile"
+type="file"
+accept="image/*,video/*"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Texte</label>
+
+<input
+id="storyCaption"
+placeholder="Ajouter un texte...">
+
+</div>
+
+<button
+class="primary"
+onclick="publishStory()">
+Publier la story
+</button>
+
+</div>
+</div>
+
+<!-- =====================================================
+     PROFILE MODAL
+===================================================== -->
+
+<div id="profileModal" class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Modifier mon profil</h2>
+
+<button
+class="close"
+onclick="closeModal('profileModal')">
+✕
+</button>
+
+</div>
+
+<div class="form-group">
+<label>Prénom</label>
+<input id="editFirstName">
+</div>
+
+<div class="form-group">
+<label>Nom</label>
+<input id="editLastName">
+</div>
+
+<div class="form-group">
+<label>Nom d'utilisateur</label>
+<input id="editUsername">
+</div>
+
+<div class="form-group">
+<label>Bio</label>
+<textarea id="editBio" rows="3"></textarea>
+</div>
+
+<div class="form-group">
+<label>Pays</label>
+<input id="editCountry">
+</div>
+
+<div class="form-group">
+<label>Ville / lieu</label>
+<input id="editCity">
+</div>
+
+<div class="form-group">
+<label>Photo de profil</label>
+<input id="avatarFile" type="file" accept="image/*">
+</div>
+
+<div class="form-group">
+<label>Photo de couverture</label>
+<input id="coverFile" type="file" accept="image/*">
+</div>
+
+<button
+class="primary"
+onclick="saveProfile()">
+Enregistrer
+</button>
+
+</div>
+</div>
 
 <script>
 
-/* =========================================================
-   SUPABASE
-   ========================================================= */
+/* ============================================================
+   CONFIGURATION SUPABASE
+============================================================ */
 
 const SUPABASE_URL =
-  "https://bdzdaceiettpiosstxkp.supabase.co";
+"https://bdzdaceiettpiosstxkp.supabase.co";
 
-const SUPABASE_KEY =
-  "sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
+const SUPABASE_ANON_KEY =
+"sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
 
 const sb =
-  supabase.createClient(
+window.supabase.createClient(
     SUPABASE_URL,
-    SUPABASE_KEY
-  );
+    SUPABASE_ANON_KEY
+);
 
+let currentUser = null;
+let currentProfile = null;
 
-/* =========================================================
-   ETAT GLOBAL
-   ========================================================= */
-
-let user = null;
-let profile = null;
-let currentPost = null;
-let currentStory = null;
-
-let pending = {};
-
-
-/* =========================================================
+/* ============================================================
    UTILITAIRES
-   ========================================================= */
+============================================================ */
 
-const $ = id =>
-  document.getElementById(id);
-
-
-const esc = value =>
-  String(value ?? "")
-    .replace(
-      /[&<>"']/g,
-      c => ({
-        "&":"&amp;",
-        "<":"&lt;",
-        ">":"&gt;",
-        '"':"&quot;",
-        "'":"&#039;"
-      }[c])
-    );
-
-
-function toast(message){
-
-  $("toast").textContent = message;
-
-  $("toast").classList.add("show");
-
-  setTimeout(
-    () => $("toast").classList.remove("show"),
-    3000
-  );
+function escapeHTML(value){
+    return String(value || '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
 }
 
-
-function showAuth(show){
-
-  $("auth").classList.toggle(
-    "hidden",
-    !show
-  );
-}
-
-
-function showReg(step){
-
-  [1,2,3,4].forEach(i => {
-
-    $("reg"+i).classList.toggle(
-      "hidden",
-      i !== step
-    );
-
-  });
-
-  $("loginBox").classList.add("hidden");
-
-  $("registerBox").classList.remove("hidden");
-}
-
-
-function showLogin(){
-
-  $("loginBox").classList.remove("hidden");
-
-  $("registerBox").classList.add("hidden");
-}
-
-
-function setBusy(
-  button,
-  busy,
-  text
-){
-
-  if(!button)return;
-
-  button.disabled = busy;
-
-  if(busy){
-
-    button.dataset.old =
-      button.textContent;
-
-    button.textContent = text;
-
-  }else{
-
-    button.textContent =
-      button.dataset.old ||
-      button.textContent;
-
-  }
-}
-
-
-/* =========================================================
-   OTP
-   ========================================================= */
-
-function otpInputs(id){
-
-  const elements =
-    [...$(id).querySelectorAll("input")];
-
-  elements.forEach(
-    (element,index) => {
-
-      element.addEventListener(
-        "input",
-        () => {
-
-          element.value =
-            element.value
-              .replace(/\D/g,"")
-              .slice(0,1);
-
-          if(
-            element.value &&
-            elements[index+1]
-          ){
-            elements[index+1].focus();
-          }
-
-        }
-      );
-
-
-      element.addEventListener(
-        "keydown",
-        event => {
-
-          if(
-            event.key === "Backspace" &&
-            !element.value &&
-            elements[index-1]
-          ){
-
-            elements[index-1].focus();
-
-          }
-
-        }
-      );
-
-    }
-  );
-
-
-  return () =>
-    elements
-      .map(x => x.value)
-      .join("");
-}
-
-
-const getEmailOtp =
-  otpInputs("emailOtp");
-
-const getPhoneOtp =
-  otpInputs("phoneOtp");
-
-
-/* =========================================================
-   UPLOAD FICHIERS
-   ========================================================= */
-
-async function upload(
-  file,
-  folder
-){
-
-  if(!file){
-    return null;
-  }
-
-  if(
-    file.size >
-    50 * 1024 * 1024
-  ){
-
-    throw new Error(
-      "Fichier trop volumineux. Maximum 50 Mo."
-    );
-
-  }
-
-  if(
-    !file.type.startsWith("image/") &&
-    !file.type.startsWith("video/")
-  ){
-
-    throw new Error(
-      "Type de fichier non supporté."
-    );
-
-  }
-
-  const extension =
-    (
-      file.name
-        .split(".")
-        .pop() ||
-      "bin"
-    ).toLowerCase();
-
-
-  const path =
-    `${user.id}/${folder}/${crypto.randomUUID()}.${extension}`;
-
-
-  const result =
-    await sb.storage
-      .from("media")
-      .upload(
-        path,
-        file,
-        {
-          upsert:false,
-          contentType:file.type
-        }
-      );
-
-
-  if(result.error){
-    throw result.error;
-  }
-
-
-  return sb.storage
-    .from("media")
-    .getPublicUrl(path)
-    .data
-    .publicUrl;
-}
-
-
-/* =========================================================
-   PROFIL
-   ========================================================= */
-
-async function loadProfile(){
-
-  if(!user)return;
-
-
-  const {
-    data,
-    error
-  } = await sb
-    .from("profiles")
-    .select("*")
-    .eq("id",user.id)
-    .maybeSingle();
-
-
-  if(error){
-
-    console.error(
-      "Erreur profil:",
-      error
-    );
-
-    return;
-
-  }
-
-
-  profile =
-    data || {};
-
-
-  const avatar =
-    profile.avatar_url || "";
-
-
-  const defaultAvatar =
-    "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect width='100%25' height='100%25' fill='%23ddd'/%3E%3C/svg%3E";
-
-
-  $("composerAvatar").src =
-    avatar ||
-    defaultAvatar;
-
-
-  $("profileAvatar").src =
-    avatar ||
-    defaultAvatar;
-
-
-  $("profileCover").style.backgroundImage =
-    profile.cover_url
-      ? `url("${profile.cover_url}")`
-      : "none";
-
-
-  $("profileName").textContent =
-    profile.full_name ||
-    [
-      profile.first_name,
-      profile.last_name
-    ]
-      .filter(Boolean)
-      .join(" ") ||
-    "Utilisateur";
-
-
-  $("profilePlace").textContent =
-    [
-      profile.city,
-      profile.country
-    ]
-      .filter(Boolean)
-      .join(" · ") ||
-    "Guinée";
-
-
-  $("editName").value =
-    profile.full_name || "";
-
-
-  $("editBio").value =
-    profile.bio || "";
-}
-
-
-/* =========================================================
-   FIL D'ACTUALITE
-   ========================================================= */
-
-async function loadFeed(){
-
-  const {
-    data,
-    error
-  } = await sb
-    .from("posts")
-    .select(`
-      id,
-      user_id,
-      content,
-      image_url,
-      video_url,
-      post_type,
-      likes_count,
-      comments_count,
-      shares_count,
-      views_count,
-      created_at,
-      profiles(
-        full_name,
-        avatar_url,
-        city
-      )
-    `)
-    .eq("post_type","post")
-    .order(
-      "created_at",
-      {ascending:false}
-    )
-    .limit(50);
-
-
-  if(error){
-
-    console.error(
-      "Erreur publications:",
-      error
-    );
-
-    $("feed").innerHTML = `
-      <div
-        class="card"
-        style="padding:25px;text-align:center"
-      >
-        Impossible de charger les publications.
-      </div>
-    `;
-
-    return;
-  }
-
-
-  $("feed").innerHTML =
-    data?.length
-      ? data.map(renderPost).join("")
-      : `
-        <div
-          class="card"
-          style="padding:30px;text-align:center;color:var(--muted)"
-        >
-          Aucune publication pour le moment.
-          Soyez le premier à publier.
-        </div>
-      `;
-}
-
-
-function renderPost(p){
-
-  const media =
-    p.video_url
-      ? `
-        <video
-          class="post-media feed-video"
-          controls
-          playsinline
-          preload="metadata"
-          src="${esc(p.video_url)}"
-        ></video>
-      `
-      : p.image_url
-        ? `
-          <img
-            class="post-media"
-            src="${esc(p.image_url)}"
-            loading="lazy"
-            alt=""
-          >
-        `
-        : "";
-
-
-  return `
-    <article
-      class="card post"
-      data-post="${p.id}"
-    >
-
-      <div class="post-head">
-
-        <img
-          class="avatar"
-          src="${esc(p.profiles?.avatar_url || "")}"
-          alt=""
-        >
-
-        <div class="info">
-
-          <strong>
-            ${esc(
-              p.profiles?.full_name ||
-              "Membre AIDBA"
-            )}
-          </strong>
-
-          <span class="post-time">
-            ${timeAgo(p.created_at)}
-            ${
-              p.profiles?.city
-                ? " · " +
-                  esc(p.profiles.city)
-                : ""
-            }
-            · 🌐
-          </span>
-
-        </div>
-
-        <button class="more">
-          •••
-        </button>
-
-      </div>
-
-      ${
-        p.content
-          ? `
-            <div class="post-text">
-              ${esc(p.content)}
-            </div>
-          `
-          : ""
-      }
-
-      ${media}
-
-      <div class="post-stats">
-
-        <span>
-          👍
-          <b>
-            ${p.likes_count || 0}
-          </b>
-        </span>
-
-        <span>
-          ${p.comments_count || 0}
-          commentaires ·
-          ${p.shares_count || 0}
-          partages
-        </span>
-
-      </div>
-
-      <div class="post-actions">
-
-        <button
-          data-act="like"
-          data-id="${p.id}"
-        >
-          <i class="fa-regular fa-thumbs-up"></i>
-          J'aime
-        </button>
-
-        <button
-          data-act="comment"
-          data-id="${p.id}"
-        >
-          <i class="fa-regular fa-comment"></i>
-          Commenter
-        </button>
-
-        <button
-          data-act="share"
-          data-id="${p.id}"
-        >
-          <i class="fa-solid fa-share"></i>
-          Partager
-        </button>
-
-        <button
-          data-act="save"
-          data-id="${p.id}"
-        >
-          <i class="fa-regular fa-bookmark"></i>
-          Favori
-        </button>
-
-      </div>
-
-    </article>
-  `;
-}
-
-
-function timeAgo(date){
-
-  const seconds =
-    Math.floor(
-      (
-        Date.now() -
-        new Date(date).getTime()
-      ) / 1000
-    );
-
-
-  if(seconds < 60){
-    return "à l'instant";
-  }
-
-  if(seconds < 3600){
-    return (
-      Math.floor(seconds/60) +
-      " min"
-    );
-  }
-
-  if(seconds < 86400){
-    return (
-      Math.floor(seconds/3600) +
-      " h"
-    );
-  }
-
-  return new Date(date)
-    .toLocaleDateString(
-      "fr-FR",
-      {
-        day:"numeric",
-        month:"short"
-      }
+function showError(error){
+    console.error(error);
+    alert(
+        error?.message ||
+        'Une erreur est survenue.'
     );
 }
 
-
-/* =========================================================
-   COMPTEURS
-   ========================================================= */
-
-async function refreshPost(postId){
-
-  const {
-    data
-  } = await sb
-    .from("posts")
-    .select(
-      "likes_count,comments_count,shares_count"
-    )
-    .eq("id",postId)
-    .single();
-
-
-  const card =
-    document.querySelector(
-      `[data-post="${postId}"]`
-    );
-
-
-  if(
-    !card ||
-    !data
-  ){
-    return;
-  }
-
-
-  card.querySelector(
-    ".post-stats"
-  ).innerHTML = `
-    <span>
-      👍
-      <b>${data.likes_count || 0}</b>
-    </span>
-
-    <span>
-      ${data.comments_count || 0}
-      commentaires ·
-      ${data.shares_count || 0}
-      partages
-    </span>
-  `;
+function closeModal(id){
+    document.getElementById(id)
+        .classList.add('hidden');
 }
 
-
-/* =========================================================
-   LIKE
-   ========================================================= */
-
-async function likePost(
-  id,
-  button
-){
-
-  if(!user){
-    return toast(
-      "Connectez-vous pour aimer une publication."
-    );
-  }
-
-
-  const {
-    data:existing,
-    error:findError
-  } = await sb
-    .from("post_likes")
-    .select("post_id")
-    .eq("post_id",id)
-    .eq("user_id",user.id)
-    .maybeSingle();
-
-
-  if(findError){
-    return toast(findError.message);
-  }
-
-
-  if(existing){
-
-    const {
-      error
-    } = await sb
-      .from("post_likes")
-      .delete()
-      .eq("post_id",id)
-      .eq("user_id",user.id);
-
-
-    if(error){
-      return toast(error.message);
-    }
-
-
-    button.classList.remove("active");
-
-  }else{
-
-    const {
-      error
-    } = await sb
-      .from("post_likes")
-      .insert({
-        post_id:id,
-        user_id:user.id
-      });
-
-
-    if(error){
-      return toast(error.message);
-    }
-
-
-    button.classList.add("active");
-  }
-
-
-  await refreshPost(id);
+function openModal(id){
+    document.getElementById(id)
+        .classList.remove('hidden');
 }
 
+function getFileExtension(file){
+    const parts =
+        file.name.split('.');
 
-/* =========================================================
-   FAVORI
-   ========================================================= */
-
-async function savePost(
-  id,
-  button
-){
-
-  const {
-    data:existing
-  } = await sb
-    .from("post_bookmarks")
-    .select("post_id")
-    .eq("post_id",id)
-    .eq("user_id",user.id)
-    .maybeSingle();
-
-
-  if(existing){
-
-    await sb
-      .from("post_bookmarks")
-      .delete()
-      .eq("post_id",id)
-      .eq("user_id",user.id);
-
-    button.classList.remove("active");
-
-  }else{
-
-    const {
-      error
-    } = await sb
-      .from("post_bookmarks")
-      .insert({
-        post_id:id,
-        user_id:user.id
-      });
-
-
-    if(error){
-      return toast(error.message);
-    }
-
-
-    button.classList.add("active");
-  }
+    return parts[
+        parts.length - 1
+    ].toLowerCase();
 }
 
+/* ============================================================
+   AUTH
+============================================================ */
 
-/* =========================================================
-   PARTAGE
-   ========================================================= */
+function showAuth(type){
 
-async function sharePost(id){
+    const login =
+        document.getElementById('loginForm');
 
-  try{
+    const register =
+        document.getElementById('registerForm');
 
-    if(navigator.share){
+    const loginTab =
+        document.getElementById('loginTab');
 
-      await navigator.share({
-        title:"AIDBA GUINÉE",
-        text:
-          "Découvrez cette publication sur AIDBA GUINÉE",
-        url:location.href
-      });
+    const registerTab =
+        document.getElementById('registerTab');
+
+    if(type === 'login'){
+
+        login.classList.remove('hidden');
+        register.classList.add('hidden');
+
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
 
     }else{
 
-      await navigator.clipboard?.writeText(
-        location.href
-      );
+        login.classList.add('hidden');
+        register.classList.remove('hidden');
 
-      toast("Lien copié.");
-
+        loginTab.classList.remove('active');
+        registerTab.classList.add('active');
     }
-
-  }catch(error){
-    console.log(error);
-  }
-
-
-  const {
-    error
-  } = await sb
-    .from("post_shares")
-    .insert({
-      post_id:id,
-      user_id:user.id
-    });
-
-
-  if(error){
-    console.error(error);
-  }
-
-
-  await refreshPost(id);
 }
 
+document.getElementById('loginForm')
+.addEventListener('submit', async e => {
 
-/* =========================================================
-   COMMENTAIRES
-   ========================================================= */
+    e.preventDefault();
 
-async function openComments(id){
+    const email =
+        document.getElementById('loginEmail')
+        .value.trim();
 
-  currentPost = id;
+    const password =
+        document.getElementById('loginPassword')
+        .value;
 
-  $("backdrop")
-    .classList
-    .add("active");
+    try{
 
-  $("commentsSheet")
-    .classList
-    .add("active");
+        const {error} =
+            await sb.auth.signInWithPassword({
+                email,
+                password
+            });
 
-  $("commentsList").innerHTML =
-    "Chargement...";
+        if(error) throw error;
 
+        await boot();
 
-  const {
-    data,
-    error
-  } = await sb
-    .from("comments")
-    .select(`
-      id,
-      content,
-      created_at,
-      profiles(
-        full_name,
-        avatar_url
-      )
-    `)
-    .eq("post_id",id)
-    .order(
-      "created_at",
-      {ascending:true}
-    );
+    }catch(error){
 
+        showError(error);
+    }
+});
 
-  if(error){
+document.getElementById('registerForm')
+.addEventListener('submit', async e => {
 
-    $("commentsList").textContent =
-      error.message;
+    e.preventDefault();
 
-    return;
-  }
+    const firstName =
+        document.getElementById('regFirstName')
+        .value.trim();
 
+    const lastName =
+        document.getElementById('regLastName')
+        .value.trim();
 
-  $("commentsList").innerHTML =
-    data?.length
-      ? data.map(c => `
-        <div class="comment">
+    const username =
+        document.getElementById('regUsername')
+        .value.trim()
+        .toLowerCase();
 
-          <img
-            src="${esc(
-              c.profiles?.avatar_url || ""
-            )}"
-            alt=""
-          >
+    const email =
+        document.getElementById('regEmail')
+        .value.trim();
 
-          <div class="bubble">
+    const phone =
+        document.getElementById('regPhone')
+        .value.trim();
 
-            <b>
-              ${esc(
-                c.profiles?.full_name ||
-                "Membre"
-              )}
-            </b>
+    const country =
+        document.getElementById('regCountry')
+        .value.trim();
 
-            <div>
-              ${esc(c.content)}
-            </div>
+    const city =
+        document.getElementById('regCity')
+        .value.trim();
 
-            <small class="muted">
-              ${timeAgo(c.created_at)}
-            </small>
+    const password =
+        document.getElementById('regPassword')
+        .value;
 
-          </div>
+    try{
 
-        </div>
-      `).join("")
-      : `
-        <p class="muted center">
-          Aucun commentaire.
-          Soyez le premier.
-        </p>
-      `;
-}
+        const {data,error} =
+            await sb.auth.signUp({
 
+                email,
+                password,
 
-async function sendComment(){
+                options:{
+                    data:{
+                        first_name:firstName,
+                        last_name:lastName,
+                        username,
+                        country,
+                        city,
+                        phone
+                    }
+                }
+            });
 
-  const text =
-    $("commentText")
-      .value
-      .trim();
+        if(error) throw error;
 
-
-  if(
-    !text ||
-    !currentPost
-  ){
-    return;
-  }
-
-
-  const {
-    error
-  } = await sb
-    .from("comments")
-    .insert({
-      post_id:currentPost,
-      user_id:user.id,
-      content:text
-    });
-
-
-  if(error){
-    return toast(error.message);
-  }
-
-
-  $("commentText").value = "";
-
-  await openComments(
-    currentPost
-  );
-
-  await refreshPost(
-    currentPost
-  );
-}
-
-
-/* =========================================================
-   PUBLICATION
-   ========================================================= */
-
-async function createPost(
-  text,
-  file
-){
-
-  if(
-    !text &&
-    !file
-  ){
-
-    return toast(
-      "Ajoutez un texte, une photo ou une vidéo."
-    );
-
-  }
-
-
-  const button =
-    $("publishBtn");
-
-
-  setBusy(
-    button,
-    true,
-    "Publication..."
-  );
-
-
-  try{
-
-    let image_url = null;
-    let video_url = null;
-
-
-    if(file){
-
-      const url =
-        await upload(
-          file,
-          "posts"
+        alert(
+            'Compte créé. Vérifie ton email si la confirmation email est activée.'
         );
 
+        if(data.session){
 
-      if(
-        file.type.startsWith("video/")
-      ){
+            await boot();
 
-        video_url = url;
+        }else{
 
-      }else{
+            showAuth('login');
+        }
 
-        image_url = url;
+    }catch(error){
 
-      }
-
+        showError(error);
     }
+});
 
+async function logout(){
+
+    await sb.auth.signOut();
+
+    currentUser = null;
+    currentProfile = null;
+
+    document.getElementById('app')
+        .classList.add('hidden');
+
+    document.getElementById('auth')
+        .classList.remove('hidden');
+}
+
+/* ============================================================
+   INITIALISATION
+============================================================ */
+
+async function boot(){
 
     const {
-      error
-    } = await sb
-      .from("posts")
-      .insert({
-        user_id:user.id,
-        content:text || null,
-        image_url,
-        video_url,
-        post_type:"post"
-      });
+        data:{session}
+    } = await sb.auth.getSession();
 
+    if(!session){
 
-    if(error){
-      throw error;
+        document.getElementById('auth')
+            .classList.remove('hidden');
+
+        document.getElementById('app')
+            .classList.add('hidden');
+
+        return;
     }
 
+    currentUser = session.user;
 
-    closeSheets();
+    await ensureProfile();
 
-    $("postText").value = "";
+    document.getElementById('auth')
+        .classList.add('hidden');
 
-    $("sheetFile").value = "";
+    document.getElementById('app')
+        .classList.remove('hidden');
 
-    await loadFeed();
-
-    toast(
-      "Publication publiée."
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      "Erreur : " +
-      error.message
-    );
-
-
-  }finally{
-
-    setBusy(
-      button,
-      false
-    );
-
-  }
+    await Promise.all([
+        loadFeed(),
+        loadStories(),
+        loadProfile()
+    ]);
 }
 
+async function ensureProfile(){
 
-/* =========================================================
-   STORIES
-   ========================================================= */
+    let {data,error} =
+        await sb
+        .from('profiles')
+        .select('*')
+        .eq('id',currentUser.id)
+        .maybeSingle();
 
-async function loadStories(){
+    if(error) throw error;
 
-  const {
-    data,
-    error
-  } = await sb
-    .from("stories")
-    .select(`
-      id,
-      user_id,
-      media_url,
-      media_type,
-      caption,
-      expires_at,
-      created_at,
-      profiles(
-        full_name,
-        avatar_url
-      )
-    `)
-    .gt(
-      "expires_at",
-      new Date().toISOString()
-    )
-    .order(
-      "created_at",
-      {ascending:false}
-    );
+    if(!data){
 
+        const metadata =
+            currentUser.user_metadata || {};
 
-  if(error){
+        const profile = {
 
-    console.error(
-      "Erreur stories:",
-      error
-    );
+            id:currentUser.id,
 
-    return;
-  }
+            first_name:
+                metadata.first_name || '',
 
+            last_name:
+                metadata.last_name || '',
 
-  const own = `
-    <button
-      class="story create-story"
-      id="createStory"
-      type="button"
-    >
-      <span class="plus">
-        +
-      </span>
+            username:
+                metadata.username ||
+                `user_${currentUser.id.slice(0,8)}`,
 
-      <b>
-        Créer une story
-      </b>
-    </button>
-  `;
+            country:
+                metadata.country ||
+                'Guinée',
 
+            city:
+                metadata.city || '',
 
-  $("storiesRow").innerHTML =
-    own +
-    (data || [])
-      .map(s => `
-        <button
-          class="story"
-          data-story="${s.id}"
-          type="button"
-        >
+            phone:
+                currentUser.phone ||
+                metadata.phone ||
+                ''
+        };
 
-          ${
-            s.media_type === "video"
-              ? `
-                <video
-                  src="${esc(s.media_url)}"
-                  muted
-                  playsinline
-                ></video>
-              `
-              : `
-                <img
-                  src="${esc(s.media_url)}"
-                  alt=""
-                >
-              `
-          }
+        const result =
+            await sb
+            .from('profiles')
+            .insert(profile)
+            .select()
+            .single();
 
-          <img
-            class="story-avatar"
-            src="${esc(
-              s.profiles?.avatar_url || ""
-            )}"
-            alt=""
-          >
+        if(result.error)
+            throw result.error;
 
-          <span class="story-name">
-            ${esc(
-              s.profiles?.full_name ||
-              "Membre"
-            )}
-          </span>
+        data = result.data;
+    }
 
-        </button>
-      `)
-      .join("");
+    currentProfile = data;
+
+    updateUserAvatar();
 }
 
+/* ============================================================
+   NAVIGATION
+============================================================ */
 
-async function createStory(){
+function showPage(page){
 
-  const input =
-    document.createElement("input");
+    document
+        .querySelectorAll('.page')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
 
+    const target =
+        document.getElementById(
+            page + 'Page'
+        );
 
-  input.type = "file";
+    if(target)
+        target.classList.add('active');
 
-  input.accept =
-    "image/*,video/*";
+    document
+        .querySelectorAll('.bottom-nav button')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
 
+    if(page === 'home')
+        document.getElementById('navHome')
+            ?.classList.add('active');
 
-  input.onchange =
-    async () => {
+    if(page === 'shorts')
+        document.getElementById('navShorts')
+            ?.classList.add('active');
 
-      const file =
-        input.files?.[0];
+    if(page === 'notifications')
+        document.getElementById('navNotifications')
+            ?.classList.add('active');
 
+    if(page === 'menu')
+        document.getElementById('navMenu')
+            ?.classList.add('active');
 
-      if(!file){
-        return;
-      }
+    if(page === 'home')
+        loadFeed();
 
+    if(page === 'shorts')
+        loadShorts();
 
-      try{
+    if(page === 'profile')
+        loadProfile();
 
-        const url =
-          await upload(
+    if(page === 'notifications')
+        loadNotifications();
+}
+
+/* ============================================================
+   AVATAR
+============================================================ */
+
+function updateUserAvatar(){
+
+    const avatar =
+        currentProfile?.avatar_url;
+
+    document.getElementById('createAvatar')
+        .src =
+        avatar ||
+        'https://placehold.co/100x100?text=A';
+}
+
+/* ============================================================
+   STORAGE
+============================================================ */
+
+async function uploadFile(
+    file,
+    bucket
+){
+
+    if(!file)
+        return null;
+
+    if(!currentUser)
+        throw new Error(
+            'Tu dois être connecté.'
+        );
+
+    const ext =
+        getFileExtension(file);
+
+    const fileName =
+        `${currentUser.id}/${Date.now()}_${crypto.randomUUID()}.${ext}`;
+
+    const {error} =
+        await sb.storage
+        .from(bucket)
+        .upload(
+            fileName,
             file,
-            "stories"
-          );
-
-
-        const {
-          error
-        } = await sb
-          .from("stories")
-          .insert({
-            user_id:user.id,
-            media_url:url,
-            media_type:
-              file.type.startsWith("video/")
-                ? "video"
-                : "image",
-            expires_at:
-              new Date(
-                Date.now() +
-                24 * 3600 * 1000
-              ).toISOString()
-          });
-
-
-        if(error){
-          throw error;
-        }
-
-
-        await loadStories();
-
-        toast(
-          "Story publiée."
+            {
+                cacheControl:'3600',
+                upsert:false
+            }
         );
 
+    if(error)
+        throw error;
 
-      }catch(error){
+    const {
+        data
+    } =
+        sb.storage
+        .from(bucket)
+        .getPublicUrl(fileName);
 
-        toast(
-          error.message
+    return data.publicUrl;
+}
+
+/* ============================================================
+   POSTS
+============================================================ */
+
+function openPostModal(){
+
+    document.getElementById('postText')
+        .value = '';
+
+    document.getElementById('postFile')
+        .value = '';
+
+    openModal('postModal');
+}
+
+async function publishPost(){
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour publier.'
         );
 
-      }
+        return;
+    }
 
-    };
+    const button =
+        document.getElementById(
+            'publishButton'
+        );
 
+    const text =
+        document.getElementById(
+            'postText'
+        ).value.trim();
 
-  input.click();
-}
+    const file =
+        document.getElementById(
+            'postFile'
+        ).files[0];
 
+    if(!text && !file){
 
-async function openStory(id){
+        alert(
+            'Écris quelque chose ou ajoute une photo/vidéo.'
+        );
 
-  const {
-    data
-  } = await sb
-    .from("stories")
-    .select(
-      "id,media_url,media_type,user_id"
-    )
-    .eq("id",id)
-    .single();
+        return;
+    }
 
+    button.disabled = true;
+    button.textContent =
+        'Publication...';
 
-  if(!data){
-    return;
-  }
+    try{
 
+        let image_url = null;
+        let video_url = null;
+        let post_type = 'text';
 
-  $("storyContent").innerHTML =
-    data.media_type === "video"
-      ? `
-        <video
-          src="${esc(data.media_url)}"
-          controls
-          autoplay
-          playsinline
-        ></video>
-      `
-      : `
-        <img
-          src="${esc(data.media_url)}"
-          alt=""
-        >
-      `;
+        if(file){
 
+            if(file.type.startsWith('image/')){
 
-  $("storyViewer")
-    .classList
-    .add("active");
+                image_url =
+                    await uploadFile(
+                        file,
+                        'posts'
+                    );
 
+                post_type = 'image';
 
-  currentStory = id;
+            }else if(
+                file.type.startsWith('video/')
+            ){
 
+                video_url =
+                    await uploadFile(
+                        file,
+                        'posts'
+                    );
 
-  await sb
-    .from("story_views")
-    .upsert(
-      {
-        story_id:id,
-        user_id:user.id
-      },
-      {
-        onConflict:
-          "story_id,user_id"
-      }
-    );
-}
-
-
-/* =========================================================
-   SHORTS
-   ========================================================= */
-
-async function loadReels(){
-
-  const {
-    data,
-    error
-  } = await sb
-    .from("posts")
-    .select(`
-      id,
-      user_id,
-      content,
-      video_url,
-      likes_count,
-      comments_count,
-      shares_count,
-      profiles(
-        full_name,
-        avatar_url
-      )
-    `)
-    .eq(
-      "post_type",
-      "short"
-    )
-    .not(
-      "video_url",
-      "is",
-      null
-    )
-    .order(
-      "created_at",
-      {ascending:false}
-    )
-    .limit(30);
-
-
-  if(error){
-
-    console.error(error);
-
-    return;
-  }
-
-
-  $("reels").innerHTML =
-    data?.length
-      ? data.map(p => `
-        <article
-          class="reel"
-          data-reel="${p.id}"
-        >
-
-          <video
-            src="${esc(p.video_url)}"
-            class="reel-video"
-            playsinline
-            loop
-            preload="metadata"
-          ></video>
-
-          <div class="reel-overlay">
-
-            <b>
-              ${esc(
-                p.profiles?.full_name ||
-                "Membre AIDBA"
-              )}
-            </b>
-
-            <div>
-              ${esc(p.content || "")}
-            </div>
-
-          </div>
-
-          <div class="reel-actions">
-
-            <button>
-              👍
-              <br>
-              <small>
-                ${p.likes_count || 0}
-              </small>
-            </button>
-
-            <button>
-              💬
-            </button>
-
-            <button>
-              ↗
-            </button>
-
-          </div>
-
-        </article>
-      `).join("")
-      : `
-        <div
-          style="color:#fff;padding:40px;text-align:center"
-        >
-          Aucun Short pour le moment.
-        </div>
-      `;
-
-
-  document
-    .querySelectorAll(".reel-video")
-    .forEach(video => {
-
-      video.addEventListener(
-        "click",
-        () => {
-
-          video.muted =
-            !video.muted;
-
-          toast(
-            video.muted
-              ? "Son coupé"
-              : "Son activé"
-          );
-
-        }
-      );
-
-    });
-
-
-  const observer =
-    new IntersectionObserver(
-      entries => {
-
-        entries.forEach(
-          entry => {
-
-            const video =
-              entry.target;
-
-
-            if(entry.isIntersecting){
-
-              document
-                .querySelectorAll(
-                  ".reel-video"
-                )
-                .forEach(
-                  other => {
-
-                    if(
-                      other !== video
-                    ){
-                      other.pause();
-                    }
-
-                  }
-                );
-
-
-              video
-                .play()
-                .catch(
-                  () => {}
-                );
+                post_type = 'video';
 
             }else{
 
-              video.pause();
-
+                throw new Error(
+                    'Format non supporté.'
+                );
             }
+        }
 
-          }
+        const {error} =
+            await sb
+            .from('posts')
+            .insert({
+
+                user_id:currentUser.id,
+
+                content:text,
+
+                image_url,
+
+                video_url,
+
+                post_type,
+
+                location:
+                    currentProfile?.city ||
+                    ''
+            });
+
+        if(error)
+            throw error;
+
+        closeModal('postModal');
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            'Publier';
+    }
+}
+
+/* ============================================================
+   FEED
+============================================================ */
+
+async function loadFeed(){
+
+    const feed =
+        document.getElementById('feed');
+
+    feed.innerHTML =
+        `<div class="state">Chargement des publications...</div>`;
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('posts')
+            .select(`
+                *,
+                profiles (
+                    id,
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url,
+                    city
+                )
+            `)
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(50);
+
+        if(error)
+            throw error;
+
+        if(!data || !data.length){
+
+            feed.innerHTML =
+                `<div class="state">
+                    Aucune publication pour le moment.
+                    <br><br>
+                    Sois le premier à publier.
+                </div>`;
+
+            return;
+        }
+
+        const postIds =
+            data.map(post => post.id);
+
+        let likedIds = new Set();
+
+        if(currentUser && postIds.length){
+
+            const {data:likes} =
+                await sb
+                .from('post_likes')
+                .select('post_id')
+                .eq(
+                    'user_id',
+                    currentUser.id
+                )
+                .in(
+                    'post_id',
+                    postIds
+                );
+
+            likedIds =
+                new Set(
+                    (likes || [])
+                    .map(x => x.post_id)
+                );
+        }
+
+        feed.innerHTML =
+            data
+            .map(post =>
+                renderPost(
+                    post,
+                    likedIds.has(post.id)
+                )
+            )
+            .join('');
+
+    }catch(error){
+
+        console.error(error);
+
+        feed.innerHTML =
+            `<div class="state">
+                Impossible de charger les publications.
+                <br><br>
+                ${escapeHTML(error.message)}
+            </div>`;
+    }
+}
+
+function renderPost(
+    post,
+    liked
+){
+
+    const profile =
+        post.profiles || {};
+
+    const name =
+        `${profile.first_name || ''} ${profile.last_name || ''}`
+        .trim()
+        ||
+        profile.username
+        ||
+        'Utilisateur';
+
+    const avatar =
+        profile.avatar_url ||
+        'https://placehold.co/100x100?text=A';
+
+    const date =
+        new Date(post.created_at)
+        .toLocaleString(
+            'fr-FR',
+            {
+                day:'numeric',
+                month:'short',
+                hour:'2-digit',
+                minute:'2-digit'
+            }
         );
 
-      },
-      {
-        threshold:.7
-      }
-    );
+    let media = '';
 
+    if(post.image_url){
 
-  document
-    .querySelectorAll(".reel-video")
-    .forEach(
-      video =>
+        media =
+        `<img
+            class="post-media"
+            src="${escapeHTML(post.image_url)}"
+            alt="Publication"
+            loading="lazy"
+        >`;
+
+    }else if(post.video_url){
+
+        media =
+        `<video
+            class="post-video"
+            src="${escapeHTML(post.video_url)}"
+            controls
+            playsinline
+            preload="metadata"
+        ></video>`;
+    }
+
+    return `
+    <article class="post">
+
+        <div class="post-head">
+
+            <img
+                class="avatar"
+                src="${escapeHTML(avatar)}"
+                alt=""
+            >
+
+            <div class="post-author">
+
+                <strong>
+                    ${escapeHTML(name)}
+                </strong>
+
+                <div class="post-meta">
+                    ${escapeHTML(date)}
+                    ${profile.city ? ' · ' + escapeHTML(profile.city) : ''}
+                    · 🌍
+                </div>
+
+            </div>
+
+            <button
+                class="more"
+                onclick="postMenu('${post.id}')">
+                •••
+            </button>
+
+        </div>
+
+        ${
+            post.content
+            ?
+            `<div class="post-text">
+                ${escapeHTML(post.content)}
+            </div>`
+            :
+            ''
+        }
+
+        ${media}
+
+        <div class="post-stats">
+
+            <span>
+                👍 ❤️
+                ${post.likes_count || 0}
+            </span>
+
+            <span>
+                ${post.comments_count || 0} commentaires
+            </span>
+
+            <span>
+                ${post.shares_count || 0} partages
+            </span>
+
+        </div>
+
+        <div class="post-actions">
+
+            <button
+                class="${liked ? 'liked':''}"
+                onclick="toggleLike('${post.id}',${liked})">
+
+                ${liked ? '👍 J’aime' : '👍 J’aime'}
+
+            </button>
+
+            <button
+                onclick="toggleComments('${post.id}')">
+
+                💬 Commenter
+
+            </button>
+
+            <button
+                onclick="sharePost('${post.id}')">
+
+                ↗️ Partager
+
+            </button>
+
+        </div>
+
+        <div
+            id="comments-${post.id}"
+            class="comments hidden">
+        </div>
+
+    </article>
+    `;
+}
+
+/* ============================================================
+   LIKE
+============================================================ */
+
+async function toggleLike(
+    postId,
+    alreadyLiked
+){
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour aimer une publication.'
+        );
+
+        return;
+    }
+
+    try{
+
+        if(alreadyLiked){
+
+            const {error} =
+                await sb
+                .from('post_likes')
+                .delete()
+                .eq(
+                    'post_id',
+                    postId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
+
+            if(error)
+                throw error;
+
+        }else{
+
+            const {error} =
+                await sb
+                .from('post_likes')
+                .insert({
+
+                    post_id:postId,
+                    user_id:currentUser.id
+
+                });
+
+            if(error)
+                throw error;
+        }
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+/* ============================================================
+   COMMENTAIRES
+============================================================ */
+
+async function toggleComments(postId){
+
+    const box =
+        document.getElementById(
+            `comments-${postId}`
+        );
+
+    if(box.classList.contains('hidden')){
+
+        box.classList.remove('hidden');
+
+        await loadComments(
+            postId,
+            box
+        );
+
+    }else{
+
+        box.classList.add('hidden');
+    }
+}
+
+async function loadComments(
+    postId,
+    box
+){
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('comments')
+            .select(`
+                *,
+                profiles(
+                    first_name,
+                    last_name,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'post_id',
+                postId
+            )
+            .order(
+                'created_at',
+                {ascending:true}
+            );
+
+        if(error)
+            throw error;
+
+        box.innerHTML = `
+
+            <div style="margin-bottom:12px;font-weight:bold;">
+                Commentaires
+            </div>
+
+            ${
+                (data || [])
+                .map(comment => {
+
+                    const p =
+                        comment.profiles || {};
+
+                    const name =
+                        `${p.first_name || ''} ${p.last_name || ''}`
+                        .trim()
+                        || 'Utilisateur';
+
+                    return `
+                    <div class="comment">
+
+                        <img
+                            class="avatar"
+                            style="width:36px;height:36px"
+                            src="${escapeHTML(
+                                p.avatar_url ||
+                                'https://placehold.co/80x80?text=A'
+                            )}"
+                        >
+
+                        <div class="comment-body">
+
+                            <strong>
+                                ${escapeHTML(name)}
+                            </strong>
+
+                            <div>
+                                ${escapeHTML(comment.content)}
+                            </div>
+
+                        </div>
+
+                    </div>
+                    `;
+
+                })
+                .join('')
+                ||
+                `<div style="color:#777;margin-bottom:10px;">
+                    Aucun commentaire.
+                </div>`
+            }
+
+            ${
+                currentUser
+                ?
+                `
+                <form
+                    class="comment-form"
+                    onsubmit="sendComment(event,'${postId}')">
+
+                    <input
+                        id="comment-${postId}"
+                        placeholder="Écrire un commentaire..."
+                        autocomplete="off"
+                    >
+
+                    <button type="submit">
+                        ➤
+                    </button>
+
+                </form>
+                `
+                :
+                ''
+            }
+        `;
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+async function sendComment(
+    event,
+    postId
+){
+
+    event.preventDefault();
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour commenter.'
+        );
+
+        return;
+    }
+
+    const input =
+        document.getElementById(
+            `comment-${postId}`
+        );
+
+    const content =
+        input.value.trim();
+
+    if(!content)
+        return;
+
+    try{
+
+        const {error} =
+            await sb
+            .from('comments')
+            .insert({
+
+                post_id:postId,
+                user_id:currentUser.id,
+                content
+
+            });
+
+        if(error)
+            throw error;
+
+        input.value = '';
+
+        const box =
+            document.getElementById(
+                `comments-${postId}`
+            );
+
+        await loadComments(
+            postId,
+            box
+        );
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+/* ============================================================
+   SHARE
+============================================================ */
+
+async function sharePost(postId){
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour partager.'
+        );
+
+        return;
+    }
+
+    try{
+
+        const {error} =
+            await sb
+            .from('post_shares')
+            .insert({
+
+                post_id:postId,
+                user_id:currentUser.id
+
+            });
+
+        if(error)
+            throw error;
+
+        const url =
+            location.href +
+            '#post-' +
+            postId;
+
+        if(
+            navigator.share
+        ){
+
+            await navigator.share({
+                title:'AIDBA GUINÉE',
+                text:'Regarde cette publication.',
+                url
+            });
+
+        }else{
+
+            await navigator.clipboard.writeText(url);
+
+            alert(
+                'Lien de la publication copié.'
+            );
+        }
+
+        await loadFeed();
+
+    }catch(error){
+
+        if(error.name !== 'AbortError')
+            showError(error);
+    }
+}
+
+/* ============================================================
+   STORIES
+============================================================ */
+
+async function loadStories(){
+
+    const box =
+        document.getElementById(
+            'stories'
+        );
+
+    box.innerHTML = '';
+
+    const create =
+        document.createElement('div');
+
+    create.className =
+        'story create-story';
+
+    create.innerHTML = `
+        <div class="plus">+</div>
+        <strong>Créer une story</strong>
+    `;
+
+    create.onclick =
+        () => openModal('storyModal');
+
+    box.appendChild(create);
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('stories')
+            .select(`
+                *,
+                profiles(
+                    id,
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url
+                )
+            `)
+            .gt(
+                'expires_at',
+                new Date().toISOString()
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(30);
+
+        if(error)
+            throw error;
+
+        (data || [])
+        .forEach(story => {
+
+            const p =
+                story.profiles || {};
+
+            const name =
+                `${p.first_name || ''} ${p.last_name || ''}`
+                .trim()
+                ||
+                p.username
+                ||
+                'Utilisateur';
+
+            const card =
+                document.createElement('div');
+
+            card.className =
+                'story';
+
+            const media =
+                story.media_type === 'video'
+                ?
+                `<video
+                    src="${escapeHTML(story.media_url)}"
+                    muted
+                    playsinline
+                ></video>`
+                :
+                `<img
+                    src="${escapeHTML(story.media_url)}"
+                >`;
+
+            card.innerHTML = `
+
+                ${media}
+
+                <div class="story-overlay"></div>
+
+                <img
+                    class="story-avatar"
+                    src="${escapeHTML(
+                        p.avatar_url ||
+                        'https://placehold.co/80x80?text=A'
+                    )}"
+                >
+
+                <div class="story-name">
+                    ${escapeHTML(name)}
+                </div>
+            `;
+
+            card.onclick =
+                () => viewStory(story);
+
+            box.appendChild(card);
+        });
+
+    }catch(error){
+
+        console.error(error);
+    }
+}
+
+async function publishStory(){
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour publier une story.'
+        );
+
+        return;
+    }
+
+    const file =
+        document.getElementById(
+            'storyFile'
+        ).files[0];
+
+    const caption =
+        document.getElementById(
+            'storyCaption'
+        ).value.trim();
+
+    if(!file){
+
+        alert(
+            'Choisis une photo ou une vidéo.'
+        );
+
+        return;
+    }
+
+    try{
+
+        const url =
+            await uploadFile(
+                file,
+                'stories'
+            );
+
+        const media_type =
+            file.type.startsWith('video/')
+            ?
+            'video'
+            :
+            'image';
+
+        const {error} =
+            await sb
+            .from('stories')
+            .insert({
+
+                user_id:currentUser.id,
+
+                media_url:url,
+
+                media_type,
+
+                caption
+
+            });
+
+        if(error)
+            throw error;
+
+        document.getElementById(
+            'storyFile'
+        ).value = '';
+
+        document.getElementById(
+            'storyCaption'
+        ).value = '';
+
+        closeModal('storyModal');
+
+        await loadStories();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+async function viewStory(story){
+
+    if(
+        currentUser &&
+        currentUser.id !== story.user_id
+    ){
+
+        try{
+
+            await sb
+            .from('story_views')
+            .insert({
+
+                story_id:story.id,
+                user_id:currentUser.id
+
+            });
+
+            await sb.rpc(
+                'increment_story_views',
+                {
+                    story_uuid:story.id
+                }
+            );
+
+        }catch(error){
+
+            console.error(error);
+        }
+    }
+
+    if(story.media_type === 'video'){
+
+        const w =
+            window.open('', '_blank');
+
+        w.document.write(`
+            <body style="margin:0;background:#000">
+            <video
+                src="${escapeHTML(story.media_url)}"
+                controls
+                autoplay
+                style="width:100%;height:100vh;object-fit:contain"
+            ></video>
+            </body>
+        `);
+
+    }else{
+
+        const w =
+            window.open('', '_blank');
+
+        w.document.write(`
+            <body style="margin:0;background:#000">
+            <img
+                src="${escapeHTML(story.media_url)}"
+                style="width:100%;height:100vh;object-fit:contain"
+            >
+            </body>
+        `);
+    }
+}
+
+/* ============================================================
+   SHORTS
+============================================================ */
+
+async function loadShorts(){
+
+    const box =
+        document.getElementById(
+            'shortsFeed'
+        );
+
+    box.innerHTML =
+        `<div class="state">
+            Chargement des Shorts...
+        </div>`;
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('posts')
+            .select(`
+                *,
+                profiles(
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'post_type',
+                'video'
+            )
+            .not(
+                'video_url',
+                'is',
+                null
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(30);
+
+        if(error)
+            throw error;
+
+        if(!data || !data.length){
+
+            box.innerHTML =
+                `<div class="state">
+                    Aucun Short pour le moment.
+                </div>`;
+
+            return;
+        }
+
+        box.innerHTML =
+            data
+            .map(post => {
+
+                const p =
+                    post.profiles || {};
+
+                const name =
+                    `${p.first_name || ''} ${p.last_name || ''}`
+                    .trim()
+                    ||
+                    p.username
+                    ||
+                    'Utilisateur';
+
+                return `
+                <article
+                    class="short-card"
+                    data-post-id="${post.id}">
+
+                    <video
+                        src="${escapeHTML(post.video_url)}"
+                        playsinline
+                        muted
+                        loop
+                        controls
+                        preload="metadata">
+                    </video>
+
+                    <div class="short-info">
+
+                        <strong>
+                            ${escapeHTML(name)}
+                        </strong>
+
+                        <div style="margin-top:7px">
+                            ${escapeHTML(post.content)}
+                        </div>
+
+                    </div>
+
+                    <div class="short-actions">
+
+                        <button
+                            onclick="toggleLike('${post.id}',false)">
+                            ❤️
+                        </button>
+
+                        <button
+                            onclick="toggleComments('${post.id}')">
+                            💬
+                        </button>
+
+                        <button
+                            onclick="sharePost('${post.id}')">
+                            ↗️
+                        </button>
+
+                    </div>
+
+                </article>
+                `;
+            })
+            .join('');
+
+        setupVideoObserver();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+function setupVideoObserver(){
+
+    const videos =
+        document.querySelectorAll(
+            '.short-card video'
+        );
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    const video =
+                        entry.target;
+
+                    if(entry.isIntersecting){
+
+                        video.play()
+                        .catch(()=>{});
+
+                    }else{
+
+                        video.pause();
+
+                    }
+
+                });
+
+            },
+            {
+                threshold:0.7
+            }
+        );
+
+    videos.forEach(video =>
         observer.observe(video)
     );
 }
 
+/* ============================================================
+   PROFILE
+============================================================ */
 
-/* =========================================================
-   BOUTIQUE
-   ========================================================= */
+async function loadProfile(){
 
-async function loadMarket(){
+    if(!currentProfile)
+        return;
 
-  const {
-    data,
-    error
-  } = await sb
-    .from("marketplace_items")
-    .select("*")
-    .eq(
-      "status",
-      "active"
-    )
-    .order(
-      "created_at",
-      {ascending:false}
-    )
-    .limit(40);
+    const box =
+        document.getElementById(
+            'profileContent'
+        );
 
+    const avatar =
+        currentProfile.avatar_url ||
+        'https://placehold.co/200x200?text=A';
 
-  if(error){
-    return;
-  }
+    const cover =
+        currentProfile.cover_url ||
+        'https://placehold.co/800x300?text=AIDBA+GUINÉE';
 
+    const name =
+        `${currentProfile.first_name || ''} ${currentProfile.last_name || ''}`
+        .trim()
+        ||
+        'Utilisateur';
 
-  $("marketGrid").innerHTML =
-    data?.length
-      ? data.map(x => `
-        <article class="market-card">
+    box.innerHTML = `
 
-          <img
-            src="${esc(
-              x.image_url || ""
-            )}"
-            alt=""
-          >
+        <div class="profile-card">
 
-          <div class="market-info">
+            <img
+                class="cover"
+                src="${escapeHTML(cover)}"
+            >
 
-            <b>
-              ${esc(x.title)}
-            </b>
+            <div class="profile-info">
 
-            <div class="price">
-              ${
-                Number(
-                  x.price || 0
-                ).toLocaleString(
-                  "fr-FR"
-                )
-              }
-              GNF
+                <img
+                    class="profile-avatar"
+                    src="${escapeHTML(avatar)}"
+                >
+
+                <h1>
+                    ${escapeHTML(name)}
+                </h1>
+
+                <p>
+                    @${escapeHTML(
+                        currentProfile.username || ''
+                    )}
+                </p>
+
+                <p>
+                    ${escapeHTML(
+                        currentProfile.bio || ''
+                    )}
+                </p>
+
+                <p>
+                    📍 ${escapeHTML(
+                        currentProfile.city || ''
+                    )}
+                    ${
+                        currentProfile.country
+                        ?
+                        ' · ' +
+                        escapeHTML(
+                            currentProfile.country
+                        )
+                        :
+                        ''
+                    }
+                </p>
+
+                <button
+                    class="primary"
+                    style="max-width:300px;margin:15px auto 0"
+                    onclick="openProfileModal()">
+                    Modifier mon profil
+                </button>
+
             </div>
 
-            <small class="muted">
-              ${esc(
-                x.city ||
-                "Guinée"
-              )}
-            </small>
-
-          </div>
-
-        </article>
-      `).join("")
-      : `
-        <div
-          class="card"
-          style="grid-column:1/-1;padding:30px;text-align:center;color:var(--muted)"
-        >
-          La boutique est encore vide.
         </div>
-      `;
+    `;
 }
 
+function openProfileModal(){
 
-/* =========================================================
-   NOTIFICATIONS
-   ========================================================= */
+    if(!currentProfile)
+        return;
 
-async function loadNotifications(){
+    document.getElementById(
+        'editFirstName'
+    ).value =
+        currentProfile.first_name || '';
 
-  const {
-    data
-  } = await sb
-    .from("notifications")
-    .select("*")
-    .eq(
-      "user_id",
-      user.id
-    )
-    .order(
-      "created_at",
-      {ascending:false}
-    )
-    .limit(50);
+    document.getElementById(
+        'editLastName'
+    ).value =
+        currentProfile.last_name || '';
 
+    document.getElementById(
+        'editUsername'
+    ).value =
+        currentProfile.username || '';
 
-  $("notifList").innerHTML =
-    data?.length
-      ? data.map(n => `
-        <div
-          class="card"
-          style="padding:13px"
-        >
+    document.getElementById(
+        'editBio'
+    ).value =
+        currentProfile.bio || '';
 
-          <b>
-            ${esc(
-              n.title ||
-              "Notification"
-            )}
-          </b>
+    document.getElementById(
+        'editCountry'
+    ).value =
+        currentProfile.country || 'Guinée';
 
-          <div>
-            ${esc(
-              n.body || ""
-            )}
-          </div>
+    document.getElementById(
+        'editCity'
+    ).value =
+        currentProfile.city || '';
 
-          <small class="muted">
-            ${timeAgo(n.created_at)}
-          </small>
-
-        </div>
-      `).join("")
-      : `
-        <div
-          class="card"
-          style="padding:35px;text-align:center;color:var(--muted)"
-        >
-          Aucune notification.
-        </div>
-      `;
+    openModal('profileModal');
 }
-
-
-/* =========================================================
-   SHEETS
-   ========================================================= */
-
-function closeSheets(){
-
-  $("backdrop")
-    .classList
-    .remove("active");
-
-  document
-    .querySelectorAll(".sheet")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
-}
-
-
-function openSheet(id){
-
-  $("backdrop")
-    .classList
-    .add("active");
-
-  $(id)
-    .classList
-    .add("active");
-}
-
-
-/* =========================================================
-   SAUVEGARDE PROFIL
-   =========================================================
-   IMPORTANT :
-   Pas de updated_at ici.
-   Cela évite l'erreur :
-   "Could not find the 'updated_at' column..."
-   ========================================================= */
 
 async function saveProfile(){
 
-  const button =
-    $("saveProfile");
+    if(!currentUser)
+        return;
 
+    try{
 
-  setBusy(
-    button,
-    true,
-    "Sauvegarde..."
-  );
+        const first_name =
+            document.getElementById(
+                'editFirstName'
+            ).value.trim();
 
+        const last_name =
+            document.getElementById(
+                'editLastName'
+            ).value.trim();
 
-  try{
+        const username =
+            document.getElementById(
+                'editUsername'
+            ).value.trim()
+            .toLowerCase();
 
-    const updates = {
+        const bio =
+            document.getElementById(
+                'editBio'
+            ).value.trim();
 
-      full_name:
-        $("editName")
-          .value
-          .trim(),
+        const country =
+            document.getElementById(
+                'editCountry'
+            ).value.trim();
 
-      bio:
-        $("editBio")
-          .value
-          .trim()
+        const city =
+            document.getElementById(
+                'editCity'
+            ).value.trim();
 
-    };
+        const avatarFile =
+            document.getElementById(
+                'avatarFile'
+            ).files[0];
 
+        const coverFile =
+            document.getElementById(
+                'coverFile'
+            ).files[0];
 
-    const avatar =
-      $("editAvatar")
-        .files[0];
+        let avatar_url =
+            currentProfile.avatar_url;
 
+        let cover_url =
+            currentProfile.cover_url;
 
-    const cover =
-      $("editCover")
-        .files[0];
+        if(avatarFile){
 
+            avatar_url =
+                await uploadFile(
+                    avatarFile,
+                    'avatars'
+                );
+        }
 
-    if(avatar){
+        if(coverFile){
 
-      updates.avatar_url =
-        await upload(
-          avatar,
-          "avatars"
+            cover_url =
+                await uploadFile(
+                    coverFile,
+                    'covers'
+                );
+        }
+
+        const {data,error} =
+            await sb
+            .from('profiles')
+            .update({
+
+                first_name,
+                last_name,
+                username,
+                bio,
+                country,
+                city,
+                avatar_url,
+                cover_url
+
+            })
+            .eq(
+                'id',
+                currentUser.id
+            )
+            .select()
+            .single();
+
+        if(error)
+            throw error;
+
+        currentProfile = data;
+
+        updateUserAvatar();
+
+        closeModal('profileModal');
+
+        await loadProfile();
+
+        alert(
+            'Profil enregistré.'
         );
 
+    }catch(error){
+
+        showError(error);
     }
-
-
-    if(cover){
-
-      updates.cover_url =
-        await upload(
-          cover,
-          "covers"
-        );
-
-    }
-
-
-    const {
-      error
-    } = await sb
-      .from("profiles")
-      .update(updates)
-      .eq(
-        "id",
-        user.id
-      );
-
-
-    if(error){
-      throw error;
-    }
-
-
-    await loadProfile();
-
-    closeSheets();
-
-    toast(
-      "Profil mis à jour."
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-    toast(
-      "Erreur : " +
-      error.message
-    );
-
-
-  }finally{
-
-    setBusy(
-      button,
-      false
-    );
-
-  }
 }
 
+/* ============================================================
+   NOTIFICATIONS
+============================================================ */
 
-/* =========================================================
-   NAVIGATION
-   ========================================================= */
+async function loadNotifications(){
 
-function switchView(view){
+    const box =
+        document.getElementById(
+            'notifications'
+        );
 
-  document
-    .querySelectorAll(".view")
-    .forEach(
-      x =>
-        x.classList.remove("active")
-    );
+    if(!currentUser)
+        return;
 
+    try{
 
-  $(view)
-    .classList
-    .add("active");
+        const {data,error} =
+            await sb
+            .from('notifications')
+            .select(`
+                *,
+                actor:profiles!notifications_actor_id_fkey(
+                    first_name,
+                    last_name,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'user_id',
+                currentUser.id
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(50);
 
+        if(error)
+            throw error;
 
-  document
-    .querySelectorAll(".bottom button")
-    .forEach(
-      button =>
-        button.classList.toggle(
-          "active",
-          button.dataset.view === view
+        if(!data || !data.length){
+
+            box.innerHTML =
+                `<div class="state">
+                    Aucune notification.
+                </div>`;
+
+            return;
+        }
+
+        box.innerHTML =
+            data
+            .map(n => `
+                <div
+                    style="
+                    padding:14px 0;
+                    border-bottom:1px solid #eee;
+                    ">
+                    ${escapeHTML(n.message)}
+                </div>
+            `)
+            .join('');
+
+    }catch(error){
+
+        console.error(error);
+
+        box.innerHTML =
+            `<div class="state">
+                Impossible de charger les notifications.
+            </div>`;
+    }
+}
+
+/* ============================================================
+   RECHERCHE
+============================================================ */
+
+function openSearch(){
+
+    const q =
+        prompt(
+            'Rechercher un utilisateur'
+        );
+
+    if(!q)
+        return;
+
+    searchUsers(q);
+}
+
+async function searchUsers(q){
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('profiles')
+            .select(`
+                id,
+                first_name,
+                last_name,
+                username,
+                avatar_url,
+                city
+            `)
+            .or(
+                `first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%`
+            )
+            .limit(20);
+
+        if(error)
+            throw error;
+
+        if(!data.length){
+
+            alert(
+                'Aucun utilisateur trouvé.'
+            );
+
+            return;
+        }
+
+        const names =
+            data.map(
+                p =>
+                `${p.first_name} ${p.last_name} (@${p.username})`
+            );
+
+        alert(
+            names.join('\n')
+        );
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+/* ============================================================
+   MENU PUBLICATION
+============================================================ */
+
+function postMenu(postId){
+
+    if(
+        confirm(
+            'Supprimer cette publication ?'
         )
-    );
+    ){
 
-
-  if(view === "homeView"){
-    loadFeed();
-    loadStories();
-  }
-
-
-  if(view === "reelsView"){
-    loadReels();
-  }
-
-
-  if(view === "marketView"){
-    loadMarket();
-  }
-
-
-  if(view === "notifView"){
-    loadNotifications();
-  }
-
-
-  if(view === "menuView"){
-    loadProfile();
-  }
+        deletePost(postId);
+    }
 }
 
+async function deletePost(postId){
 
-/* =========================================================
-   INSCRIPTION
-   ========================================================= */
-
-$("goRegister").onclick =
-  () => showReg(1);
-
-
-$("goLogin").onclick =
-  showLogin;
-
-
-$("backToLoginFromEmail").onclick =
-  showLogin;
-
-
-/* =========================================================
-   CREATION DU COMPTE SUPABASE
-   ========================================================= */
-
-$("regForm").onsubmit =
-  async event => {
-
-    event.preventDefault();
-
-
-    const firstName =
-      $("firstName")
-        .value
-        .trim();
-
-
-    const lastName =
-      $("lastName")
-        .value
-        .trim();
-
-
-    const email =
-      $("regEmail")
-        .value
-        .trim();
-
-
-    const phone =
-      $("phone")
-        .value
-        .trim();
-
-
-    const password =
-      $("regPassword")
-        .value;
-
-
-    const password2 =
-      $("regPassword2")
-        .value;
-
-
-    const dob =
-      $("dob").value;
-
-
-    const country =
-      $("country").value;
-
-
-    const city =
-      $("city")
-        .value
-        .trim();
-
-
-    /* Vérification mot de passe */
-
-    if(
-      password.length < 6
-    ){
-
-      return toast(
-        "Le mot de passe doit contenir au moins 6 caractères."
-      );
-
-    }
-
-
-    if(
-      password !== password2
-    ){
-
-      return toast(
-        "Les mots de passe ne correspondent pas."
-      );
-
-    }
-
-
-    /* Vérification date */
-
-    const birthDate =
-      new Date(dob);
-
-
-    if(
-      !dob ||
-      isNaN(birthDate.getTime()) ||
-      birthDate > new Date()
-    ){
-
-      return toast(
-        "Date de naissance invalide."
-      );
-
-    }
-
-
-    /* Stockage temporaire */
-
-    pending = {
-
-      first_name:firstName,
-
-      last_name:lastName,
-
-      email:email,
-
-      phone:phone,
-
-      country:country,
-
-      city:city,
-
-      password:password,
-
-      date_of_birth:dob
-
-    };
-
-
-    const button =
-      event.submitter;
-
-
-    setBusy(
-      button,
-      true,
-      "Création..."
-    );
-
-
-    try{
-
-      /*
-       * INSCRIPTION SUPABASE
-       * Code demandé intégré ici.
-       */
-
-      const {
-        data,
-        error
-      } = await sb.auth.signUp({
-
-        email:email,
-
-        password:password,
-
-        options:{
-
-          data:{
-
-            first_name:firstName,
-
-            last_name:lastName,
-
-            full_name:
-              `${firstName} ${lastName}`,
-
-            country:country,
-
-            city:city,
-
-            date_of_birth:dob,
-
-            phone:phone
-
-          }
-
-        }
-
-      });
-
-
-      if(error){
-
-        const message =
-          error.message || "";
-
-
-        if(
-          message.includes(
-            "User already registered"
-          ) ||
-          message.includes(
-            "already registered"
-          ) ||
-          message.includes(
-            "already exists"
-          ) ||
-          message.includes(
-            "already been registered"
-          )
-        ){
-
-          toast(
-            "Un compte existe déjà avec cet e-mail. Essaie de te connecter !"
-          );
-
-        }else{
-
-          toast(
-            "Erreur lors de l'inscription : " +
-            message
-          );
-
-        }
-
+    if(!currentUser)
         return;
-      }
-
-
-      if(!data?.user){
-
-        return toast(
-          "Impossible de créer le compte."
-        );
-
-      }
-
-
-      /*
-       * Conserver les informations
-       * temporairement dans le navigateur.
-       */
-
-      localStorage.setItem(
-        "aidba_pending",
-        JSON.stringify(pending)
-      );
-
-
-      $("emailShown").textContent =
-        email;
-
-
-      showReg(2);
-
-
-      toast(
-        "Compte créé. Vérifie ton e-mail avec le code à 6 chiffres."
-      );
-
-
-    }catch(error){
-
-      console.error(
-        "Erreur inscription:",
-        error
-      );
-
-      toast(
-        "Erreur lors de l'inscription : " +
-        error.message
-      );
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
-    }
-
-  };
-
-
-/* =========================================================
-   VERIFICATION EMAIL
-   ========================================================= */
-
-$("verifyEmailBtn").onclick =
-  async () => {
-
-    const token =
-      getEmailOtp();
-
-
-    if(
-      token.length !== 6
-    ){
-
-      return toast(
-        "Entrez les 6 chiffres."
-      );
-
-    }
-
-
-    const button =
-      $("verifyEmailBtn");
-
-
-    setBusy(
-      button,
-      true,
-      "Vérification..."
-    );
-
 
     try{
 
-      const {
-        data,
-        error
-      } = await sb.auth.verifyOtp({
+        const {error} =
+            await sb
+            .from('posts')
+            .delete()
+            .eq(
+                'id',
+                postId
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
 
-        email:pending.email,
+        if(error)
+            throw error;
 
-        token:token,
-
-        type:"email"
-
-      });
-
-
-      if(error){
-
-        toast(
-          error.message
-        );
-
-        return;
-      }
-
-
-      /*
-       * Après confirmation de l'e-mail,
-       * Supabase possède maintenant la session.
-       */
-
-      user =
-        data?.user ||
-        (await sb.auth.getUser())
-          .data
-          ?.user;
-
-
-      if(!user){
-
-        throw new Error(
-          "Session utilisateur introuvable après confirmation de l'e-mail."
-        );
-
-      }
-
-
-      /*
-       * Création du profil.
-       *
-       * UPSERT = si le profil existe déjà,
-       * on le met à jour.
-       */
-
-      const {
-        error:profileError
-      } = await sb
-        .from("profiles")
-        .upsert(
-          {
-            id:user.id,
-
-            first_name:
-              pending.first_name,
-
-            last_name:
-              pending.last_name,
-
-            full_name:
-              `${pending.first_name} ${pending.last_name}`,
-
-            date_of_birth:
-              pending.date_of_birth,
-
-            country:
-              pending.country,
-
-            city:
-              pending.city,
-
-            phone:
-              pending.phone
-          },
-          {
-            onConflict:"id"
-          }
-        );
-
-
-      if(profileError){
-
-        throw profileError;
-
-      }
-
-
-      $("phoneShown").textContent =
-        pending.phone;
-
-
-      showReg(3);
-
-
-      toast(
-        "E-mail confirmé."
-      );
-
+        await loadFeed();
 
     }catch(error){
 
-      console.error(error);
-
-      toast(
-        "Erreur de confirmation : " +
-        error.message
-      );
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
+        showError(error);
     }
-
-  };
-
-
-/* =========================================================
-   RENVOYER CODE EMAIL
-   ========================================================= */
-
-$("resendEmailBtn").onclick =
-  async () => {
-
-    if(!pending.email){
-
-      return toast(
-        "Adresse e-mail introuvable."
-      );
-
-    }
-
-
-    const button =
-      $("resendEmailBtn");
-
-
-    setBusy(
-      button,
-      true,
-      "Envoi..."
-    );
-
-
-    try{
-
-      const {
-        error
-      } = await sb.auth.signInWithOtp({
-
-        email:pending.email,
-
-        options:{
-          shouldCreateUser:false
-        }
-
-      });
-
-
-      if(error){
-
-        toast(
-          error.message
-        );
-
-      }else{
-
-        toast(
-          "Nouveau code envoyé."
-        );
-
-      }
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
-    }
-
-  };
-
-
-/* =========================================================
-   ENVOI SMS
-   ========================================================= */
-
-$("sendPhoneBtn").onclick =
-  async () => {
-
-    const button =
-      $("sendPhoneBtn");
-
-
-    setBusy(
-      button,
-      true,
-      "Envoi..."
-    );
-
-
-    try{
-
-      if(!user){
-
-        throw new Error(
-          "Vous devez d'abord confirmer votre e-mail."
-        );
-
-      }
-
-
-      const {
-        error
-      } = await sb.auth.updateUser({
-
-        phone:
-          pending.phone
-
-      });
-
-
-      if(error){
-        throw error;
-      }
-
-
-      toast(
-        "Code SMS envoyé."
-      );
-
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Impossible d'envoyer le SMS : " +
-        error.message
-      );
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
-    }
-
-  };
-
-
-/* =========================================================
-   VERIFICATION TELEPHONE
-   ========================================================= */
-
-$("verifyPhoneBtn").onclick =
-  async () => {
-
-    const token =
-      getPhoneOtp();
-
-
-    if(
-      token.length !== 6
-    ){
-
-      return toast(
-        "Entrez les 6 chiffres."
-      );
-
-    }
-
-
-    const button =
-      $("verifyPhoneBtn");
-
-
-    setBusy(
-      button,
-      true,
-      "Vérification..."
-    );
-
-
-    try{
-
-      const {
-        error
-      } = await sb.auth.verifyOtp({
-
-        phone:
-          pending.phone,
-
-        token:
-          token,
-
-        type:
-          "phone_change"
-
-      });
-
-
-      if(error){
-        throw error;
-      }
-
-
-      /*
-       * Ne pas utiliser updated_at ici.
-       */
-
-      const {
-        error:profileError
-      } = await sb
-        .from("profiles")
-        .update({
-          phone:
-            pending.phone,
-
-          phone_verified_at:
-            new Date().toISOString()
-        })
-        .eq(
-          "id",
-          user.id
-        );
-
-
-      if(profileError){
-        throw profileError;
-      }
-
-
-      showReg(4);
-
-
-      toast(
-        "Téléphone confirmé."
-      );
-
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Erreur de vérification : " +
-        error.message
-      );
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
-    }
-
-  };
-
-
-/* =========================================================
-   FIN INSCRIPTION + PHOTOS
-   ========================================================= */
-
-$("finishRegistration").onclick =
-  async () => {
-
-    const button =
-      $("finishRegistration");
-
-
-    setBusy(
-      button,
-      true,
-      "Finalisation..."
-    );
-
-
-    try{
-
-      if(!user){
-
-        throw new Error(
-          "Utilisateur non connecté."
-        );
-
-      }
-
-
-      const updates = {
-
-        first_name:
-          pending.first_name,
-
-        last_name:
-          pending.last_name,
-
-        full_name:
-          `${pending.first_name} ${pending.last_name}`,
-
-        date_of_birth:
-          pending.date_of_birth,
-
-        country:
-          pending.country,
-
-        city:
-          pending.city,
-
-        phone:
-          pending.phone
-
-      };
-
-
-      const avatar =
-        $("avatarFile")
-          .files[0];
-
-
-      const cover =
-        $("coverFile")
-          .files[0];
-
-
-      if(avatar){
-
-        updates.avatar_url =
-          await upload(
-            avatar,
-            "avatars"
-          );
-
-      }
-
-
-      if(cover){
-
-        updates.cover_url =
-          await upload(
-            cover,
-            "covers"
-          );
-
-      }
-
-
-      const {
-        error
-      } = await sb
-        .from("profiles")
-        .upsert(
-          updates,
-          {
-            onConflict:"id"
-          }
-        );
-
-
-      if(error){
-        throw error;
-      }
-
-
-      localStorage.removeItem(
-        "aidba_pending"
-      );
-
-
-      toast(
-        "Compte créé avec succès !"
-      );
-
-
-      await boot();
-
-
-    }catch(error){
-
-      console.error(error);
-
-      toast(
-        "Erreur : " +
-        error.message
-      );
-
-
-    }finally{
-
-      setBusy(
-        button,
-        false
-      );
-
-    }
-
-  };
-
-
-/* =========================================================
-   COMPOSER
-   ========================================================= */
-
-$("openComposer").onclick =
-  () =>
-    openSheet(
-      "composerSheet"
-    );
-
-
-$("composerPhoto").onclick =
-  () =>
-    openSheet(
-      "composerSheet"
-    );
-
-
-$("closeComposer").onclick =
-  closeSheets;
-
-
-$("closeComments").onclick =
-  closeSheets;
-
-
-$("closeProfile").onclick =
-  closeSheets;
-
-
-$("backdrop").onclick =
-  closeSheets;
-
-
-$("publishBtn").onclick =
-  () =>
-    createPost(
-      $("postText")
-        .value
-        .trim(),
-
-      $("sheetFile")
-        .files[0]
-    );
-
-
-/* =========================================================
-   COMMENTAIRE
-   ========================================================= */
-
-$("sendComment").onclick =
-  sendComment;
-
-
-$("commentText")
-  .addEventListener(
-    "keydown",
-    event => {
-
-      if(
-        event.key === "Enter"
-      ){
-
-        event.preventDefault();
-
-        sendComment();
-
-      }
-
-    }
-  );
-
-
-/* =========================================================
-   PROFIL
-   ========================================================= */
-
-$("editProfileBtn").onclick =
-  () =>
-    openSheet(
-      "profileSheet"
-    );
-
-
-$("saveProfile").onclick =
-  saveProfile;
-
-
-/* =========================================================
-   DECONNEXION
-   ========================================================= */
-
-$("logoutBtn").onclick =
-  async () => {
-
-    await sb.auth.signOut();
-
-    location.reload();
-
-  };
-
-
-/* =========================================================
-   STORIES
-   ========================================================= */
-
-$("storiesRow")
-  .addEventListener(
-    "click",
-    event => {
-
-      const create =
-        event.target.closest(
-          "#createStory"
-        );
-
-
-      if(create){
-
-        createStory();
-
-        return;
-      }
-
-
-      const card =
-        event.target.closest(
-          "[data-story]"
-        );
-
-
-      if(card){
-
-        openStory(
-          card.dataset.story
-        );
-
-      }
-
-    }
-  );
-
-
-$("closeStory").onclick =
-  () => {
-
-    $("storyViewer")
-      .classList
-      .remove("active");
-
-    $("storyContent")
-      .innerHTML = "";
-
-  };
-
-
-/* =========================================================
-   NAVIGATION BOTTOM
-   ========================================================= */
-
-document
-  .querySelectorAll(
-    ".bottom button"
-  )
-  .forEach(
-    button => {
-
-      button.onclick =
-        () =>
-          switchView(
-            button.dataset.view
-          );
-
-    }
-  );
-
-
-/* =========================================================
-   ACTIONS PUBLICATIONS
-   ========================================================= */
-
-document.addEventListener(
-  "click",
-  event => {
-
-    const button =
-      event.target.closest(
-        "[data-act]"
-      );
-
-
-    if(!button){
-      return;
-    }
-
-
-    const id =
-      button.dataset.id;
-
-
-    if(
-      button.dataset.act ===
-      "like"
-    ){
-
-      likePost(
-        id,
-        button
-      );
-
-    }
-
-
-    if(
-      button.dataset.act ===
-      "comment"
-    ){
-
-      openComments(id);
-
-    }
-
-
-    if(
-      button.dataset.act ===
-      "share"
-    ){
-
-      sharePost(id);
-
-    }
-
-
-    if(
-      button.dataset.act ===
-      "save"
-    ){
-
-      savePost(
-        id,
-        button
-      );
-
-    }
-
-  }
-);
-
-
-/* =========================================================
-   HEADER
-   ========================================================= */
-
-$("searchBtn").onclick =
-  () =>
-    toast(
-      "La recherche sera disponible prochainement."
-    );
-
-
-$("messagesBtn").onclick =
-  () =>
-    toast(
-      "Messagerie : structure prête."
-    );
-
-
-$("notifBtn").onclick =
-  () =>
-    switchView(
-      "notifView"
-    );
-
-
-/* =========================================================
-   RECUPERER SESSION EXISTANTE
-   ========================================================= */
-
-async function boot(){
-
-  const {
-    data:{
-      session
-    }
-  } =
-    await sb.auth.getSession();
-
-
-  if(!session){
-
-    user = null;
-
-    showAuth(true);
-
-    return;
-
-  }
-
-
-  user =
-    session.user;
-
-
-  showAuth(false);
-
-
-  await loadProfile();
-
-
-  await Promise.all([
-    loadFeed(),
-    loadStories()
-  ]);
-
 }
 
-
-/* =========================================================
-   CHANGEMENT AUTH
-   ========================================================= */
+/* ============================================================
+   AUTH STATE
+============================================================ */
 
 sb.auth.onAuthStateChange(
-  async (
-    event,
-    session
-  ) => {
+    async (event,session) => {
 
-    if(session){
+        if(
+            event === 'SIGNED_IN' &&
+            session
+        ){
 
-      user =
-        session.user;
+            currentUser =
+                session.user;
 
+            await boot();
+        }
 
-      showAuth(false);
+        if(
+            event === 'SIGNED_OUT'
+        ){
 
+            document.getElementById('app')
+                .classList.add('hidden');
 
-      await loadProfile();
-
-      await loadFeed();
-
-      await loadStories();
-
-    }else{
-
-      user = null;
-
-      profile = null;
-
-      showAuth(true);
-
+            document.getElementById('auth')
+                .classList.remove('hidden');
+        }
     }
-
-  }
 );
 
-
-/* =========================================================
-   DEMARRAGE
-   ========================================================= */
+/* ============================================================
+   START
+============================================================ */
 
 boot();
 
