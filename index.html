@@ -2,3130 +2,2462 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>AIDBA GUINÉE</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
 <style>
-:root{
-  --red:#ce1126;
-  --yellow:#fcd116;
-  --green:#009460;
-  --bg:#f0f2f5;
-  --card:#fff;
-  --text:#17191c;
-  --muted:#65676b;
-  --border:#e4e6eb;
-  --blue:#1877f2;
-  --shadow:0 1px 3px rgba(0,0,0,.12);
-  --radius:12px;
-}
-
 *{
-  box-sizing:border-box;
-  margin:0;
-  padding:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
 }
 
-html,body{
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
+:root{
+    --red:#d90429;
+    --green:#16a34a;
+    --blue:#2563eb;
+    --bg:#f1f3f6;
+    --card:#fff;
+    --text:#171717;
+    --muted:#6b7280;
+    --border:#e5e7eb;
 }
 
 body{
-  padding-bottom:68px;
+    font-family:Arial,Helvetica,sans-serif;
+    background:var(--bg);
+    color:var(--text);
 }
 
 button,
 input,
-textarea,
-select{
-  font:inherit;
+textarea{
+    font:inherit;
 }
 
 button{
-  cursor:pointer;
-}
-
-img{
-  max-width:100%;
+    cursor:pointer;
+    border:0;
 }
 
 .hidden{
-  display:none!important;
+    display:none!important;
 }
 
-/* =========================
+/* =====================================================
    AUTH
-========================= */
+===================================================== */
 
-#auth-screen{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  background:#fff;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-  overflow:auto;
+#auth{
+    min-height:100vh;
+    background:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
 }
 
 .auth-box{
-  width:100%;
-  max-width:410px;
+    width:100%;
+    max-width:430px;
+}
+
+.logo-big{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo-icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:40px;
+    font-weight:900;
+    color:white;
+    background:linear-gradient(135deg,#e5092f 0 33%,#ffd600 33% 66%,#009b77 66%);
 }
 
 .brand{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:9px;
-  font-size:24px;
-  font-weight:900;
-  margin-bottom:24px;
+    font-size:30px;
+    font-weight:900;
+    margin-top:12px;
 }
 
-.logo{
-  width:48px;
-  height:48px;
-  border-radius:13px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  color:#fff;
-  font-weight:900;
-  background:
-    linear-gradient(
-      135deg,
-      var(--red) 0 33%,
-      var(--yellow) 33% 66%,
-      var(--green) 66%
-    );
+.brand span{
+    color:var(--red);
 }
 
 .auth-card{
-  background:#fff;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:22px;
+    box-shadow:0 8px 30px rgba(0,0,0,.08);
 }
 
-.auth-title{
-  font-size:24px;
-  font-weight:800;
-  margin-bottom:5px;
+.auth-tabs{
+    display:flex;
+    margin-bottom:20px;
+    border-bottom:1px solid var(--border);
 }
 
-.auth-subtitle{
-  color:var(--muted);
-  font-size:14px;
-  margin-bottom:20px;
+.auth-tabs button{
+    flex:1;
+    background:none;
+    padding:14px;
+    font-weight:bold;
+    color:var(--muted);
 }
 
-.auth-form{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+.auth-tabs button.active{
+    color:var(--red);
+    border-bottom:3px solid var(--red);
 }
 
-.auth-form input,
-.auth-form select{
-  width:100%;
-  border:1px solid #ccd0d5;
-  border-radius:9px;
-  padding:13px;
-  outline:none;
-  background:#fff;
+.form-group{
+    margin-bottom:14px;
 }
 
-.auth-form input:focus,
-.auth-form select:focus{
-  border-color:var(--blue);
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:7px;
 }
 
-.auth-btn{
-  border:0;
-  border-radius:9px;
-  padding:13px;
-  background:var(--red);
-  color:#fff;
-  font-weight:800;
+.form-group input,
+.form-group textarea,
+.form-group select{
+    width:100%;
+    padding:13px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    outline:none;
 }
 
-.auth-btn:disabled{
-  opacity:.55;
-  cursor:not-allowed;
+.form-group input:focus,
+.form-group textarea:focus{
+    border-color:var(--red);
 }
 
-.secondary-btn{
-  border:0;
-  border-radius:9px;
-  padding:12px;
-  background:#e4e6eb;
-  color:var(--text);
-  font-weight:700;
+.primary{
+    width:100%;
+    padding:14px;
+    background:var(--red);
+    color:white;
+    border-radius:12px;
+    font-weight:bold;
+    margin-top:5px;
 }
 
-.auth-switch{
-  text-align:center;
-  margin-top:18px;
-  color:var(--muted);
-  font-size:14px;
+.secondary{
+    width:100%;
+    padding:13px;
+    background:#f3f4f6;
+    color:#111;
+    border-radius:12px;
+    font-weight:bold;
 }
 
-.auth-switch span{
-  color:var(--red);
-  font-weight:800;
-  cursor:pointer;
+.auth-info{
+    color:var(--muted);
+    text-align:center;
+    margin-top:15px;
+    font-size:13px;
 }
 
-/* =========================
-   HEADER
-========================= */
+/* =====================================================
+   APP
+===================================================== */
 
-.app-header{
-  height:58px;
-  position:sticky;
-  top:0;
-  z-index:1000;
-  background:#fff;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 12px;
+#app{
+    min-height:100vh;
+    padding-bottom:78px;
 }
 
-.header-brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:900;
+.topbar{
+    height:74px;
+    background:white;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    position:sticky;
+    top:0;
+    z-index:50;
 }
 
-.header-brand .logo{
-  width:34px;
-  height:34px;
-  border-radius:9px;
-  font-size:16px;
+.brand-small{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:22px;
+    font-weight:900;
 }
 
-.header-actions{
-  display:flex;
-  gap:7px;
+.brand-small .mini-logo{
+    width:45px;
+    height:45px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:25px;
+    font-weight:900;
+    background:linear-gradient(135deg,#e5092f 0 33%,#ffd600 33% 66%,#009b77 66%);
+}
+
+.brand-small span{
+    color:var(--red);
+}
+
+.top-actions{
+    display:flex;
+    gap:8px;
 }
 
 .icon-btn{
-  width:38px;
-  height:38px;
-  border:0;
-  border-radius:50%;
-  background:#f0f2f5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#242526;
+    width:46px;
+    height:46px;
+    border-radius:50%;
+    background:#f3f4f6;
+    font-size:21px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
 }
 
-/* =========================
-   VIEWS
-========================= */
-
-.view{
-  display:none;
-  min-height:calc(100vh - 126px);
-}
-
-.view.active{
-  display:block;
-}
+/* =====================================================
+   PAGES
+===================================================== */
 
 .page{
-  width:100%;
-  max-width:760px;
-  margin:auto;
+    display:none;
 }
 
-/* =========================
-   PROFILE
-========================= */
-
-.profile-card{
-  background:#fff;
-  margin-bottom:9px;
+.page.active{
+    display:block;
 }
 
-.cover{
-  height:180px;
-  background:#d9d9d9 center/cover no-repeat;
-  position:relative;
+.container{
+    max-width:720px;
+    margin:auto;
+}
+
+/* =====================================================
+   CREATE POST
+===================================================== */
+
+.create-card{
+    background:white;
+    margin:14px 0;
+    border-radius:20px;
+    border:1px solid var(--border);
+    overflow:hidden;
+}
+
+.create-top{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:16px;
 }
 
 .avatar{
-  width:96px;
-  height:96px;
-  border-radius:50%;
-  border:4px solid #fff;
-  background:#eee center/cover no-repeat;
-  position:absolute;
-  bottom:-35px;
-  left:18px;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    object-fit:cover;
+    background:#ddd;
 }
 
-.profile-info{
-  padding:45px 16px 16px;
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  align-items:flex-start;
+.create-input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:25px;
+    padding:12px 17px;
+    color:#555;
+    background:#f7f7f8;
+    cursor:pointer;
 }
 
-.profile-name{
-  font-size:21px;
-  font-weight:800;
+.create-actions{
+    display:flex;
+    border-top:1px solid var(--border);
 }
 
-.profile-location{
-  color:var(--muted);
-  font-size:13px;
-  margin-top:3px;
+.create-actions button{
+    flex:1;
+    background:white;
+    padding:15px 5px;
+    font-weight:bold;
 }
 
-.profile-edit{
-  border:0;
-  background:#e4e6eb;
-  border-radius:8px;
-  padding:9px 12px;
-  font-weight:700;
+.create-actions button:first-child{
+    color:#e11d48;
 }
 
-/* =========================
+.create-actions button:nth-child(2){
+    color:#16a34a;
+}
+
+.create-actions button:nth-child(3){
+    color:#2563eb;
+}
+
+/* =====================================================
    STORIES
-========================= */
+===================================================== */
+
+.stories-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:12px;
+}
+
+.section-title h2{
+    font-size:20px;
+}
+
+.section-title button{
+    background:none;
+    color:#2563eb;
+    font-weight:bold;
+}
 
 .stories{
-  background:#fff;
-  padding:10px;
-  display:flex;
-  gap:8px;
-  overflow-x:auto;
-  margin-bottom:9px;
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    scrollbar-width:none;
+}
+
+.stories::-webkit-scrollbar{
+    display:none;
 }
 
 .story{
-  min-width:105px;
-  width:105px;
-  height:165px;
-  border-radius:12px;
-  overflow:hidden;
-  position:relative;
-  background:#111;
-  flex-shrink:0;
+    min-width:110px;
+    width:110px;
+    height:175px;
+    border-radius:15px;
+    overflow:hidden;
+    position:relative;
+    background:#eee;
+    flex-shrink:0;
+    cursor:pointer;
+    border:1px solid #ddd;
 }
 
 .story img,
 .story video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.story-overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(transparent 45%,rgba(0,0,0,.8));
 }
 
 .story-name{
-  position:absolute;
-  bottom:8px;
-  left:8px;
-  right:5px;
-  color:#fff;
-  font-size:11px;
-  font-weight:800;
-  text-shadow:0 1px 3px #000;
+    position:absolute;
+    bottom:10px;
+    left:8px;
+    right:5px;
+    color:white;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.story-avatar{
+    position:absolute;
+    top:8px;
+    left:8px;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    border:3px solid white;
+    object-fit:cover;
+    z-index:2;
 }
 
 .create-story{
-  background:#f0f2f5;
-  border:1px dashed #bbb;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  gap:8px;
-  color:var(--red);
-  font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    background:#fff;
 }
 
-.create-story span{
-  color:var(--text);
-  font-size:12px;
+.create-story .plus{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#2563eb;
+    color:white;
+    font-size:30px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin-bottom:8px;
 }
 
-/* =========================
-   CREATE POST
-========================= */
-
-.create-post{
-  background:#fff;
-  border-radius:var(--radius);
-  padding:12px;
-  margin-bottom:9px;
-}
-
-.create-top{
-  display:flex;
-  align-items:center;
-  gap:10px;
-}
-
-.mini-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#eee;
-}
-
-.post-input{
-  flex:1;
-  border:0;
-  background:#f0f2f5;
-  border-radius:22px;
-  padding:12px 15px;
-  outline:none;
-  resize:none;
-}
-
-.create-actions{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  border-top:1px solid #f0f2f5;
-  margin-top:10px;
-  padding-top:10px;
-}
-
-.media-label{
-  color:var(--green);
-  font-weight:800;
-  font-size:13px;
-}
-
-.publish-btn{
-  border:0;
-  background:var(--red);
-  color:#fff;
-  border-radius:8px;
-  padding:8px 14px;
-  font-weight:800;
-}
-
-/* =========================
+/* =====================================================
    POST
-========================= */
+===================================================== */
 
 .post{
-  background:#fff;
-  border-radius:var(--radius);
-  margin-bottom:9px;
-  overflow:hidden;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:20px;
+    margin-bottom:14px;
+    overflow:hidden;
 }
 
-.post-header{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px;
-}
-
-.post-avatar{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  object-fit:cover;
+.post-head{
+    display:flex;
+    align-items:center;
+    padding:15px;
+    gap:10px;
 }
 
 .post-author{
-  font-weight:800;
-  font-size:14px;
+    flex:1;
 }
 
-.post-date{
-  color:var(--muted);
-  font-size:11px;
-  margin-top:2px;
+.post-author strong{
+    display:block;
 }
 
-.post-body{
-  padding:0 12px 12px;
-  white-space:pre-wrap;
-  word-break:break-word;
-  line-height:1.45;
+.post-meta{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:3px;
+}
+
+.more{
+    font-size:22px;
+    background:none;
+}
+
+.post-text{
+    padding:0 15px 15px;
+    white-space:pre-wrap;
+    font-size:16px;
+    line-height:1.45;
 }
 
 .post-media{
-  width:100%;
-  max-height:600px;
-  display:block;
-  object-fit:cover;
-  background:#000;
+    width:100%;
+    max-height:600px;
+    display:block;
+    object-fit:cover;
+    background:#111;
 }
 
 .post-video{
-  width:100%;
-  max-height:600px;
-  display:block;
-  background:#000;
+    width:100%;
+    max-height:600px;
+    display:block;
+    background:#000;
 }
 
 .post-stats{
-  padding:9px 12px;
-  display:flex;
-  justify-content:space-between;
-  color:var(--muted);
-  font-size:12px;
-  border-bottom:1px solid #f0f2f5;
+    display:flex;
+    justify-content:space-between;
+    padding:10px 15px;
+    color:#555;
+    font-size:14px;
 }
 
 .post-actions{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
+    border-top:1px solid var(--border);
+    display:flex;
 }
 
-.post-action{
-  border:0;
-  background:#fff;
-  color:var(--muted);
-  padding:10px 3px;
-  font-size:12px;
-  font-weight:700;
+.post-actions button{
+    flex:1;
+    background:white;
+    padding:13px 4px;
+    font-weight:bold;
+    color:#555;
 }
 
-.post-action i{
-  margin-right:4px;
+.post-actions button.liked{
+    color:#2563eb;
 }
 
-.post-action.active{
-  color:var(--red);
-}
-
-/* =========================
-   COMMENTS
-========================= */
-
-.overlay{
-  display:none;
-  position:fixed;
-  inset:0;
-  z-index:4000;
-  background:rgba(0,0,0,.5);
-}
-
-.overlay.active{
-  display:block;
-}
-
-.comment-sheet{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:-100%;
-  height:78vh;
-  z-index:4100;
-  background:#fff;
-  border-radius:18px 18px 0 0;
-  display:flex;
-  flex-direction:column;
-  transition:.25s ease;
-}
-
-.comment-sheet.active{
-  bottom:0;
-}
-
-.sheet-header{
-  padding:14px 16px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  font-weight:800;
-}
-
-.comment-list{
-  flex:1;
-  overflow-y:auto;
-  padding:15px;
+.comments{
+    border-top:1px solid var(--border);
+    padding:12px 15px;
 }
 
 .comment{
-  display:flex;
-  gap:9px;
-  margin-bottom:13px;
+    display:flex;
+    gap:8px;
+    margin-bottom:10px;
 }
 
-.comment img{
-  width:36px;
-  height:36px;
-  border-radius:50%;
-  object-fit:cover;
+.comment-body{
+    background:#f1f2f4;
+    border-radius:13px;
+    padding:8px 11px;
+    flex:1;
 }
 
-.comment-bubble{
-  background:#f0f2f5;
-  border-radius:14px;
-  padding:8px 11px;
+.comment-body strong{
+    font-size:13px;
 }
 
-.comment-author{
-  font-size:12px;
-  font-weight:800;
+.comment-body div{
+    margin-top:3px;
 }
 
-.comment-text{
-  font-size:14px;
-  margin-top:2px;
-  word-break:break-word;
+.comment-form{
+    display:flex;
+    gap:7px;
 }
 
-.comment-input{
-  display:flex;
-  gap:8px;
-  padding:10px;
-  border-top:1px solid var(--border);
+.comment-form input{
+    flex:1;
+    border:1px solid #ddd;
+    border-radius:20px;
+    padding:9px 13px;
 }
 
-.comment-input input{
-  flex:1;
-  border:0;
-  background:#f0f2f5;
-  border-radius:22px;
-  padding:11px 14px;
-  outline:none;
+.comment-form button{
+    width:42px;
+    border-radius:50%;
+    background:var(--blue);
+    color:white;
 }
 
-.comment-input button{
-  width:42px;
-  border:0;
-  border-radius:50%;
-  background:var(--red);
-  color:#fff;
+/* =====================================================
+   EMPTY / LOADING
+===================================================== */
+
+.state{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:35px 20px;
+    text-align:center;
+    color:var(--muted);
 }
 
-/* =========================
+/* =====================================================
    SHORTS
-========================= */
+===================================================== */
 
 .shorts-page{
-  background:#000;
+    max-width:720px;
+    margin:auto;
 }
 
-.shorts-feed{
-  height:calc(100vh - 126px);
-  overflow-y:auto;
-  scroll-snap-type:y mandatory;
+.short-card{
+    height:calc(100vh - 150px);
+    min-height:500px;
+    background:#000;
+    margin-bottom:10px;
+    position:relative;
+    overflow:hidden;
+    border-radius:16px;
 }
 
-.short{
-  height:calc(100vh - 126px);
-  scroll-snap-align:start;
-  position:relative;
-  background:#000;
-  overflow:hidden;
-}
-
-.short video{
-  width:100%;
-  height:100%;
-  object-fit:cover;
+.short-card video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
 }
 
 .short-info{
-  position:absolute;
-  bottom:18px;
-  left:15px;
-  right:15px;
-  color:#fff;
-  text-shadow:0 1px 4px #000;
-}
-
-.short-author{
-  font-weight:900;
-  margin-bottom:5px;
+    position:absolute;
+    left:15px;
+    right:75px;
+    bottom:20px;
+    color:white;
+    z-index:3;
+    text-shadow:0 1px 4px #000;
 }
 
 .short-actions{
-  position:absolute;
-  right:12px;
-  bottom:75px;
-  display:flex;
-  flex-direction:column;
-  gap:12px;
+    position:absolute;
+    right:12px;
+    bottom:25px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    z-index:4;
 }
 
 .short-actions button{
-  width:48px;
-  height:48px;
-  border:0;
-  border-radius:50%;
-  background:rgba(0,0,0,.5);
-  color:#fff;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:rgba(0,0,0,.55);
+    color:white;
+    font-size:20px;
 }
 
-/* =========================
-   MARKET
-========================= */
+/* =====================================================
+   PROFILE
+===================================================== */
 
-.market-title{
-  background:#fff;
-  padding:15px;
-  font-weight:900;
+.profile-card{
+    background:white;
+    margin-bottom:14px;
+    border-radius:20px;
+    overflow:hidden;
+    border:1px solid var(--border);
 }
 
-.market-grid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:9px;
-  padding:9px;
+.cover{
+    width:100%;
+    height:210px;
+    object-fit:cover;
+    background:#ddd;
 }
 
-.market-card{
-  background:#fff;
-  border-radius:10px;
-  overflow:hidden;
+.profile-info{
+    padding:0 18px 20px;
+    text-align:center;
 }
 
-.market-card img{
-  width:100%;
-  height:150px;
-  object-fit:cover;
+.profile-avatar{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:5px solid white;
+    margin-top:-55px;
+    background:#ddd;
 }
 
-.market-info{
-  padding:9px;
+.profile-info h1{
+    margin-top:8px;
 }
 
-.market-price{
-  color:var(--green);
-  font-weight:900;
+.profile-info p{
+    color:var(--muted);
+    margin-top:5px;
 }
 
-/* =========================
-   NOTIFICATIONS
-========================= */
+/* =====================================================
+   MODALS
+===================================================== */
 
-.notification{
-  background:#fff;
-  padding:13px;
-  display:flex;
-  gap:10px;
-  border-bottom:1px solid #f0f2f5;
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:100;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
 }
 
-.notification-icon{
-  width:38px;
-  height:38px;
-  border-radius:50%;
-  background:#f0f2f5;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:var(--red);
+.modal-box{
+    width:100%;
+    max-width:720px;
+    max-height:90vh;
+    overflow-y:auto;
+    background:white;
+    border-radius:25px 25px 0 0;
+    padding:20px;
 }
 
-.notification-text{
-  font-size:13px;
+.modal-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
 }
 
-/* =========================
-   MENU
-========================= */
-
-.menu-card{
-  background:#fff;
-  margin:10px;
-  border-radius:12px;
-  overflow:hidden;
+.close{
+    background:#f1f1f1;
+    width:36px;
+    height:36px;
+    border-radius:50%;
 }
 
-.menu-item{
-  width:100%;
-  border:0;
-  background:#fff;
-  padding:16px;
-  text-align:left;
-  border-bottom:1px solid #f0f2f5;
-  font-weight:700;
-}
-
-.logout{
-  color:var(--red);
-}
-
-/* =========================
-   MODAL PROFILE
-========================= */
-
-.profile-modal{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  width:92%;
-  max-width:430px;
-  background:#fff;
-  border-radius:14px;
-  padding:18px;
-  z-index:4500;
-  display:none;
-  max-height:90vh;
-  overflow:auto;
-}
-
-.profile-modal.active{
-  display:block;
-}
-
-.profile-modal h3{
-  margin-bottom:15px;
-}
-
-.profile-modal label{
-  display:block;
-  color:var(--muted);
-  font-size:12px;
-  font-weight:800;
-  margin:10px 0 5px;
-}
-
-.profile-modal input{
-  width:100%;
-  padding:11px;
-  border:1px solid #ddd;
-  border-radius:8px;
-}
-
-.modal-actions{
-  display:flex;
-  gap:8px;
-  margin-top:18px;
-}
-
-.modal-actions button{
-  flex:1;
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
+/* =====================================================
+   NAV
+===================================================== */
 
 .bottom-nav{
-  position:fixed;
-  left:0;
-  right:0;
-  bottom:0;
-  height:60px;
-  background:#fff;
-  border-top:1px solid var(--border);
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  z-index:2000;
+    position:fixed;
+    bottom:0;
+    left:0;
+    right:0;
+    height:72px;
+    background:white;
+    border-top:1px solid var(--border);
+    display:flex;
+    z-index:60;
 }
 
-.nav-btn{
-  border:0;
-  background:#fff;
-  color:var(--muted);
-  font-size:21px;
+.bottom-nav button{
+    flex:1;
+    background:white;
+    color:#666;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:4px;
 }
 
-.nav-btn span{
-  display:block;
-  font-size:9px;
-  margin-top:2px;
+.bottom-nav button.active{
+    color:var(--red);
+    font-weight:bold;
 }
 
-.nav-btn.active{
-  color:var(--red);
+.bottom-nav .nav-icon{
+    font-size:23px;
 }
 
-/* =========================
-   EMPTY / LOADING
-========================= */
+@media(max-width:480px){
 
-.empty{
-  padding:45px 20px;
-  text-align:center;
-  color:var(--muted);
-}
+    .brand-small{
+        font-size:18px;
+    }
 
-.loader{
-  padding:35px;
-  text-align:center;
-  color:var(--muted);
-}
+    .brand-small .mini-logo{
+        width:40px;
+        height:40px;
+    }
 
-/* =========================
-   RESPONSIVE
-========================= */
+    .topbar{
+        padding:0 10px;
+    }
 
-@media(min-width:800px){
-  .bottom-nav{
-    left:50%;
-    right:auto;
-    width:760px;
-    transform:translateX(-50%);
-    border-left:1px solid var(--border);
-    border-right:1px solid var(--border);
-  }
+    .icon-btn{
+        width:42px;
+        height:42px;
+    }
 
-  .cover{
-    height:240px;
-  }
-}
+    .container{
+        width:100%;
+    }
 
-@media(max-width:360px){
-  .post-actions{
-    grid-template-columns:repeat(4,1fr);
-  }
+    .create-card,
+    .stories-card,
+    .post,
+    .profile-card,
+    .state{
+        border-radius:15px;
+    }
 
-  .post-action{
-    font-size:10px;
-  }
+    .story{
+        width:105px;
+        min-width:105px;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<!-- =========================================================
-     AUTHENTIFICATION
-========================================================= -->
+<!-- =====================================================
+     AUTH
+===================================================== -->
 
-<section id="auth-screen">
+<section id="auth">
 
-  <div class="auth-box">
+<div class="auth-box">
 
-    <div class="brand">
-      <div class="logo">A</div>
-      <div>AIDBA <span style="color:var(--red)">GUINÉE</span></div>
-    </div>
+<div class="logo-big">
+    <div class="logo-icon">A</div>
+    <div class="brand">AIDBA <span>GUINÉE</span></div>
+</div>
 
-    <div id="login-form-container" class="auth-card">
+<div class="auth-card">
 
-      <h1 class="auth-title">Connexion</h1>
-      <p class="auth-subtitle">
-        Connectez-vous à votre réseau social guinéen.
-      </p>
+<div class="auth-tabs">
+    <button id="loginTab" class="active" onclick="showAuth('login')">
+        Connexion
+    </button>
 
-      <form id="login-form" class="auth-form">
+    <button id="registerTab" onclick="showAuth('register')">
+        Inscription
+    </button>
+</div>
 
-        <input
-          id="login-email"
-          type="email"
-          placeholder="Adresse e-mail"
-          autocomplete="email"
-          required>
+<!-- LOGIN -->
 
-        <input
-          id="login-password"
-          type="password"
-          placeholder="Mot de passe"
-          autocomplete="current-password"
-          required>
+<form id="loginForm">
 
-        <button id="login-btn" class="auth-btn">
-          Se connecter
-        </button>
+<div class="form-group">
+<label>Email</label>
+<input id="loginEmail" type="email" required>
+</div>
 
-      </form>
+<div class="form-group">
+<label>Mot de passe</label>
+<input id="loginPassword" type="password" required>
+</div>
 
-      <div class="auth-switch">
-        Pas encore de compte ?
-        <span onclick="showRegister()">Créer un compte</span>
-      </div>
+<button class="primary" type="submit">
+Se connecter
+</button>
 
-    </div>
+<div class="auth-info">
+Tu dois avoir un compte pour publier, aimer, commenter et partager.
+</div>
 
-    <div id="register-container" class="auth-card hidden">
+</form>
 
-      <h1 class="auth-title">Créer un compte</h1>
+<!-- REGISTER -->
 
-      <p class="auth-subtitle">
-        Rejoignez AIDBA GUINÉE.
-      </p>
+<form id="registerForm" class="hidden">
 
-      <form id="register-form" class="auth-form">
+<div class="form-group">
+<label>Prénom</label>
+<input id="regFirstName" required>
+</div>
 
-        <input
-          id="reg-firstname"
-          type="text"
-          placeholder="Prénom"
-          required>
+<div class="form-group">
+<label>Nom</label>
+<input id="regLastName" required>
+</div>
 
-        <input
-          id="reg-lastname"
-          type="text"
-          placeholder="Nom"
-          required>
+<div class="form-group">
+<label>Nom d'utilisateur</label>
+<input id="regUsername" required>
+</div>
 
-        <input
-          id="reg-email"
-          type="email"
-          placeholder="Adresse e-mail"
-          autocomplete="email"
-          required>
+<div class="form-group">
+<label>Email</label>
+<input id="regEmail" type="email" required>
+</div>
 
-        <input
-          id="reg-birth"
-          type="date"
-          required>
+<div class="form-group">
+<label>Numéro de téléphone</label>
+<input id="regPhone" type="tel" placeholder="+224...">
+</div>
 
-        <select id="reg-country">
-          <option value="Guinée">Guinée</option>
-          <option value="Sénégal">Sénégal</option>
-          <option value="Côte d'Ivoire">Côte d'Ivoire</option>
-          <option value="Mali">Mali</option>
-          <option value="France">France</option>
-        </select>
+<div class="form-group">
+<label>Pays</label>
+<input id="regCountry" value="Guinée">
+</div>
 
-        <input
-          id="reg-city"
-          type="text"
-          placeholder="Ville : Conakry, Kankan..."
-          required>
+<div class="form-group">
+<label>Ville / lieu</label>
+<input id="regCity" placeholder="Conakry">
+</div>
 
-        <input
-          id="reg-password"
-          type="password"
-          placeholder="Mot de passe"
-          minlength="6"
-          autocomplete="new-password"
-          required>
+<div class="form-group">
+<label>Mot de passe</label>
+<input id="regPassword" type="password" minlength="6" required>
+</div>
 
-        <button id="register-btn" class="auth-btn">
-          Créer mon compte
-        </button>
+<button class="primary" type="submit">
+Créer mon compte
+</button>
 
-      </form>
+<div class="auth-info">
+Après inscription, confirme ton email si la confirmation email est activée dans Supabase.
+</div>
 
-      <div class="auth-switch">
-        Vous avez déjà un compte ?
-        <span onclick="showLogin()">Se connecter</span>
-      </div>
+</form>
 
-    </div>
-
-  </div>
-
+</div>
+</div>
 </section>
 
+<!-- =====================================================
+     APP
+===================================================== -->
 
-<!-- =========================================================
-     APPLICATION
-========================================================= -->
+<section id="app" class="hidden">
 
-<header class="app-header">
+<header class="topbar">
 
-  <div class="header-brand">
-    <div class="logo">A</div>
-    <span>AIDBA <span style="color:var(--red)">GUINÉE</span></span>
-  </div>
+<div class="brand-small">
+<div class="mini-logo">A</div>
+<div>AIDBA <span>GUINÉE</span></div>
+</div>
 
-  <div class="header-actions">
+<div class="top-actions">
 
-    <button class="icon-btn" onclick="showSearch()">
-      <i class="fa-solid fa-magnifying-glass"></i>
-    </button>
+<button class="icon-btn" onclick="openSearch()">🔎</button>
 
-    <button class="icon-btn" onclick="switchTab('messages')">
-      <i class="fa-solid fa-message"></i>
-    </button>
+<button class="icon-btn" onclick="showPage('messages')">
+💬
+</button>
 
-  </div>
+<button class="icon-btn" onclick="showPage('notifications')">
+🔔
+</button>
+
+</div>
 
 </header>
 
+<!-- =====================================================
+     ACCUEIL
+===================================================== -->
 
-<!-- =========================================================
-     HOME
-========================================================= -->
+<main id="homePage" class="page active">
 
-<main id="home-view" class="view active">
+<div class="container">
 
-<div class="page">
+<!-- CREATE -->
 
-  <section class="profile-card">
+<section class="create-card">
 
-    <div id="cover-display" class="cover">
+<div class="create-top">
 
-      <div id="avatar-display" class="avatar"></div>
+<img id="createAvatar" class="avatar">
 
-    </div>
+<div
+class="create-input"
+onclick="openPostModal()">
+Quoi de neuf sur AIDBA GUINÉE ?
+</div>
 
-    <div class="profile-info">
+</div>
 
-      <div>
+<div class="create-actions">
 
-        <div id="profile-name" class="profile-name">
-          Utilisateur
-        </div>
+<button onclick="openPostModal('video')">
+🎥 En direct
+</button>
 
-        <div id="profile-location" class="profile-location">
-          Guinée
-        </div>
+<button onclick="openPostModal('image')">
+🖼️ Photo
+</button>
 
-      </div>
+<button onclick="openPostModal()">
+😊 Humeur
+</button>
 
-      <button
-        class="profile-edit"
-        onclick="openProfileModal()">
+</div>
 
-        <i class="fa-solid fa-pen"></i>
-        Modifier
+</section>
 
-      </button>
+<!-- STORIES -->
 
-    </div>
+<section class="stories-card">
 
-  </section>
+<div class="section-title">
 
+<h2>Stories</h2>
 
-  <!-- STORIES -->
+<button onclick="loadStories()">
+Voir tout
+</button>
 
-  <section id="stories" class="stories">
+</div>
 
-    <div
-      class="story create-story"
-      onclick="createStory()">
+<div id="stories" class="stories"></div>
 
-      <i class="fa-solid fa-plus fa-xl"></i>
-      <span>Créer une story</span>
+</section>
 
-    </div>
+<!-- FEED -->
 
-  </section>
-
-
-  <!-- CREATE POST -->
-
-  <section class="create-post">
-
-    <div class="create-top">
-
-      <img
-        id="mini-avatar"
-        class="mini-avatar"
-        src=""
-        alt="Profil">
-
-      <textarea
-        id="post-content"
-        class="post-input"
-        rows="1"
-        placeholder="Quoi de neuf ?"></textarea>
-
-    </div>
-
-    <div class="create-actions">
-
-      <label
-        for="post-file"
-        class="media-label">
-
-        <i class="fa-solid fa-image"></i>
-        Photo / vidéo
-
-      </label>
-
-      <input
-        id="post-file"
-        type="file"
-        accept="image/*,video/*"
-        hidden>
-
-      <span
-        id="file-name"
-        style="font-size:11px;color:var(--muted);">
-      </span>
-
-      <button
-        id="publish-btn"
-        class="publish-btn"
-        onclick="createPost()">
-
-        Publier
-
-      </button>
-
-    </div>
-
-  </section>
-
-
-  <!-- FEED -->
-
-  <section id="posts-feed"></section>
+<div id="feed"></div>
 
 </div>
 
 </main>
 
-
-<!-- =========================================================
+<!-- =====================================================
      SHORTS
-========================================================= -->
+===================================================== -->
 
-<main id="shorts-view" class="view shorts-page">
+<main id="shortsPage" class="page">
 
-  <div
-    id="shorts-feed"
-    class="shorts-feed">
-  </div>
+<div class="shorts-page">
 
-</main>
+<div id="shortsFeed"></div>
 
-
-<!-- =========================================================
-     MARKETPLACE
-========================================================= -->
-
-<main id="market-view" class="view">
-
-  <div class="page">
-
-    <div class="market-title">
-      <i class="fa-solid fa-store"></i>
-      Marketplace Guinée
-    </div>
-
-    <div
-      id="market-container"
-      class="market-grid">
-    </div>
-
-  </div>
+</div>
 
 </main>
 
+<!-- =====================================================
+     PROFILE
+===================================================== -->
 
-<!-- =========================================================
+<main id="profilePage" class="page">
+
+<div class="container">
+
+<div id="profileContent"></div>
+
+</div>
+
+</main>
+
+<!-- =====================================================
      NOTIFICATIONS
-========================================================= -->
+===================================================== -->
 
-<main id="notifications-view" class="view">
+<main id="notificationsPage" class="page">
 
-  <div class="page">
+<div class="container">
 
-    <div
-      id="notifications-container">
-    </div>
+<div class="stories-card">
 
-  </div>
+<div class="section-title">
+<h2>Notifications</h2>
+</div>
+
+<div id="notifications"></div>
+
+</div>
+
+</div>
 
 </main>
 
-
-<!-- =========================================================
+<!-- =====================================================
      MESSAGES
-========================================================= -->
+===================================================== -->
 
-<main id="messages-view" class="view">
+<main id="messagesPage" class="page">
 
-  <div class="page">
+<div class="container">
 
-    <div class="empty">
+<div class="stories-card">
 
-      <i
-        class="fa-solid fa-message"
-        style="font-size:35px;margin-bottom:12px;">
-      </i>
+<div class="section-title">
+<h2>Messages</h2>
+</div>
 
-      <h3>Messages</h3>
+<div class="state">
+💬 Ta messagerie est prête.
+</div>
 
-      <p>
-        La messagerie peut être reliée à ta table
-        <strong>messages</strong>.
-      </p>
+</div>
 
-    </div>
-
-  </div>
+</div>
 
 </main>
 
-
-<!-- =========================================================
+<!-- =====================================================
      MENU
-========================================================= -->
+===================================================== -->
 
-<main id="menu-view" class="view">
+<main id="menuPage" class="page">
 
-  <div class="page">
+<div class="container">
 
-    <div class="menu-card">
+<div class="stories-card">
 
-      <button
-        class="menu-item"
-        onclick="openProfileModal()">
+<h2 style="margin-bottom:15px;">
+Menu
+</h2>
 
-        <i class="fa-solid fa-user"></i>
-        Modifier mon profil
+<button
+class="secondary"
+style="margin-bottom:10px"
+onclick="showPage('profile')">
+👤 Mon profil
+</button>
 
-      </button>
+<button
+class="secondary"
+style="margin-bottom:10px"
+onclick="openProfileModal()">
+⚙️ Modifier mon profil
+</button>
 
-      <button
-        class="menu-item"
-        onclick="switchTab('home')">
+<button
+class="secondary"
+onclick="logout()">
+🚪 Déconnexion
+</button>
 
-        <i class="fa-solid fa-house"></i>
-        Accueil
+</div>
 
-      </button>
-
-      <button
-        class="menu-item logout"
-        onclick="logout()">
-
-        <i class="fa-solid fa-right-from-bracket"></i>
-        Se déconnecter
-
-      </button>
-
-    </div>
-
-  </div>
+</div>
 
 </main>
 
-
-<!-- =========================================================
-     COMMENT MODAL
-========================================================= -->
-
-<div
-  id="comments-overlay"
-  class="overlay"
-  onclick="closeComments()">
-</div>
-
-<section
-  id="comments-sheet"
-  class="comment-sheet">
-
-  <div class="sheet-header">
-
-    <span>
-      Commentaires
-    </span>
-
-    <button
-      class="icon-btn"
-      onclick="closeComments()">
-
-      <i class="fa-solid fa-xmark"></i>
-
-    </button>
-
-  </div>
-
-  <div
-    id="comments-list"
-    class="comment-list">
-  </div>
-
-  <div class="comment-input">
-
-    <input
-      id="comment-input"
-      type="text"
-      placeholder="Écrire un commentaire...">
-
-    <button onclick="sendComment()">
-      <i class="fa-solid fa-paper-plane"></i>
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
-     PROFILE MODAL
-========================================================= -->
-
-<div
-  id="profile-overlay"
-  class="overlay"
-  onclick="closeProfileModal()">
-</div>
-
-<section
-  id="profile-modal"
-  class="profile-modal">
-
-  <h3>Modifier mon profil</h3>
-
-  <label>Nom complet</label>
-
-  <input
-    id="edit-name"
-    type="text">
-
-  <label>Photo de profil</label>
-
-  <input
-    id="edit-avatar"
-    type="file"
-    accept="image/*">
-
-  <label>Photo de couverture</label>
-
-  <input
-    id="edit-cover"
-    type="file"
-    accept="image/*">
-
-  <div class="modal-actions">
-
-    <button
-      class="secondary-btn"
-      onclick="closeProfileModal()">
-
-      Annuler
-
-    </button>
-
-    <button
-      id="save-profile-btn"
-      class="auth-btn"
-      onclick="saveProfile()">
-
-      Enregistrer
-
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- =========================================================
+<!-- =====================================================
      NAVIGATION
-========================================================= -->
+===================================================== -->
 
 <nav class="bottom-nav">
 
-  <button
-    id="nav-home"
-    class="nav-btn active"
-    onclick="switchTab('home')">
+<button id="navHome"
+class="active"
+onclick="showPage('home')">
+<div class="nav-icon">🏠</div>
+<div>Accueil</div>
+</button>
 
-    <i class="fa-solid fa-house"></i>
-    <span>Accueil</span>
+<button id="navShorts"
+onclick="showPage('shorts')">
+<div class="nav-icon">▶️</div>
+<div>Shorts</div>
+</button>
 
-  </button>
+<button onclick="alert('Boutique disponible prochainement')">
+<div class="nav-icon">🏪</div>
+<div>Boutique</div>
+</button>
 
-  <button
-    id="nav-shorts"
-    class="nav-btn"
-    onclick="switchTab('shorts')">
+<button
+id="navNotifications"
+onclick="showPage('notifications')">
+<div class="nav-icon">🔔</div>
+<div>Notifications</div>
+</button>
 
-    <i class="fa-solid fa-play"></i>
-    <span>Shorts</span>
-
-  </button>
-
-  <button
-    id="nav-market"
-    class="nav-btn"
-    onclick="switchTab('market')">
-
-    <i class="fa-solid fa-store"></i>
-    <span>Boutique</span>
-
-  </button>
-
-  <button
-    id="nav-notifications"
-    class="nav-btn"
-    onclick="switchTab('notifications')">
-
-    <i class="fa-solid fa-bell"></i>
-    <span>Notifications</span>
-
-  </button>
-
-  <button
-    id="nav-menu"
-    class="nav-btn"
-    onclick="switchTab('menu')">
-
-    <i class="fa-solid fa-bars"></i>
-    <span>Menu</span>
-
-  </button>
+<button
+id="navMenu"
+onclick="showPage('menu')">
+<div class="nav-icon">☰</div>
+<div>Menu</div>
+</button>
 
 </nav>
 
+</section>
+
+<!-- =====================================================
+     POST MODAL
+===================================================== -->
+
+<div id="postModal" class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Créer une publication</h2>
+
+<button
+class="close"
+onclick="closeModal('postModal')">
+✕
+</button>
+
+</div>
+
+<div class="form-group">
+
+<label>Votre publication</label>
+
+<textarea
+id="postText"
+rows="5"
+placeholder="Quoi de neuf ?"></textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>Photo ou vidéo</label>
+
+<input
+id="postFile"
+type="file"
+accept="image/*,video/*">
+
+</div>
+
+<button
+id="publishButton"
+class="primary"
+onclick="publishPost()">
+Publier
+</button>
+
+</div>
+</div>
+
+<!-- =====================================================
+     STORY MODAL
+===================================================== -->
+
+<div id="storyModal" class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Créer une story</h2>
+
+<button
+class="close"
+onclick="closeModal('storyModal')">
+✕
+</button>
+
+</div>
+
+<div class="form-group">
+
+<label>Photo ou vidéo</label>
+
+<input
+id="storyFile"
+type="file"
+accept="image/*,video/*"
+required>
+
+</div>
+
+<div class="form-group">
+
+<label>Texte</label>
+
+<input
+id="storyCaption"
+placeholder="Ajouter un texte...">
+
+</div>
+
+<button
+class="primary"
+onclick="publishStory()">
+Publier la story
+</button>
+
+</div>
+</div>
+
+<!-- =====================================================
+     PROFILE MODAL
+===================================================== -->
+
+<div id="profileModal" class="modal hidden">
+
+<div class="modal-box">
+
+<div class="modal-head">
+
+<h2>Modifier mon profil</h2>
+
+<button
+class="close"
+onclick="closeModal('profileModal')">
+✕
+</button>
+
+</div>
+
+<div class="form-group">
+<label>Prénom</label>
+<input id="editFirstName">
+</div>
+
+<div class="form-group">
+<label>Nom</label>
+<input id="editLastName">
+</div>
+
+<div class="form-group">
+<label>Nom d'utilisateur</label>
+<input id="editUsername">
+</div>
+
+<div class="form-group">
+<label>Bio</label>
+<textarea id="editBio" rows="3"></textarea>
+</div>
+
+<div class="form-group">
+<label>Pays</label>
+<input id="editCountry">
+</div>
+
+<div class="form-group">
+<label>Ville / lieu</label>
+<input id="editCity">
+</div>
+
+<div class="form-group">
+<label>Photo de profil</label>
+<input id="avatarFile" type="file" accept="image/*">
+</div>
+
+<div class="form-group">
+<label>Photo de couverture</label>
+<input id="coverFile" type="file" accept="image/*">
+</div>
+
+<button
+class="primary"
+onclick="saveProfile()">
+Enregistrer
+</button>
+
+</div>
+</div>
 
 <script>
+
 /* ============================================================
-   CONFIGURATION
+   CONFIGURATION SUPABASE
 ============================================================ */
 
 const SUPABASE_URL =
-  "https://bdzdaceiettpiosstxkp.supabase.co";
+"TON_URL_SUPABASE";
 
 const SUPABASE_ANON_KEY =
-  "sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
+"TA_CLE_ANON";
 
-const supabaseClient =
-  window.supabase.createClient(
+const sb =
+window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
-  );
-
-
-/* ============================================================
-   ÉTAT GLOBAL
-============================================================ */
+);
 
 let currentUser = null;
 let currentProfile = null;
-let currentPostId = null;
-
-let activeTab = "home";
-
-let observer = null;
-
 
 /* ============================================================
    UTILITAIRES
 ============================================================ */
 
 function escapeHTML(value){
-
-  if(value === null || value === undefined){
-    return "";
-  }
-
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+    return String(value || '')
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'","&#039;");
 }
 
-
-function safeUrl(url){
-
-  if(!url){
-    return "";
-  }
-
-  try{
-
-    const parsed = new URL(url);
-
-    if(
-      parsed.protocol === "https:" ||
-      parsed.protocol === "http:"
-    ){
-      return parsed.href;
-    }
-
-  }catch(e){}
-
-  return "";
-}
-
-
-function formatDate(date){
-
-  if(!date){
-    return "";
-  }
-
-  return new Date(date).toLocaleString(
-    "fr-FR",
-    {
-      dateStyle:"short",
-      timeStyle:"short"
-    }
-  );
-}
-
-
-function placeholderAvatar(){
-
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg"
-           width="100"
-           height="100"
-           viewBox="0 0 100 100">
-        <rect width="100" height="100" fill="#e4e6eb"/>
-        <circle cx="50" cy="38" r="20" fill="#9ca3af"/>
-        <path d="M18 92c4-25 20-35 32-35s28 10 32 35"
-              fill="#9ca3af"/>
-      </svg>
-    `);
-}
-
-
-function placeholderCover(){
-
-  return "data:image/svg+xml;charset=UTF-8," +
-    encodeURIComponent(`
-      <svg xmlns="http://www.w3.org/2000/svg"
-           width="900"
-           height="300">
-        <rect width="900"
-              height="300"
-              fill="#e4e6eb"/>
-        <text x="450"
-              y="155"
-              text-anchor="middle"
-              font-size="30"
-              fill="#777">
-          AIDBA GUINÉE
-        </text>
-      </svg>
-    `);
-}
-
-
-/* ============================================================
-   AUTH UI
-============================================================ */
-
-function showLogin(){
-
-  document
-    .getElementById("login-form-container")
-    .classList.remove("hidden");
-
-  document
-    .getElementById("register-container")
-    .classList.add("hidden");
-}
-
-
-function showRegister(){
-
-  document
-    .getElementById("login-form-container")
-    .classList.add("hidden");
-
-  document
-    .getElementById("register-container")
-    .classList.remove("hidden");
-}
-
-
-function showAuth(){
-
-  document
-    .getElementById("auth-screen")
-    .style.display = "flex";
-}
-
-
-function hideAuth(){
-
-  document
-    .getElementById("auth-screen")
-    .style.display = "none";
-}
-
-
-/* ============================================================
-   INSCRIPTION
-============================================================ */
-
-document
-  .getElementById("register-form")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-      const button =
-        document.getElementById("register-btn");
-
-      const firstname =
-        document.getElementById("reg-firstname")
-          .value.trim();
-
-      const lastname =
-        document.getElementById("reg-lastname")
-          .value.trim();
-
-      const email =
-        document.getElementById("reg-email")
-          .value.trim();
-
-      const birth =
-        document.getElementById("reg-birth")
-          .value;
-
-      const country =
-        document.getElementById("reg-country")
-          .value;
-
-      const city =
-        document.getElementById("reg-city")
-          .value.trim();
-
-      const password =
-        document.getElementById("reg-password")
-          .value;
-
-      if(password.length < 6){
-
-        alert("Le mot de passe doit contenir au moins 6 caractères.");
-
-        return;
-      }
-
-      button.disabled = true;
-      button.textContent = "Création...";
-
-      try{
-
-        const {
-          data,
-          error
-        } =
-          await supabaseClient.auth.signUp({
-
-            email,
-            password,
-
-            options:{
-              data:{
-                full_name:
-                  `${firstname} ${lastname}`.trim(),
-
-                first_name:firstname,
-                last_name:lastname,
-                birth_date:birth,
-                country,
-                city
-              }
-            }
-
-          });
-
-        if(error){
-          throw error;
-        }
-
-        if(!data.session){
-
-          alert(
-            "Compte créé. Vérifiez votre e-mail si la confirmation e-mail est activée dans Supabase."
-          );
-
-          showLogin();
-
-        }else{
-
-          await initializeUser();
-
-        }
-
-      }catch(error){
-
-        console.error(error);
-
-        alert(
-          "Impossible de créer le compte : " +
-          error.message
-        );
-
-      }finally{
-
-        button.disabled = false;
-        button.textContent = "Créer mon compte";
-
-      }
-
-    }
-  );
-
-
-/* ============================================================
-   CONNEXION
-============================================================ */
-
-document
-  .getElementById("login-form")
-  .addEventListener(
-    "submit",
-    async function(event){
-
-      event.preventDefault();
-
-      const button =
-        document.getElementById("login-btn");
-
-      const email =
-        document.getElementById("login-email")
-          .value.trim();
-
-      const password =
-        document.getElementById("login-password")
-          .value;
-
-      button.disabled = true;
-      button.textContent = "Connexion...";
-
-      try{
-
-        const {
-          error
-        } =
-          await supabaseClient.auth
-            .signInWithPassword({
-              email,
-              password
-            });
-
-        if(error){
-          throw error;
-        }
-
-        await initializeUser();
-
-      }catch(error){
-
-        console.error(error);
-
-        alert(
-          "Connexion impossible : " +
-          error.message
-        );
-
-      }finally{
-
-        button.disabled = false;
-        button.textContent = "Se connecter";
-
-      }
-
-    }
-  );
-
-
-/* ============================================================
-   SESSION
-============================================================ */
-
-async function initializeUser(){
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient.auth.getSession();
-
-  if(error){
+function showError(error){
     console.error(error);
-    return;
-  }
-
-  currentUser =
-    data.session?.user || null;
-
-  if(!currentUser){
-
-    showAuth();
-    return;
-  }
-
-  hideAuth();
-
-  await ensureProfile();
-
-  await Promise.all([
-    loadProfile(),
-    loadPosts(),
-    loadStories(),
-    loadNotifications()
-  ]);
+    alert(
+        error?.message ||
+        'Une erreur est survenue.'
+    );
 }
 
+function closeModal(id){
+    document.getElementById(id)
+        .classList.add('hidden');
+}
 
-supabaseClient.auth.onAuthStateChange(
-  async function(event, session){
+function openModal(id){
+    document.getElementById(id)
+        .classList.remove('hidden');
+}
 
-    currentUser =
-      session?.user || null;
+function getFileExtension(file){
+    const parts =
+        file.name.split('.');
 
-    if(currentUser){
+    return parts[
+        parts.length - 1
+    ].toLowerCase();
+}
 
-      hideAuth();
+/* ============================================================
+   AUTH
+============================================================ */
 
-      /*
-       Évite de faire toute l'initialisation
-       plusieurs fois inutilement.
-      */
+function showAuth(type){
 
-      if(
-        event === "SIGNED_IN" ||
-        event === "INITIAL_SESSION"
-      ){
-        await initializeUser();
-      }
+    const login =
+        document.getElementById('loginForm');
+
+    const register =
+        document.getElementById('registerForm');
+
+    const loginTab =
+        document.getElementById('loginTab');
+
+    const registerTab =
+        document.getElementById('registerTab');
+
+    if(type === 'login'){
+
+        login.classList.remove('hidden');
+        register.classList.add('hidden');
+
+        loginTab.classList.add('active');
+        registerTab.classList.remove('active');
 
     }else{
 
-      showAuth();
+        login.classList.add('hidden');
+        register.classList.remove('hidden');
 
+        loginTab.classList.remove('active');
+        registerTab.classList.add('active');
     }
+}
 
-  }
-);
+document.getElementById('loginForm')
+.addEventListener('submit', async e => {
 
+    e.preventDefault();
+
+    const email =
+        document.getElementById('loginEmail')
+        .value.trim();
+
+    const password =
+        document.getElementById('loginPassword')
+        .value;
+
+    try{
+
+        const {error} =
+            await sb.auth.signInWithPassword({
+                email,
+                password
+            });
+
+        if(error) throw error;
+
+        await boot();
+
+    }catch(error){
+
+        showError(error);
+    }
+});
+
+document.getElementById('registerForm')
+.addEventListener('submit', async e => {
+
+    e.preventDefault();
+
+    const firstName =
+        document.getElementById('regFirstName')
+        .value.trim();
+
+    const lastName =
+        document.getElementById('regLastName')
+        .value.trim();
+
+    const username =
+        document.getElementById('regUsername')
+        .value.trim()
+        .toLowerCase();
+
+    const email =
+        document.getElementById('regEmail')
+        .value.trim();
+
+    const phone =
+        document.getElementById('regPhone')
+        .value.trim();
+
+    const country =
+        document.getElementById('regCountry')
+        .value.trim();
+
+    const city =
+        document.getElementById('regCity')
+        .value.trim();
+
+    const password =
+        document.getElementById('regPassword')
+        .value;
+
+    try{
+
+        const {data,error} =
+            await sb.auth.signUp({
+
+                email,
+                password,
+
+                options:{
+                    data:{
+                        first_name:firstName,
+                        last_name:lastName,
+                        username,
+                        country,
+                        city,
+                        phone
+                    }
+                }
+            });
+
+        if(error) throw error;
+
+        alert(
+            'Compte créé. Vérifie ton email si la confirmation email est activée.'
+        );
+
+        if(data.session){
+
+            await boot();
+
+        }else{
+
+            showAuth('login');
+        }
+
+    }catch(error){
+
+        showError(error);
+    }
+});
+
+async function logout(){
+
+    await sb.auth.signOut();
+
+    currentUser = null;
+    currentProfile = null;
+
+    document.getElementById('app')
+        .classList.add('hidden');
+
+    document.getElementById('auth')
+        .classList.remove('hidden');
+}
 
 /* ============================================================
-   PROFILE
+   INITIALISATION
 ============================================================ */
+
+async function boot(){
+
+    const {
+        data:{session}
+    } = await sb.auth.getSession();
+
+    if(!session){
+
+        document.getElementById('auth')
+            .classList.remove('hidden');
+
+        document.getElementById('app')
+            .classList.add('hidden');
+
+        return;
+    }
+
+    currentUser = session.user;
+
+    await ensureProfile();
+
+    document.getElementById('auth')
+        .classList.add('hidden');
+
+    document.getElementById('app')
+        .classList.remove('hidden');
+
+    await Promise.all([
+        loadFeed(),
+        loadStories(),
+        loadProfile()
+    ]);
+}
 
 async function ensureProfile(){
 
-  if(!currentUser){
-    return;
-  }
+    let {data,error} =
+        await sb
+        .from('profiles')
+        .select('*')
+        .eq('id',currentUser.id)
+        .maybeSingle();
 
-  const {
-    data:existing,
-    error:selectError
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select("id")
-      .eq("id",currentUser.id)
-      .maybeSingle();
+    if(error) throw error;
 
-  if(selectError){
+    if(!data){
 
-    console.warn(
-      "Impossible de vérifier profiles:",
-      selectError.message
-    );
+        const metadata =
+            currentUser.user_metadata || {};
 
-    return;
-  }
+        const profile = {
 
-  if(existing){
-    return;
-  }
+            id:currentUser.id,
 
-  const metadata =
-    currentUser.user_metadata || {};
+            first_name:
+                metadata.first_name || '',
 
-  const {
-    error
-  } =
-    await supabaseClient
-      .from("profiles")
-      .insert({
-        id:currentUser.id,
+            last_name:
+                metadata.last_name || '',
 
-        full_name:
-          metadata.full_name ||
-          currentUser.email?.split("@")[0] ||
-          "Utilisateur",
+            username:
+                metadata.username ||
+                `user_${currentUser.id.slice(0,8)}`,
 
-        avatar_url:null,
-        cover_url:null,
+            country:
+                metadata.country ||
+                'Guinée',
 
-        country:
-          metadata.country || "Guinée",
+            city:
+                metadata.city || '',
 
-        city:
-          metadata.city || null,
+            phone:
+                currentUser.phone ||
+                metadata.phone ||
+                ''
+        };
 
-        birth_date:
-          metadata.birth_date || null
+        const result =
+            await sb
+            .from('profiles')
+            .insert(profile)
+            .select()
+            .single();
 
-      });
+        if(result.error)
+            throw result.error;
 
-  if(error){
+        data = result.data;
+    }
 
-    console.warn(
-      "Création profil:",
-      error.message
-    );
+    currentProfile = data;
 
-  }
+    updateUserAvatar();
 }
 
+/* ============================================================
+   NAVIGATION
+============================================================ */
 
-async function loadProfile(){
+function showPage(page){
 
-  if(!currentUser){
-    return;
-  }
+    document
+        .querySelectorAll('.page')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
 
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("profiles")
-      .select("*")
-      .eq("id",currentUser.id)
-      .maybeSingle();
+    const target =
+        document.getElementById(
+            page + 'Page'
+        );
 
-  if(error){
+    if(target)
+        target.classList.add('active');
 
-    console.error(error);
-    return;
+    document
+        .querySelectorAll('.bottom-nav button')
+        .forEach(el =>
+            el.classList.remove('active')
+        );
 
-  }
+    if(page === 'home')
+        document.getElementById('navHome')
+            ?.classList.add('active');
 
-  currentProfile = data;
+    if(page === 'shorts')
+        document.getElementById('navShorts')
+            ?.classList.add('active');
 
-  const avatar =
-    safeUrl(data?.avatar_url) ||
-    placeholderAvatar();
+    if(page === 'notifications')
+        document.getElementById('navNotifications')
+            ?.classList.add('active');
 
-  const cover =
-    safeUrl(data?.cover_url) ||
-    placeholderCover();
+    if(page === 'menu')
+        document.getElementById('navMenu')
+            ?.classList.add('active');
 
-  document
-    .getElementById("profile-name")
-    .textContent =
-      data?.full_name ||
-      "Utilisateur";
+    if(page === 'home')
+        loadFeed();
 
-  document
-    .getElementById("profile-location")
-    .textContent =
-      [data?.city,data?.country]
-        .filter(Boolean)
-        .join(", ") ||
-      "Guinée";
+    if(page === 'shorts')
+        loadShorts();
 
-  document
-    .getElementById("avatar-display")
-    .style.backgroundImage =
-      `url("${avatar}")`;
+    if(page === 'profile')
+        loadProfile();
 
-  document
-    .getElementById("cover-display")
-    .style.backgroundImage =
-      `url("${cover}")`;
-
-  document
-    .getElementById("mini-avatar")
-    .src = avatar;
-
-  document
-    .getElementById("edit-name")
-    .value =
-      data?.full_name || "";
+    if(page === 'notifications')
+        loadNotifications();
 }
 
+/* ============================================================
+   AVATAR
+============================================================ */
+
+function updateUserAvatar(){
+
+    const avatar =
+        currentProfile?.avatar_url;
+
+    document.getElementById('createAvatar')
+        .src =
+        avatar ||
+        'https://placehold.co/100x100?text=A';
+}
 
 /* ============================================================
    STORAGE
 ============================================================ */
 
 async function uploadFile(
-  file,
-  folder
+    file,
+    bucket
 ){
 
-  if(!file || !currentUser){
-    return null;
-  }
+    if(!file)
+        return null;
 
-  const extension =
-    file.name.includes(".")
-      ? file.name.split(".").pop().toLowerCase()
-      : "bin";
-
-  const filename =
-    `${crypto.randomUUID()}.${extension}`;
-
-  const path =
-    `${currentUser.id}/${folder}/${filename}`;
-
-  const {
-    error
-  } =
-    await supabaseClient.storage
-      .from("media")
-      .upload(
-        path,
-        file,
-        {
-          cacheControl:"3600",
-          upsert:false,
-          contentType:file.type
-        }
-      );
-
-  if(error){
-    throw error;
-  }
-
-  const {
-    data
-  } =
-    supabaseClient.storage
-      .from("media")
-      .getPublicUrl(path);
-
-  return data.publicUrl;
-}
-
-
-/* ============================================================
-   PROFIL MODAL
-============================================================ */
-
-function openProfileModal(){
-
-  if(!currentUser){
-    return;
-  }
-
-  document
-    .getElementById("profile-overlay")
-    .classList.add("active");
-
-  document
-    .getElementById("profile-modal")
-    .classList.add("active");
-
-}
-
-
-function closeProfileModal(){
-
-  document
-    .getElementById("profile-overlay")
-    .classList.remove("active");
-
-  document
-    .getElementById("profile-modal")
-    .classList.remove("active");
-
-}
-
-
-async function saveProfile(){
-
-  if(!currentUser){
-    return;
-  }
-
-  const button =
-    document.getElementById("save-profile-btn");
-
-  const name =
-    document
-      .getElementById("edit-name")
-      .value.trim();
-
-  const avatarFile =
-    document
-      .getElementById("edit-avatar")
-      .files[0];
-
-  const coverFile =
-    document
-      .getElementById("edit-cover")
-      .files[0];
-
-  if(!name){
-
-    alert("Le nom ne peut pas être vide.");
-    return;
-
-  }
-
-  button.disabled = true;
-  button.textContent = "Sauvegarde...";
-
-  try{
-
-    const updates = {
-      full_name:name,
-      updated_at:new Date().toISOString()
-    };
-
-    if(avatarFile){
-
-      updates.avatar_url =
-        await uploadFile(
-          avatarFile,
-          "avatars"
+    if(!currentUser)
+        throw new Error(
+            'Tu dois être connecté.'
         );
 
-    }
+    const ext =
+        getFileExtension(file);
 
-    if(coverFile){
+    const fileName =
+        `${currentUser.id}/${Date.now()}_${crypto.randomUUID()}.${ext}`;
 
-      updates.cover_url =
-        await uploadFile(
-          coverFile,
-          "covers"
+    const {error} =
+        await sb.storage
+        .from(bucket)
+        .upload(
+            fileName,
+            file,
+            {
+                cacheControl:'3600',
+                upsert:false
+            }
         );
 
-    }
+    if(error)
+        throw error;
 
     const {
-      error
+        data
     } =
-      await supabaseClient
-        .from("profiles")
-        .update(updates)
-        .eq("id",currentUser.id);
+        sb.storage
+        .from(bucket)
+        .getPublicUrl(fileName);
 
-    if(error){
-      throw error;
-    }
-
-    await loadProfile();
-    await loadPosts();
-
-    closeProfileModal();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erreur pendant la sauvegarde : " +
-      error.message
-    );
-
-  }finally{
-
-    button.disabled = false;
-    button.textContent = "Enregistrer";
-
-  }
-
+    return data.publicUrl;
 }
-
-
-/* ============================================================
-   PUBLICATION
-============================================================ */
-
-document
-  .getElementById("post-file")
-  .addEventListener(
-    "change",
-    function(){
-
-      const file =
-        this.files[0];
-
-      document
-        .getElementById("file-name")
-        .textContent =
-          file ? file.name : "";
-
-    }
-  );
-
-
-async function createPost(){
-
-  if(!currentUser){
-    alert("Connectez-vous pour publier.");
-    return;
-  }
-
-  const button =
-    document.getElementById("publish-btn");
-
-  const content =
-    document
-      .getElementById("post-content")
-      .value.trim();
-
-  const file =
-    document
-      .getElementById("post-file")
-      .files[0];
-
-  if(!content && !file){
-
-    alert(
-      "Écrivez quelque chose ou choisissez une photo/vidéo."
-    );
-
-    return;
-  }
-
-  button.disabled = true;
-  button.textContent = "Publication...";
-
-  try{
-
-    let mediaUrl = null;
-    let mediaType = null;
-
-    if(file){
-
-      mediaUrl =
-        await uploadFile(
-          file,
-          "posts"
-        );
-
-      mediaType =
-        file.type.startsWith("video/")
-          ? "video"
-          : "image";
-
-    }
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("posts")
-        .insert({
-          user_id:currentUser.id,
-          content:content || null,
-          image_url:
-            mediaType === "image"
-              ? mediaUrl
-              : null,
-
-          video_url:
-            mediaType === "video"
-              ? mediaUrl
-              : null,
-
-          media_type:mediaType
-        });
-
-    if(error){
-      throw error;
-    }
-
-    document
-      .getElementById("post-content")
-      .value = "";
-
-    document
-      .getElementById("post-file")
-      .value = "";
-
-    document
-      .getElementById("file-name")
-      .textContent = "";
-
-    await loadPosts();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Erreur de publication : " +
-      error.message
-    );
-
-  }finally{
-
-    button.disabled = false;
-    button.textContent = "Publier";
-
-  }
-
-}
-
 
 /* ============================================================
    POSTS
 ============================================================ */
 
-async function loadPosts(){
+function openPostModal(){
 
-  const container =
-    document.getElementById("posts-feed");
+    document.getElementById('postText')
+        .value = '';
 
-  if(!currentUser){
-    return;
-  }
+    document.getElementById('postFile')
+        .value = '';
 
-  container.innerHTML =
-    `<div class="loader">
-       Chargement des publications...
-     </div>`;
-
-  const {
-    data:posts,
-    error
-  } =
-    await supabaseClient
-      .from("posts")
-      .select(`
-        *,
-        profiles(
-          id,
-          full_name,
-          avatar_url
-        )
-      `)
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(50);
-
-  if(error){
-
-    console.error(error);
-
-    container.innerHTML =
-      `<div class="empty">
-        Impossible de charger les publications.
-       </div>`;
-
-    return;
-  }
-
-  if(!posts?.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        <i class="fa-solid fa-earth-africa"
-           style="font-size:40px;margin-bottom:12px;">
-        </i>
-        <h3>Aucune publication</h3>
-        <p>Soyez le premier à publier sur AIDBA GUINÉE.</p>
-       </div>`;
-
-    return;
-  }
-
-  const postIds =
-    posts.map(post => post.id);
-
-  let likedIds = new Set();
-  let favoriteIds = new Set();
-
-  if(postIds.length){
-
-    const {
-      data:likes
-    } =
-      await supabaseClient
-        .from("likes")
-        .select("post_id")
-        .eq("user_id",currentUser.id)
-        .in("post_id",postIds);
-
-    likedIds =
-      new Set(
-        (likes || []).map(x => x.post_id)
-      );
-
-
-    const {
-      data:favorites
-    } =
-      await supabaseClient
-        .from("favorites")
-        .select("post_id")
-        .eq("user_id",currentUser.id)
-        .in("post_id",postIds);
-
-    favoriteIds =
-      new Set(
-        (favorites || []).map(x => x.post_id)
-      );
-
-  }
-
-  container.innerHTML =
-    posts.map(
-      post =>
-        renderPost(
-          post,
-          likedIds.has(post.id),
-          favoriteIds.has(post.id)
-        )
-    ).join("");
-
-  activateFeedVideos();
-
+    openModal('postModal');
 }
 
+async function publishPost(){
 
-function renderPost(
-  post,
-  liked,
-  favorite
-){
+    if(!currentUser){
 
-  const profile =
-    post.profiles || {};
+        alert(
+            'Connecte-toi pour publier.'
+        );
 
-  const name =
-    escapeHTML(
-      profile.full_name ||
-      "Membre de Guinée"
-    );
-
-  const avatar =
-    safeUrl(profile.avatar_url) ||
-    placeholderAvatar();
-
-  const content =
-    escapeHTML(post.content || "");
-
-  const image =
-    safeUrl(post.image_url);
-
-  const video =
-    safeUrl(post.video_url);
-
-  let media = "";
-
-  if(
-    video ||
-    post.media_type === "video"
-  ){
-
-    if(video){
-
-      media =
-        `<video
-          class="post-video feed-video"
-          src="${video}"
-          playsinline
-          muted
-          loop
-          controls
-          preload="metadata">
-        </video>`;
-
+        return;
     }
 
-  }else if(image){
+    const button =
+        document.getElementById(
+            'publishButton'
+        );
 
-    media =
-      `<img
-        class="post-media"
-        src="${image}"
-        alt="Publication"
-        loading="lazy">`;
+    const text =
+        document.getElementById(
+            'postText'
+        ).value.trim();
 
-  }
+    const file =
+        document.getElementById(
+            'postFile'
+        ).files[0];
 
-  const likes =
-    Number(post.likes_count || 0);
+    if(!text && !file){
 
-  const comments =
-    Number(post.comments_count || 0);
+        alert(
+            'Écris quelque chose ou ajoute une photo/vidéo.'
+        );
 
-  const shares =
-    Number(post.shares_count || 0);
+        return;
+    }
 
-  const views =
-    Number(post.views_count || 0);
+    button.disabled = true;
+    button.textContent =
+        'Publication...';
 
-  return `
-    <article
-      class="post"
-      data-post-id="${escapeHTML(post.id)}">
+    try{
 
-      <div class="post-header">
+        let image_url = null;
+        let video_url = null;
+        let post_type = 'text';
 
-        <img
-          class="post-avatar"
-          src="${avatar}"
-          alt="Profil"
-          loading="lazy">
+        if(file){
 
-        <div>
+            if(file.type.startsWith('image/')){
 
-          <div class="post-author">
-            ${name}
-          </div>
+                image_url =
+                    await uploadFile(
+                        file,
+                        'posts'
+                    );
 
-          <div class="post-date">
-            ${formatDate(post.created_at)}
-          </div>
+                post_type = 'image';
+
+            }else if(
+                file.type.startsWith('video/')
+            ){
+
+                video_url =
+                    await uploadFile(
+                        file,
+                        'posts'
+                    );
+
+                post_type = 'video';
+
+            }else{
+
+                throw new Error(
+                    'Format non supporté.'
+                );
+            }
+        }
+
+        const {error} =
+            await sb
+            .from('posts')
+            .insert({
+
+                user_id:currentUser.id,
+
+                content:text,
+
+                image_url,
+
+                video_url,
+
+                post_type,
+
+                location:
+                    currentProfile?.city ||
+                    ''
+            });
+
+        if(error)
+            throw error;
+
+        closeModal('postModal');
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+
+    }finally{
+
+        button.disabled = false;
+        button.textContent =
+            'Publier';
+    }
+}
+
+/* ============================================================
+   FEED
+============================================================ */
+
+async function loadFeed(){
+
+    const feed =
+        document.getElementById('feed');
+
+    feed.innerHTML =
+        `<div class="state">Chargement des publications...</div>`;
+
+    try{
+
+        const {data,error} =
+            await sb
+            .from('posts')
+            .select(`
+                *,
+                profiles (
+                    id,
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url,
+                    city
+                )
+            `)
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(50);
+
+        if(error)
+            throw error;
+
+        if(!data || !data.length){
+
+            feed.innerHTML =
+                `<div class="state">
+                    Aucune publication pour le moment.
+                    <br><br>
+                    Sois le premier à publier.
+                </div>`;
+
+            return;
+        }
+
+        const postIds =
+            data.map(post => post.id);
+
+        let likedIds = new Set();
+
+        if(currentUser && postIds.length){
+
+            const {data:likes} =
+                await sb
+                .from('post_likes')
+                .select('post_id')
+                .eq(
+                    'user_id',
+                    currentUser.id
+                )
+                .in(
+                    'post_id',
+                    postIds
+                );
+
+            likedIds =
+                new Set(
+                    (likes || [])
+                    .map(x => x.post_id)
+                );
+        }
+
+        feed.innerHTML =
+            data
+            .map(post =>
+                renderPost(
+                    post,
+                    likedIds.has(post.id)
+                )
+            )
+            .join('');
+
+    }catch(error){
+
+        console.error(error);
+
+        feed.innerHTML =
+            `<div class="state">
+                Impossible de charger les publications.
+                <br><br>
+                ${escapeHTML(error.message)}
+            </div>`;
+    }
+}
+
+function renderPost(
+    post,
+    liked
+){
+
+    const profile =
+        post.profiles || {};
+
+    const name =
+        `${profile.first_name || ''} ${profile.last_name || ''}`
+        .trim()
+        ||
+        profile.username
+        ||
+        'Utilisateur';
+
+    const avatar =
+        profile.avatar_url ||
+        'https://placehold.co/100x100?text=A';
+
+    const date =
+        new Date(post.created_at)
+        .toLocaleString(
+            'fr-FR',
+            {
+                day:'numeric',
+                month:'short',
+                hour:'2-digit',
+                minute:'2-digit'
+            }
+        );
+
+    let media = '';
+
+    if(post.image_url){
+
+        media =
+        `<img
+            class="post-media"
+            src="${escapeHTML(post.image_url)}"
+            alt="Publication"
+            loading="lazy"
+        >`;
+
+    }else if(post.video_url){
+
+        media =
+        `<video
+            class="post-video"
+            src="${escapeHTML(post.video_url)}"
+            controls
+            playsinline
+            preload="metadata"
+        ></video>`;
+    }
+
+    return `
+    <article class="post">
+
+        <div class="post-head">
+
+            <img
+                class="avatar"
+                src="${escapeHTML(avatar)}"
+                alt=""
+            >
+
+            <div class="post-author">
+
+                <strong>
+                    ${escapeHTML(name)}
+                </strong>
+
+                <div class="post-meta">
+                    ${escapeHTML(date)}
+                    ${profile.city ? ' · ' + escapeHTML(profile.city) : ''}
+                    · 🌍
+                </div>
+
+            </div>
+
+            <button
+                class="more"
+                onclick="postMenu('${post.id}')">
+                •••
+            </button>
 
         </div>
 
-      </div>
+        ${
+            post.content
+            ?
+            `<div class="post-text">
+                ${escapeHTML(post.content)}
+            </div>`
+            :
+            ''
+        }
 
-      ${
-        content
-          ? `<div class="post-body">${content}</div>`
-          : ""
-      }
+        ${media}
 
-      ${media}
+        <div class="post-stats">
 
-      <div class="post-stats">
+            <span>
+                👍 ❤️
+                ${post.likes_count || 0}
+            </span>
 
-        <span>
-          <i class="fa-solid fa-thumbs-up"></i>
-          ${likes}
-        </span>
+            <span>
+                ${post.comments_count || 0} commentaires
+            </span>
 
-        <span>
-          ${comments} commentaire(s)
-          · ${shares} partage(s)
-          · ${views} vue(s)
-        </span>
+            <span>
+                ${post.shares_count || 0} partages
+            </span>
 
-      </div>
+        </div>
 
-      <div class="post-actions">
+        <div class="post-actions">
 
-        <button
-          class="post-action ${liked ? "active" : ""}"
-          onclick="toggleLike('${post.id}',this)">
+            <button
+                class="${liked ? 'liked':''}"
+                onclick="toggleLike('${post.id}',${liked})">
 
-          <i class="fa-${
-            liked ? "solid" : "regular"
-          } fa-thumbs-up"></i>
+                ${liked ? '👍 J’aime' : '👍 J’aime'}
 
-          J'aime
+            </button>
 
-        </button>
+            <button
+                onclick="toggleComments('${post.id}')">
 
-        <button
-          class="post-action"
-          onclick="openComments('${post.id}')">
+                💬 Commenter
 
-          <i class="fa-regular fa-comment"></i>
-          Commenter
+            </button>
 
-        </button>
+            <button
+                onclick="sharePost('${post.id}')">
 
-        <button
-          class="post-action ${favorite ? "active" : ""}"
-          onclick="toggleFavorite('${post.id}',this)">
+                ↗️ Partager
 
-          <i class="fa-${
-            favorite ? "solid" : "regular"
-          } fa-star"></i>
+            </button>
 
-          Favori
+        </div>
 
-        </button>
-
-        <button
-          class="post-action"
-          onclick="sharePost('${post.id}')">
-
-          <i class="fa-solid fa-share"></i>
-          Partager
-
-        </button>
-
-      </div>
+        <div
+            id="comments-${post.id}"
+            class="comments hidden">
+        </div>
 
     </article>
-  `;
+    `;
 }
-
 
 /* ============================================================
    LIKE
 ============================================================ */
 
 async function toggleLike(
-  postId,
-  button
+    postId,
+    alreadyLiked
 ){
 
-  if(!currentUser){
-    return;
-  }
+    if(!currentUser){
 
-  button.disabled = true;
+        alert(
+            'Connecte-toi pour aimer une publication.'
+        );
 
-  try{
-
-    const {
-      data:existing,
-      error:findError
-    } =
-      await supabaseClient
-        .from("likes")
-        .select("id")
-        .eq("post_id",postId)
-        .eq("user_id",currentUser.id)
-        .maybeSingle();
-
-    if(findError){
-      throw findError;
+        return;
     }
 
-    if(existing){
+    try{
 
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("likes")
-          .delete()
-          .eq("id",existing.id);
+        if(alreadyLiked){
 
-      if(error){
-        throw error;
-      }
+            const {error} =
+                await sb
+                .from('post_likes')
+                .delete()
+                .eq(
+                    'post_id',
+                    postId
+                )
+                .eq(
+                    'user_id',
+                    currentUser.id
+                );
 
-    }else{
+            if(error)
+                throw error;
 
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("likes")
-          .insert({
-            post_id:postId,
-            user_id:currentUser.id
-          });
+        }else{
 
-      if(error){
-        throw error;
-      }
+            const {error} =
+                await sb
+                .from('post_likes')
+                .insert({
 
+                    post_id:postId,
+                    user_id:currentUser.id
+
+                });
+
+            if(error)
+                throw error;
+        }
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
     }
-
-    await refreshPostStats(postId);
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Impossible de modifier le J'aime : " +
-      error.message
-    );
-
-  }finally{
-
-    button.disabled = false;
-
-  }
-
 }
-
-
-/* ============================================================
-   FAVORI
-============================================================ */
-
-async function toggleFavorite(
-  postId,
-  button
-){
-
-  if(!currentUser){
-    return;
-  }
-
-  button.disabled = true;
-
-  try{
-
-    const {
-      data:existing,
-      error:findError
-    } =
-      await supabaseClient
-        .from("favorites")
-        .select("id")
-        .eq("post_id",postId)
-        .eq("user_id",currentUser.id)
-        .maybeSingle();
-
-    if(findError){
-      throw findError;
-    }
-
-    if(existing){
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("favorites")
-          .delete()
-          .eq("id",existing.id);
-
-      if(error){
-        throw error;
-      }
-
-    }else{
-
-      const {
-        error
-      } =
-        await supabaseClient
-          .from("favorites")
-          .insert({
-            post_id:postId,
-            user_id:currentUser.id
-          });
-
-      if(error){
-        throw error;
-      }
-
-    }
-
-    await loadPosts();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Impossible de modifier le favori : " +
-      error.message
-    );
-
-  }finally{
-
-    button.disabled = false;
-
-  }
-
-}
-
-
-/* ============================================================
-   RAFRAÎCHIR LES STATS
-============================================================ */
-
-async function refreshPostStats(postId){
-
-  /*
-    Les compteurs peuvent être maintenus côté
-    base avec des triggers Supabase.
-
-    Ici on recharge simplement le fil afin
-    d'éviter les compteurs locaux faux.
-  */
-
-  await loadPosts();
-
-}
-
-
-/* ============================================================
-   PARTAGE
-============================================================ */
-
-async function sharePost(postId){
-
-  if(!currentUser){
-    return;
-  }
-
-  const url =
-    `${window.location.origin}${window.location.pathname}?post=${encodeURIComponent(postId)}`;
-
-  try{
-
-    if(navigator.share){
-
-      await navigator.share({
-        title:"AIDBA GUINÉE",
-        text:"Regardez cette publication sur AIDBA GUINÉE.",
-        url
-      });
-
-    }else if(
-      navigator.clipboard &&
-      navigator.clipboard.writeText
-    ){
-
-      await navigator.clipboard.writeText(url);
-
-      alert("Lien de la publication copié.");
-
-    }else{
-
-      prompt(
-        "Copiez ce lien :",
-        url
-      );
-
-    }
-
-    /*
-      On enregistre le partage après
-      l'action utilisateur.
-    */
-
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("shares")
-        .insert({
-          post_id:postId,
-          user_id:currentUser.id
-        });
-
-    if(error){
-
-      console.warn(
-        "Enregistrement du partage:",
-        error.message
-      );
-
-    }
-
-  }catch(error){
-
-    /*
-      Un abandon du menu de partage
-      n'est pas une erreur à montrer.
-    */
-
-    if(error?.name !== "AbortError"){
-      console.error(error);
-    }
-
-  }
-
-}
-
 
 /* ============================================================
    COMMENTAIRES
 ============================================================ */
 
-async function openComments(postId){
+async function toggleComments(postId){
 
-  currentPostId = postId;
-
-  document
-    .getElementById("comments-overlay")
-    .classList.add("active");
-
-  document
-    .getElementById("comments-sheet")
-    .classList.add("active");
-
-  await loadComments(postId);
-
-}
-
-
-function closeComments(){
-
-  currentPostId = null;
-
-  document
-    .getElementById("comments-overlay")
-    .classList.remove("active");
-
-  document
-    .getElementById("comments-sheet")
-    .classList.remove("active");
-
-}
-
-
-async function loadComments(postId){
-
-  const list =
-    document.getElementById("comments-list");
-
-  list.innerHTML =
-    `<div class="loader">
-      Chargement...
-     </div>`;
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("comments")
-      .select(`
-        *,
-        profiles(
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq("post_id",postId)
-      .order(
-        "created_at",
-        {ascending:true}
-      );
-
-  if(error){
-
-    console.error(error);
-
-    list.innerHTML =
-      `<div class="empty">
-        Impossible de charger les commentaires.
-       </div>`;
-
-    return;
-  }
-
-  if(!data?.length){
-
-    list.innerHTML =
-      `<div class="empty">
-        Aucun commentaire.
-       </div>`;
-
-    return;
-  }
-
-  list.innerHTML =
-    data.map(comment => {
-
-      const avatar =
-        safeUrl(
-          comment.profiles?.avatar_url
-        ) ||
-        placeholderAvatar();
-
-      const name =
-        escapeHTML(
-          comment.profiles?.full_name ||
-          "Membre"
+    const box =
+        document.getElementById(
+            `comments-${postId}`
         );
 
-      const text =
-        escapeHTML(
-          comment.content || ""
+    if(box.classList.contains('hidden')){
+
+        box.classList.remove('hidden');
+
+        await loadComments(
+            postId,
+            box
         );
 
-      return `
-        <div class="comment">
+    }else{
 
-          <img
-            src="${avatar}"
-            alt="Profil">
-
-          <div class="comment-bubble">
-
-            <div class="comment-author">
-              ${name}
-            </div>
-
-            <div class="comment-text">
-              ${text}
-            </div>
-
-          </div>
-
-        </div>
-      `;
-
-    }).join("");
-
+        box.classList.add('hidden');
+    }
 }
 
+async function loadComments(
+    postId,
+    box
+){
 
-async function sendComment(){
+    try{
 
-  if(!currentUser || !currentPostId){
-    return;
-  }
+        const {data,error} =
+            await sb
+            .from('comments')
+            .select(`
+                *,
+                profiles(
+                    first_name,
+                    last_name,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'post_id',
+                postId
+            )
+            .order(
+                'created_at',
+                {ascending:true}
+            );
 
-  const input =
-    document.getElementById("comment-input");
+        if(error)
+            throw error;
 
-  const text =
-    input.value.trim();
+        box.innerHTML = `
 
-  if(!text){
-    return;
-  }
+            <div style="margin-bottom:12px;font-weight:bold;">
+                Commentaires
+            </div>
 
-  input.disabled = true;
+            ${
+                (data || [])
+                .map(comment => {
 
-  try{
+                    const p =
+                        comment.profiles || {};
 
-    const {
-      error
-    } =
-      await supabaseClient
-        .from("comments")
-        .insert({
-          post_id:currentPostId,
-          user_id:currentUser.id,
-          content:text
-        });
+                    const name =
+                        `${p.first_name || ''} ${p.last_name || ''}`
+                        .trim()
+                        || 'Utilisateur';
 
-    if(error){
-      throw error;
+                    return `
+                    <div class="comment">
+
+                        <img
+                            class="avatar"
+                            style="width:36px;height:36px"
+                            src="${escapeHTML(
+                                p.avatar_url ||
+                                'https://placehold.co/80x80?text=A'
+                            )}"
+                        >
+
+                        <div class="comment-body">
+
+                            <strong>
+                                ${escapeHTML(name)}
+                            </strong>
+
+                            <div>
+                                ${escapeHTML(comment.content)}
+                            </div>
+
+                        </div>
+
+                    </div>
+                    `;
+
+                })
+                .join('')
+                ||
+                `<div style="color:#777;margin-bottom:10px;">
+                    Aucun commentaire.
+                </div>`
+            }
+
+            ${
+                currentUser
+                ?
+                `
+                <form
+                    class="comment-form"
+                    onsubmit="sendComment(event,'${postId}')">
+
+                    <input
+                        id="comment-${postId}"
+                        placeholder="Écrire un commentaire..."
+                        autocomplete="off"
+                    >
+
+                    <button type="submit">
+                        ➤
+                    </button>
+
+                </form>
+                `
+                :
+                ''
+            }
+        `;
+
+    }catch(error){
+
+        showError(error);
     }
-
-    input.value = "";
-
-    await loadComments(currentPostId);
-    await loadPosts();
-
-  }catch(error){
-
-    console.error(error);
-
-    alert(
-      "Impossible d'envoyer le commentaire : " +
-      error.message
-    );
-
-  }finally{
-
-    input.disabled = false;
-    input.focus();
-
-  }
-
 }
 
+async function sendComment(
+    event,
+    postId
+){
 
-document
-  .getElementById("comment-input")
-  .addEventListener(
-    "keydown",
-    function(event){
+    event.preventDefault();
 
-      if(
-        event.key === "Enter" &&
-        !event.shiftKey
-      ){
+    if(!currentUser){
 
-        event.preventDefault();
-        sendComment();
+        alert(
+            'Connecte-toi pour commenter.'
+        );
 
-      }
-
+        return;
     }
-  );
 
+    const input =
+        document.getElementById(
+            `comment-${postId}`
+        );
+
+    const content =
+        input.value.trim();
+
+    if(!content)
+        return;
+
+    try{
+
+        const {error} =
+            await sb
+            .from('comments')
+            .insert({
+
+                post_id:postId,
+                user_id:currentUser.id,
+                content
+
+            });
+
+        if(error)
+            throw error;
+
+        input.value = '';
+
+        const box =
+            document.getElementById(
+                `comments-${postId}`
+            );
+
+        await loadComments(
+            postId,
+            box
+        );
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
+
+/* ============================================================
+   SHARE
+============================================================ */
+
+async function sharePost(postId){
+
+    if(!currentUser){
+
+        alert(
+            'Connecte-toi pour partager.'
+        );
+
+        return;
+    }
+
+    try{
+
+        const {error} =
+            await sb
+            .from('post_shares')
+            .insert({
+
+                post_id:postId,
+                user_id:currentUser.id
+
+            });
+
+        if(error)
+            throw error;
+
+        const url =
+            location.href +
+            '#post-' +
+            postId;
+
+        if(
+            navigator.share
+        ){
+
+            await navigator.share({
+                title:'AIDBA GUINÉE',
+                text:'Regarde cette publication.',
+                url
+            });
+
+        }else{
+
+            await navigator.clipboard.writeText(url);
+
+            alert(
+                'Lien de la publication copié.'
+            );
+        }
+
+        await loadFeed();
+
+    }catch(error){
+
+        if(error.name !== 'AbortError')
+            showError(error);
+    }
+}
 
 /* ============================================================
    STORIES
@@ -3133,204 +2465,264 @@ document
 
 async function loadStories(){
 
-  const container =
-    document.getElementById("stories");
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("stories")
-      .select(`
-        *,
-        profiles(
-          full_name,
-          avatar_url
-        )
-      `)
-      .gt(
-        "expires_at",
-        new Date().toISOString()
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(30);
-
-  if(error){
-
-    console.warn(
-      "Stories:",
-      error.message
-    );
-
-    return;
-  }
-
-  const createStoryHTML = `
-    <div
-      class="story create-story"
-      onclick="createStory()">
-
-      <i class="fa-solid fa-plus fa-xl"></i>
-      <span>Créer une story</span>
-
-    </div>
-  `;
-
-  if(!data?.length){
-
-    container.innerHTML =
-      createStoryHTML;
-
-    return;
-  }
-
-  container.innerHTML =
-    createStoryHTML +
-    data.map(story => {
-
-      const media =
-        safeUrl(
-          story.media_url
+    const box =
+        document.getElementById(
+            'stories'
         );
 
-      const name =
-        escapeHTML(
-          story.profiles?.full_name ||
-          "Membre"
-        );
+    box.innerHTML = '';
 
-      const avatar =
-        safeUrl(
-          story.profiles?.avatar_url
-        ) ||
-        placeholderAvatar();
+    const create =
+        document.createElement('div');
 
-      if(!media){
-        return "";
-      }
+    create.className =
+        'story create-story';
 
-      const isVideo =
-        story.media_type === "video";
+    create.innerHTML = `
+        <div class="plus">+</div>
+        <strong>Créer une story</strong>
+    `;
 
-      return `
-        <div
-          class="story"
-          onclick="openStory('${escapeHTML(story.id)}')">
+    create.onclick =
+        () => openModal('storyModal');
 
-          ${
-            isVideo
-              ? `<video
-                   src="${media}"
-                   muted
-                   playsinline>
-                 </video>`
-              : `<img
-                   src="${media}"
-                   alt="Story">`
-          }
+    box.appendChild(create);
 
-          <div class="story-name">
-            ${name}
-          </div>
+    try{
 
-        </div>
-      `;
+        const {data,error} =
+            await sb
+            .from('stories')
+            .select(`
+                *,
+                profiles(
+                    id,
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url
+                )
+            `)
+            .gt(
+                'expires_at',
+                new Date().toISOString()
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(30);
 
-    }).join("");
+        if(error)
+            throw error;
 
+        (data || [])
+        .forEach(story => {
+
+            const p =
+                story.profiles || {};
+
+            const name =
+                `${p.first_name || ''} ${p.last_name || ''}`
+                .trim()
+                ||
+                p.username
+                ||
+                'Utilisateur';
+
+            const card =
+                document.createElement('div');
+
+            card.className =
+                'story';
+
+            const media =
+                story.media_type === 'video'
+                ?
+                `<video
+                    src="${escapeHTML(story.media_url)}"
+                    muted
+                    playsinline
+                ></video>`
+                :
+                `<img
+                    src="${escapeHTML(story.media_url)}"
+                >`;
+
+            card.innerHTML = `
+
+                ${media}
+
+                <div class="story-overlay"></div>
+
+                <img
+                    class="story-avatar"
+                    src="${escapeHTML(
+                        p.avatar_url ||
+                        'https://placehold.co/80x80?text=A'
+                    )}"
+                >
+
+                <div class="story-name">
+                    ${escapeHTML(name)}
+                </div>
+            `;
+
+            card.onclick =
+                () => viewStory(story);
+
+            box.appendChild(card);
+        });
+
+    }catch(error){
+
+        console.error(error);
+    }
 }
 
+async function publishStory(){
 
-async function createStory(){
+    if(!currentUser){
 
-  if(!currentUser){
-    return;
-  }
+        alert(
+            'Connecte-toi pour publier une story.'
+        );
 
-  const input =
-    document.createElement("input");
-
-  input.type = "file";
-  input.accept =
-    "image/*,video/*";
-
-  input.onchange =
-    async function(){
-
-      const file =
-        input.files[0];
-
-      if(!file){
         return;
-      }
+    }
 
-      try{
+    const file =
+        document.getElementById(
+            'storyFile'
+        ).files[0];
+
+    const caption =
+        document.getElementById(
+            'storyCaption'
+        ).value.trim();
+
+    if(!file){
+
+        alert(
+            'Choisis une photo ou une vidéo.'
+        );
+
+        return;
+    }
+
+    try{
 
         const url =
-          await uploadFile(
-            file,
-            "stories"
-          );
+            await uploadFile(
+                file,
+                'stories'
+            );
 
-        const mediaType =
-          file.type.startsWith("video/")
-            ? "video"
-            : "image";
+        const media_type =
+            file.type.startsWith('video/')
+            ?
+            'video'
+            :
+            'image';
 
-        const expires =
-          new Date(
-            Date.now() +
-            24 * 60 * 60 * 1000
-          ).toISOString();
-
-        const {
-          error
-        } =
-          await supabaseClient
-            .from("stories")
+        const {error} =
+            await sb
+            .from('stories')
             .insert({
-              user_id:currentUser.id,
-              media_url:url,
-              media_type:mediaType,
-              expires_at:expires
+
+                user_id:currentUser.id,
+
+                media_url:url,
+
+                media_type,
+
+                caption
+
             });
 
-        if(error){
-          throw error;
-        }
+        if(error)
+            throw error;
+
+        document.getElementById(
+            'storyFile'
+        ).value = '';
+
+        document.getElementById(
+            'storyCaption'
+        ).value = '';
+
+        closeModal('storyModal');
 
         await loadStories();
 
-      }catch(error){
+    }catch(error){
 
-        console.error(error);
-
-        alert(
-          "Impossible de créer la story : " +
-          error.message
-        );
-
-      }
-
-    };
-
-  input.click();
-
+        showError(error);
+    }
 }
 
+async function viewStory(story){
 
-function openStory(id){
+    if(
+        currentUser &&
+        currentUser.id !== story.user_id
+    ){
 
-  alert(
-    "Story sélectionnée : " + id
-  );
+        try{
 
+            await sb
+            .from('story_views')
+            .insert({
+
+                story_id:story.id,
+                user_id:currentUser.id
+
+            });
+
+            await sb.rpc(
+                'increment_story_views',
+                {
+                    story_uuid:story.id
+                }
+            );
+
+        }catch(error){
+
+            console.error(error);
+        }
+    }
+
+    if(story.media_type === 'video'){
+
+        const w =
+            window.open('', '_blank');
+
+        w.document.write(`
+            <body style="margin:0;background:#000">
+            <video
+                src="${escapeHTML(story.media_url)}"
+                controls
+                autoplay
+                style="width:100%;height:100vh;object-fit:contain"
+            ></video>
+            </body>
+        `);
+
+    }else{
+
+        const w =
+            window.open('', '_blank');
+
+        w.document.write(`
+            <body style="margin:0;background:#000">
+            <img
+                src="${escapeHTML(story.media_url)}"
+                style="width:100%;height:100vh;object-fit:contain"
+            >
+            </body>
+        `);
+    }
 }
-
 
 /* ============================================================
    SHORTS
@@ -3338,373 +2730,412 @@ function openStory(id){
 
 async function loadShorts(){
 
-  const container =
-    document.getElementById("shorts-feed");
-
-  container.innerHTML =
-    `<div class="loader" style="color:#fff">
-      Chargement des Shorts...
-     </div>`;
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("posts")
-      .select(`
-        *,
-        profiles(
-          full_name,
-          avatar_url
-        )
-      `)
-      .eq(
-        "media_type",
-        "video"
-      )
-      .not(
-        "video_url",
-        "is",
-        null
-      )
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(30);
-
-  if(error){
-
-    console.error(error);
-
-    container.innerHTML =
-      `<div class="empty"
-            style="color:#fff">
-         Impossible de charger les Shorts.
-       </div>`;
-
-    return;
-  }
-
-  if(!data?.length){
-
-    container.innerHTML =
-      `<div class="empty"
-            style="color:#fff">
-         <i class="fa-solid fa-video"
-            style="font-size:40px;margin-bottom:12px;">
-         </i>
-         <h3>Aucun Short</h3>
-         <p>Les vidéos publiées apparaîtront ici.</p>
-       </div>`;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.map(short => {
-
-      const video =
-        safeUrl(short.video_url);
-
-      const name =
-        escapeHTML(
-          short.profiles?.full_name ||
-          "Membre"
+    const box =
+        document.getElementById(
+            'shortsFeed'
         );
 
-      const content =
-        escapeHTML(
-          short.content || ""
-        );
+    box.innerHTML =
+        `<div class="state">
+            Chargement des Shorts...
+        </div>`;
 
-      return `
-        <article
-          class="short"
-          data-short-id="${escapeHTML(short.id)}">
+    try{
 
-          <video
-            class="short-video"
-            src="${video}"
-            playsinline
-            loop
-            muted
-            preload="metadata">
-          </video>
+        const {data,error} =
+            await sb
+            .from('posts')
+            .select(`
+                *,
+                profiles(
+                    first_name,
+                    last_name,
+                    username,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'post_type',
+                'video'
+            )
+            .not(
+                'video_url',
+                'is',
+                null
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(30);
 
-          <div class="short-info">
+        if(error)
+            throw error;
 
-            <div class="short-author">
-              ${name}
-            </div>
+        if(!data || !data.length){
 
-            <div>
-              ${content}
-            </div>
+            box.innerHTML =
+                `<div class="state">
+                    Aucun Short pour le moment.
+                </div>`;
 
-          </div>
+            return;
+        }
 
-          <div class="short-actions">
+        box.innerHTML =
+            data
+            .map(post => {
 
-            <button
-              onclick="toggleShortSound(this,event)">
+                const p =
+                    post.profiles || {};
 
-              <i class="fa-solid fa-volume-xmark"></i>
+                const name =
+                    `${p.first_name || ''} ${p.last_name || ''}`
+                    .trim()
+                    ||
+                    p.username
+                    ||
+                    'Utilisateur';
 
-            </button>
+                return `
+                <article
+                    class="short-card"
+                    data-post-id="${post.id}">
 
-            <button
-              onclick="likeShort('${escapeHTML(short.id)}',event)">
+                    <video
+                        src="${escapeHTML(post.video_url)}"
+                        playsinline
+                        muted
+                        loop
+                        controls
+                        preload="metadata">
+                    </video>
 
-              <i class="fa-regular fa-heart"></i>
+                    <div class="short-info">
 
-            </button>
+                        <strong>
+                            ${escapeHTML(name)}
+                        </strong>
 
-            <button
-              onclick="openComments('${escapeHTML(short.id)}')">
+                        <div style="margin-top:7px">
+                            ${escapeHTML(post.content)}
+                        </div>
 
-              <i class="fa-regular fa-comment"></i>
+                    </div>
 
-            </button>
+                    <div class="short-actions">
 
-          </div>
+                        <button
+                            onclick="toggleLike('${post.id}',false)">
+                            ❤️
+                        </button>
 
-        </article>
-      `;
+                        <button
+                            onclick="toggleComments('${post.id}')">
+                            💬
+                        </button>
 
-    }).join("");
+                        <button
+                            onclick="sharePost('${post.id}')">
+                            ↗️
+                        </button>
 
-  activateShortObserver();
+                    </div>
 
+                </article>
+                `;
+            })
+            .join('');
+
+        setupVideoObserver();
+
+    }catch(error){
+
+        showError(error);
+    }
 }
 
+function setupVideoObserver(){
 
-function activateShortObserver(){
+    const videos =
+        document.querySelectorAll(
+            '.short-card video'
+        );
 
-  if(observer){
-    observer.disconnect();
-  }
+    const observer =
+        new IntersectionObserver(
+            entries => {
 
-  const videos =
-    document.querySelectorAll(
-      ".short-video"
-    );
+                entries.forEach(entry => {
 
-  observer =
-    new IntersectionObserver(
-      entries => {
+                    const video =
+                        entry.target;
 
-        entries.forEach(
-          entry => {
+                    if(entry.isIntersecting){
 
-            const video =
-              entry.target;
+                        video.play()
+                        .catch(()=>{});
 
-            if(
-              entry.isIntersecting &&
-              entry.intersectionRatio >= .65
-            ){
+                    }else{
 
-              document
-                .querySelectorAll(
-                  ".short-video"
-                )
-                .forEach(other => {
+                        video.pause();
 
-                  if(other !== video){
-
-                    other.pause();
-                    other.currentTime = 0;
-
-                  }
+                    }
 
                 });
 
-              video
-                .play()
-                .catch(() => {});
-
-              registerVideoView(
-                video.closest(".short")
-                  ?.dataset.shortId
-              );
-
-            }else{
-
-              video.pause();
-
+            },
+            {
+                threshold:0.7
             }
-
-          }
         );
 
-      },
-      {
-        threshold:[0,.65,1]
-      }
+    videos.forEach(video =>
+        observer.observe(video)
     );
-
-  videos.forEach(
-    video =>
-      observer.observe(video)
-  );
-
 }
-
-
-function toggleShortSound(
-  button,
-  event
-){
-
-  event.stopPropagation();
-
-  const short =
-    button.closest(".short");
-
-  const video =
-    short?.querySelector("video");
-
-  if(!video){
-    return;
-  }
-
-  video.muted =
-    !video.muted;
-
-  button.innerHTML =
-    video.muted
-      ? `<i class="fa-solid fa-volume-xmark"></i>`
-      : `<i class="fa-solid fa-volume-high"></i>`;
-
-}
-
-
-async function likeShort(
-  postId,
-  event
-){
-
-  event.stopPropagation();
-
-  const fakeButton =
-    event.currentTarget;
-
-  await toggleLike(
-    postId,
-    fakeButton
-  );
-
-}
-
-
-async function registerVideoView(postId){
-
-  if(!postId || !currentUser){
-    return;
-  }
-
-  /*
-    Une vue est enregistrée par utilisateur
-    et par publication.
-  */
-
-  const {
-    data:existing
-  } =
-    await supabaseClient
-      .from("post_views")
-      .select("id")
-      .eq("post_id",postId)
-      .eq("user_id",currentUser.id)
-      .maybeSingle();
-
-  if(existing){
-    return;
-  }
-
-  await supabaseClient
-    .from("post_views")
-    .insert({
-      post_id:postId,
-      user_id:currentUser.id
-    });
-
-}
-
 
 /* ============================================================
-   VIDÉOS DU FIL
+   PROFILE
 ============================================================ */
 
-function activateFeedVideos(){
+async function loadProfile(){
 
-  const videos =
-    document.querySelectorAll(
-      ".feed-video"
-    );
+    if(!currentProfile)
+        return;
 
-  if(!videos.length){
-    return;
-  }
+    const box =
+        document.getElementById(
+            'profileContent'
+        );
 
-  const feedObserver =
-    new IntersectionObserver(
-      entries => {
+    const avatar =
+        currentProfile.avatar_url ||
+        'https://placehold.co/200x200?text=A';
 
-        entries.forEach(entry => {
+    const cover =
+        currentProfile.cover_url ||
+        'https://placehold.co/800x300?text=AIDBA+GUINÉE';
 
-          const video =
-            entry.target;
+    const name =
+        `${currentProfile.first_name || ''} ${currentProfile.last_name || ''}`
+        .trim()
+        ||
+        'Utilisateur';
 
-          if(
-            entry.isIntersecting &&
-            entry.intersectionRatio >= .6
-          ){
+    box.innerHTML = `
 
-            document
-              .querySelectorAll(
-                ".feed-video"
-              )
-              .forEach(other => {
+        <div class="profile-card">
 
-                if(other !== video){
-                  other.pause();
-                }
+            <img
+                class="cover"
+                src="${escapeHTML(cover)}"
+            >
 
-              });
+            <div class="profile-info">
 
-            video
-              .play()
-              .catch(() => {});
+                <img
+                    class="profile-avatar"
+                    src="${escapeHTML(avatar)}"
+                >
 
-            registerVideoView(
-              video.closest(".post")
-                ?.dataset.postId
-            );
+                <h1>
+                    ${escapeHTML(name)}
+                </h1>
 
-          }else{
+                <p>
+                    @${escapeHTML(
+                        currentProfile.username || ''
+                    )}
+                </p>
 
-            video.pause();
+                <p>
+                    ${escapeHTML(
+                        currentProfile.bio || ''
+                    )}
+                </p>
 
-          }
+                <p>
+                    📍 ${escapeHTML(
+                        currentProfile.city || ''
+                    )}
+                    ${
+                        currentProfile.country
+                        ?
+                        ' · ' +
+                        escapeHTML(
+                            currentProfile.country
+                        )
+                        :
+                        ''
+                    }
+                </p>
 
-        });
+                <button
+                    class="primary"
+                    style="max-width:300px;margin:15px auto 0"
+                    onclick="openProfileModal()">
+                    Modifier mon profil
+                </button>
 
-      },
-      {
-        threshold:[0,.6,1]
-      }
-    );
+            </div>
 
-  videos.forEach(
-    video =>
-      feedObserver.observe(video)
-  );
-
+        </div>
+    `;
 }
 
+function openProfileModal(){
+
+    if(!currentProfile)
+        return;
+
+    document.getElementById(
+        'editFirstName'
+    ).value =
+        currentProfile.first_name || '';
+
+    document.getElementById(
+        'editLastName'
+    ).value =
+        currentProfile.last_name || '';
+
+    document.getElementById(
+        'editUsername'
+    ).value =
+        currentProfile.username || '';
+
+    document.getElementById(
+        'editBio'
+    ).value =
+        currentProfile.bio || '';
+
+    document.getElementById(
+        'editCountry'
+    ).value =
+        currentProfile.country || 'Guinée';
+
+    document.getElementById(
+        'editCity'
+    ).value =
+        currentProfile.city || '';
+
+    openModal('profileModal');
+}
+
+async function saveProfile(){
+
+    if(!currentUser)
+        return;
+
+    try{
+
+        const first_name =
+            document.getElementById(
+                'editFirstName'
+            ).value.trim();
+
+        const last_name =
+            document.getElementById(
+                'editLastName'
+            ).value.trim();
+
+        const username =
+            document.getElementById(
+                'editUsername'
+            ).value.trim()
+            .toLowerCase();
+
+        const bio =
+            document.getElementById(
+                'editBio'
+            ).value.trim();
+
+        const country =
+            document.getElementById(
+                'editCountry'
+            ).value.trim();
+
+        const city =
+            document.getElementById(
+                'editCity'
+            ).value.trim();
+
+        const avatarFile =
+            document.getElementById(
+                'avatarFile'
+            ).files[0];
+
+        const coverFile =
+            document.getElementById(
+                'coverFile'
+            ).files[0];
+
+        let avatar_url =
+            currentProfile.avatar_url;
+
+        let cover_url =
+            currentProfile.cover_url;
+
+        if(avatarFile){
+
+            avatar_url =
+                await uploadFile(
+                    avatarFile,
+                    'avatars'
+                );
+        }
+
+        if(coverFile){
+
+            cover_url =
+                await uploadFile(
+                    coverFile,
+                    'covers'
+                );
+        }
+
+        const {data,error} =
+            await sb
+            .from('profiles')
+            .update({
+
+                first_name,
+                last_name,
+                username,
+                bio,
+                country,
+                city,
+                avatar_url,
+                cover_url
+
+            })
+            .eq(
+                'id',
+                currentUser.id
+            )
+            .select()
+            .single();
+
+        if(error)
+            throw error;
+
+        currentProfile = data;
+
+        updateUserAvatar();
+
+        closeModal('profileModal');
+
+        await loadProfile();
+
+        alert(
+            'Profil enregistré.'
+        );
+
+    }catch(error){
+
+        showError(error);
+    }
+}
 
 /* ============================================================
    NOTIFICATIONS
@@ -3712,398 +3143,222 @@ function activateFeedVideos(){
 
 async function loadNotifications(){
 
-  const container =
-    document.getElementById(
-      "notifications-container"
-    );
-
-  if(!currentUser){
-    return;
-  }
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("notifications")
-      .select("*")
-      .eq("user_id",currentUser.id)
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(50);
-
-  if(error){
-
-    console.warn(
-      "Notifications:",
-      error.message
-    );
-
-    container.innerHTML =
-      `<div class="empty">
-        Impossible de charger les notifications.
-       </div>`;
-
-    return;
-  }
-
-  if(!data?.length){
-
-    container.innerHTML =
-      `<div class="empty">
-        <i class="fa-regular fa-bell"
-           style="font-size:40px;margin-bottom:12px;">
-        </i>
-        <h3>Aucune notification</h3>
-        <p>Vous êtes à jour.</p>
-       </div>`;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.map(notification => {
-
-      const text =
-        escapeHTML(
-          notification.message ||
-          "Nouvelle notification"
+    const box =
+        document.getElementById(
+            'notifications'
         );
 
-      return `
-        <div class="notification">
+    if(!currentUser)
+        return;
 
-          <div class="notification-icon">
-            <i class="fa-solid fa-bell"></i>
-          </div>
+    try{
 
-          <div class="notification-text">
+        const {data,error} =
+            await sb
+            .from('notifications')
+            .select(`
+                *,
+                actor:profiles!notifications_actor_id_fkey(
+                    first_name,
+                    last_name,
+                    avatar_url
+                )
+            `)
+            .eq(
+                'user_id',
+                currentUser.id
+            )
+            .order(
+                'created_at',
+                {ascending:false}
+            )
+            .limit(50);
 
-            ${text}
+        if(error)
+            throw error;
 
-            <div
-              style="font-size:10px;
-                     color:var(--muted);
-                     margin-top:3px;">
+        if(!data || !data.length){
 
-              ${formatDate(
-                notification.created_at
-              )}
+            box.innerHTML =
+                `<div class="state">
+                    Aucune notification.
+                </div>`;
 
-            </div>
+            return;
+        }
 
-          </div>
+        box.innerHTML =
+            data
+            .map(n => `
+                <div
+                    style="
+                    padding:14px 0;
+                    border-bottom:1px solid #eee;
+                    ">
+                    ${escapeHTML(n.message)}
+                </div>
+            `)
+            .join('');
 
-        </div>
-      `;
+    }catch(error){
 
-    }).join("");
+        console.error(error);
 
+        box.innerHTML =
+            `<div class="state">
+                Impossible de charger les notifications.
+            </div>`;
+    }
 }
-
-
-/* ============================================================
-   MARKETPLACE
-============================================================ */
-
-async function loadMarketplace(){
-
-  const container =
-    document.getElementById(
-      "market-container"
-    );
-
-  /*
-    Cette partie attend une table
-    marketplace_products.
-  */
-
-  const {
-    data,
-    error
-  } =
-    await supabaseClient
-      .from("marketplace_products")
-      .select("*")
-      .order(
-        "created_at",
-        {ascending:false}
-      )
-      .limit(50);
-
-  if(error){
-
-    console.warn(
-      "Marketplace:",
-      error.message
-    );
-
-    container.innerHTML =
-      `<div
-         style="grid-column:1/-1"
-         class="empty">
-
-         La marketplace sera disponible
-         lorsque la table
-         <strong>marketplace_products</strong>
-         sera configurée.
-
-       </div>`;
-
-    return;
-  }
-
-  if(!data?.length){
-
-    container.innerHTML =
-      `<div
-         style="grid-column:1/-1"
-         class="empty">
-
-         Aucun produit pour le moment.
-
-       </div>`;
-
-    return;
-  }
-
-  container.innerHTML =
-    data.map(product => {
-
-      const image =
-        safeUrl(product.image_url) ||
-        placeholderCover();
-
-      const title =
-        escapeHTML(
-          product.title ||
-          "Produit"
-        );
-
-      const price =
-        escapeHTML(
-          product.price ||
-          ""
-        );
-
-      return `
-        <article class="market-card">
-
-          <img
-            src="${image}"
-            alt="${title}"
-            loading="lazy">
-
-          <div class="market-info">
-
-            <strong>
-              ${title}
-            </strong>
-
-            <div class="market-price">
-              ${price}
-            </div>
-
-          </div>
-
-        </article>
-      `;
-
-    }).join("");
-
-}
-
-
-/* ============================================================
-   NAVIGATION
-============================================================ */
-
-function stopAllVideos(){
-
-  document
-    .querySelectorAll("video")
-    .forEach(video => {
-
-      video.pause();
-
-    });
-
-}
-
-
-function switchTab(tab){
-
-  stopAllVideos();
-
-  activeTab = tab;
-
-  document
-    .querySelectorAll(".view")
-    .forEach(view =>
-      view.classList.remove("active")
-    );
-
-  document
-    .querySelectorAll(".nav-btn")
-    .forEach(button =>
-      button.classList.remove("active")
-    );
-
-  const view =
-    document.getElementById(
-      `${tab}-view`
-    );
-
-  const nav =
-    document.getElementById(
-      `nav-${tab}`
-    );
-
-  if(view){
-    view.classList.add("active");
-  }
-
-  if(nav){
-    nav.classList.add("active");
-  }
-
-  window.scrollTo({
-    top:0,
-    behavior:"instant"
-  });
-
-  if(tab === "home"){
-    loadPosts();
-  }
-
-  if(tab === "shorts"){
-    loadShorts();
-  }
-
-  if(tab === "market"){
-    loadMarketplace();
-  }
-
-  if(tab === "notifications"){
-    loadNotifications();
-  }
-
-}
-
 
 /* ============================================================
    RECHERCHE
 ============================================================ */
 
-function showSearch(){
+function openSearch(){
 
-  const query =
-    prompt(
-      "Rechercher un membre ou une publication :"
-    );
+    const q =
+        prompt(
+            'Rechercher un utilisateur'
+        );
 
-  if(!query?.trim()){
-    return;
-  }
+    if(!q)
+        return;
 
-  alert(
-    `La recherche avancée "${query.trim()}" devra être reliée à une table de recherche/profils.`
-  );
-
+    searchUsers(q);
 }
 
+async function searchUsers(q){
 
-/* ============================================================
-   DÉCONNEXION
-============================================================ */
+    try{
 
-async function logout(){
+        const {data,error} =
+            await sb
+            .from('profiles')
+            .select(`
+                id,
+                first_name,
+                last_name,
+                username,
+                avatar_url,
+                city
+            `)
+            .or(
+                `first_name.ilike.%${q}%,last_name.ilike.%${q}%,username.ilike.%${q}%`
+            )
+            .limit(20);
 
-  stopAllVideos();
+        if(error)
+            throw error;
 
-  const {
-    error
-  } =
-    await supabaseClient.auth.signOut();
+        if(!data.length){
 
-  if(error){
+            alert(
+                'Aucun utilisateur trouvé.'
+            );
 
-    alert(
-      "Erreur de déconnexion : " +
-      error.message
-    );
+            return;
+        }
 
-    return;
-  }
+        const names =
+            data.map(
+                p =>
+                `${p.first_name} ${p.last_name} (@${p.username})`
+            );
 
-  currentUser = null;
-  currentProfile = null;
+        alert(
+            names.join('\n')
+        );
 
-  showAuth();
-  showLogin();
+    }catch(error){
 
+        showError(error);
+    }
 }
 
-
 /* ============================================================
-   INITIALISATION
+   MENU PUBLICATION
 ============================================================ */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  async function(){
+function postMenu(postId){
 
-    const {
-      data
-    } =
-      await supabaseClient.auth.getSession();
+    if(
+        confirm(
+            'Supprimer cette publication ?'
+        )
+    ){
 
-    if(data.session){
-
-      currentUser =
-        data.session.user;
-
-      await initializeUser();
-
-    }else{
-
-      showAuth();
-      showLogin();
-
+        deletePost(postId);
     }
+}
 
-  }
-);
+async function deletePost(postId){
 
+    if(!currentUser)
+        return;
+
+    try{
+
+        const {error} =
+            await sb
+            .from('posts')
+            .delete()
+            .eq(
+                'id',
+                postId
+            )
+            .eq(
+                'user_id',
+                currentUser.id
+            );
+
+        if(error)
+            throw error;
+
+        await loadFeed();
+
+    }catch(error){
+
+        showError(error);
+    }
+}
 
 /* ============================================================
-   NAVIGATION CLAVIER / RETOUR
+   AUTH STATE
 ============================================================ */
 
-window.addEventListener(
-  "pagehide",
-  stopAllVideos
-);
+sb.auth.onAuthStateChange(
+    async (event,session) => {
 
-document.addEventListener(
-  "visibilitychange",
-  function(){
+        if(
+            event === 'SIGNED_IN' &&
+            session
+        ){
 
-    if(document.hidden){
+            currentUser =
+                session.user;
 
-      stopAllVideos();
+            await boot();
+        }
 
-    }else if(activeTab === "shorts"){
+        if(
+            event === 'SIGNED_OUT'
+        ){
 
-      activateShortObserver();
+            document.getElementById('app')
+                .classList.add('hidden');
 
+            document.getElementById('auth')
+                .classList.remove('hidden');
+        }
     }
-
-  }
 );
+
+/* ============================================================
+   START
+============================================================ */
+
+boot();
 
 </script>
 
