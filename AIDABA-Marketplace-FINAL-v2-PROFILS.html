@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIDABA Market — Marketplace de Guinée · Profils</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --ink:#16213E; --surface:#1F2F52; --surface-2:#28396266;
+  --mango:#E8A33D; --terracotta:#C1443D; --cream:#F2EAD8;
+  --verified:#3E8E7E; --line:#3A4B78;
+  --font-display:'Fraunces',serif; --font-body:'Inter',sans-serif;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--ink); color:var(--cream); font-family:var(--font-body); min-height:100vh;}
+h1,h2,h3{font-family:var(--font-display); font-weight:600;}
+a{color:inherit;}
+button{font-family:var(--font-body); cursor:pointer; border:none;}
+input,select,textarea{font-family:var(--font-body);}
+
+/* ---- HEADER ---- */
+header{position:sticky; top:0; z-index:50; background:var(--ink); border-bottom:1px solid var(--line); padding:14px 16px;}
+.header-row{display:flex; align-items:center; gap:10px;}
+.logo{font-family:var(--font-display); font-size:1.3rem; font-weight:700; color:var(--mango); white-space:nowrap;}
+.search-bar{flex:1; display:flex; align-items:center; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 12px;}
+.search-bar input{background:transparent; border:none; color:var(--cream); width:100%; outline:none; font-size:0.95rem;}
+.icon-btn{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 10px; color:var(--cream); font-size:1.1rem; position:relative;}
+.badge{position:absolute; top:-6px; right:-6px; background:var(--terracotta); color:var(--cream); font-size:0.65rem; padding:1px 5px; border-radius:20px; font-weight:700;}
+.tabs{display:flex; gap:8px; margin-top:12px; overflow-x:auto; padding-bottom:2px;}
+.tab{padding:6px 14px; border-radius:20px; background:var(--surface); border:1px solid var(--line); font-size:0.85rem; white-space:nowrap; color:var(--cream); opacity:0.7;}
+.tab.active{background:var(--mango); color:var(--ink); border-color:var(--mango); opacity:1; font-weight:600;}
+
+/* ---- CATEGORY STRIP ---- */
+.cat-strip{display:flex; gap:10px; padding:14px 16px; overflow-x:auto;}
+.cat-chip{flex-shrink:0; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:10px 16px; font-size:0.8rem; text-align:center; min-width:76px;}
+
+/* ---- RECO RAILS (défilement horizontal) ---- */
+.reco-rail{margin:0 0 18px;}
+.reco-rail-title{font-size:0.95rem; font-weight:600; margin:0 16px 10px; display:flex; align-items:center; gap:6px;}
+.reco-scroll{display:flex; gap:10px; overflow-x:auto; padding:0 16px 4px;}
+.reco-card{flex-shrink:0; width:130px; background:var(--surface); border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+.reco-card .card-stripe{height:4px;}
+.reco-card .card-img{aspect-ratio:1; font-size:1.4rem;}
+.reco-card .card-body{padding:8px 9px 10px;}
+.reco-card .card-title{font-size:0.76rem; min-height:2em;}
+.reco-card .card-price{font-size:0.85rem;}
+
+/* ---- PRODUCT GRID (market stall style) ---- */
+main{padding:16px; max-width:1100px; margin:0 auto;}
+.section-title{font-size:1.15rem; margin:18px 0 12px; display:flex; align-items:center; justify-content:space-between;}
+.grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+@media(min-width:640px){.grid{grid-template-columns:repeat(3,1fr);}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(4,1fr);}}
+.card{background:var(--surface); border-radius:8px; overflow:hidden; border:1px solid var(--line); display:flex; flex-direction:column;}
+.card-stripe{height:5px; background:linear-gradient(90deg,var(--mango),var(--terracotta));}
+.card-img{aspect-ratio:1; background:#0f1830; display:flex; align-items:center; justify-content:center; color:var(--line); font-size:1.8rem;}.card-img img{display:block;width:100%;height:100%;object-fit:cover;min-width:0;min-height:0;} .seller-product-mini img{display:block;width:100%;height:100%;object-fit:cover;}
+.card-body{padding:10px 12px 12px; display:flex; flex-direction:column; gap:4px; flex:1;}
+.card-title{font-size:0.88rem; font-weight:500; line-height:1.3; min-height:2.3em;}
+.card-price{font-family:var(--font-display); font-weight:700; color:var(--mango); font-size:1rem;}
+.card-wholesale{font-size:0.7rem; color:var(--verified);}
+.card-seller{font-size:0.7rem; opacity:0.65; display:flex; align-items:center; gap:4px;}
+.verified-dot{display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border-radius:50%; background:#3B82F6; color:white; font-size:9px; font-weight:900;}
+.verified-dot::after{content:"✓";}
+
+/* ---- BUTTONS ---- */
+.btn{padding:11px 18px; border-radius:10px; font-weight:600; font-size:0.9rem;}
+.btn-primary{background:var(--mango); color:var(--ink);}
+.btn-secondary{background:var(--surface); color:var(--cream); border:1px solid var(--line);}
+.btn-danger{background:var(--terracotta); color:var(--cream);}
+.btn-full{width:100%;}
+.btn-sm{padding:7px 12px; font-size:0.8rem; border-radius:8px;}
+
+/* ---- MODAL / SHEET ---- */
+.overlay{position:fixed; inset:0; background:rgba(10,15,30,0.7); z-index:100; display:flex; align-items:flex-end; justify-content:center;}
+@media(min-width:640px){.overlay{align-items:center;}}
+.sheet{background:var(--ink); border:1px solid var(--line); width:100%; max-width:480px; max-height:88vh; overflow-y:auto; border-radius:18px 18px 0 0; padding:20px;}
+@media(min-width:640px){.sheet{border-radius:18px;}}
+.sheet-close{float:right; background:none; color:var(--cream); font-size:1.3rem; opacity:0.6;}
+.field{margin-bottom:14px;}
+.field label{display:block; font-size:0.8rem; margin-bottom:6px; opacity:0.8;}
+.field input,.field select,.field textarea{width:100%; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:10px 12px; color:var(--cream); font-size:0.92rem;}
+.field textarea{resize:vertical; min-height:70px;}
+.row-split{display:flex; gap:10px;}
+.row-split>*{flex:1;}
+.qty-picker{display:flex; align-items:center; gap:12px;}
+.qty-picker button{width:34px; height:34px; border-radius:8px; background:var(--surface); border:1px solid var(--line); color:var(--cream); font-size:1.1rem;}
+.divider{height:1px; background:var(--line); margin:16px 0;}
+.status-pill{display:inline-block; padding:3px 10px; border-radius:20px; font-size:0.72rem; font-weight:600;}
+.status-pending{background:#4a3a1a; color:var(--mango);}
+.status-approved{background:#1a4a3d; color:var(--verified);}
+.status-rejected{background:#4a1a1a; color:var(--terracotta);}
+.empty-state{text-align:center; padding:40px 20px; opacity:0.6;}
+.toast{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:var(--verified); color:var(--ink); padding:10px 20px; border-radius:10px; font-weight:600; font-size:0.85rem; z-index:200;}
+.cart-line{display:flex; gap:10px; align-items:center; padding:10px 0; border-bottom:1px solid var(--line);}
+.cart-line-img{width:52px; height:52px; border-radius:6px; background:var(--surface); flex-shrink:0;}
+.order-card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px; margin-bottom:10px;}
+.hidden{display:none !important;}
+footer.tabbar{position:fixed; bottom:0; left:0; right:0; background:var(--ink); border-top:1px solid var(--line); display:flex; padding:8px 0 max(8px,env(safe-area-inset-bottom)); z-index:50;}
+.tabbar button{flex:1; background:none; color:var(--cream); opacity:0.55; font-size:0.68rem; display:flex; flex-direction:column; align-items:center; gap:3px;}
+.tabbar button.active{opacity:1; color:var(--mango);}
+.tabbar .ic{font-size:1.25rem;}
+.spacer-bottom{height:70px;}
+
+/* ---- SPLASH ---- */
+#splash{position:fixed; inset:0; background:var(--ink); z-index:999; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity 0.4s ease;}
+#splash .splash-logo{font-family:var(--font-display); font-size:2.4rem; font-weight:700; color:var(--mango); letter-spacing:1px;}
+#splash .splash-tag{font-size:0.8rem; opacity:0.6; letter-spacing:2px; text-transform:uppercase; margin-top:-12px;}
+#splash .splash-ring{width:34px; height:34px; border:3px solid var(--surface); border-top-color:var(--mango); border-radius:50%; animation:spin 0.9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+#splash.fade-out{opacity:0; pointer-events:none;}
+
+/* ---- ROLE PICKER ---- */
+.role-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:18px;}
+.role-card{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:18px 12px; text-align:center; cursor:pointer;}
+.role-card.selected{border-color:var(--mango); background:#2a3a5f;}
+.role-card .role-ic{font-size:1.6rem; margin-bottom:8px; display:block;}
+.role-card .role-label{font-weight:600; font-size:0.9rem;}
+.role-card .role-sub{font-size:0.72rem; opacity:0.6; margin-top:2px;}
+.loc-status{font-size:0.78rem; padding:8px 10px; border-radius:8px; background:var(--surface); border:1px solid var(--line); margin-bottom:12px;}
+.loc-status.ok{color:var(--verified); border-color:var(--verified);}
+
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--surface);border:1px solid var(--line)}
+.product-images-preview{display:flex;gap:8px;overflow-x:auto;margin-top:8px}.product-images-preview img{width:68px;height:68px;object-fit:cover;border-radius:8px;border:1px solid var(--line)}
+.rating{color:var(--mango);letter-spacing:1px}.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.stat-box{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;text-align:center}.stat-box strong{display:block;font-size:1rem;color:var(--mango)}.stat-box span{font-size:.68rem;opacity:.65}
+.notification-item{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid var(--line)}.notification-item.unread{background:rgba(232,163,61,.06);margin:0 -10px;padding-left:10px;padding-right:10px;border-radius:8px}.notif-dot{width:8px;height:8px;border-radius:50%;background:var(--terracotta);margin-top:6px;flex:none}.seller-head{display:flex;align-items:center;gap:10px}.verified-badge{font-size:.68rem;background:#1a4a3d;color:var(--verified);padding:3px 7px;border-radius:20px}
+
+/* ---- COMPACT FACEBOOK/ALIEXPRESS STYLE SELLER PROFILE ---- */
+.seller-profile{padding:0 0 4px;}
+.seller-cover{height:92px;border-radius:14px;background:linear-gradient(135deg,#283962,#16213E 58%,#C1443D);position:relative;overflow:hidden;margin:-4px -2px 0;}
+.seller-cover::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(232,163,61,.25),transparent 55%);}
+.seller-profile-head{display:flex;gap:11px;align-items:flex-end;margin-top:-32px;padding:0 8px;position:relative;z-index:2;}
+.seller-profile-avatar{width:68px;height:68px;border-radius:50%;object-fit:cover;background:var(--surface);border:3px solid var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.25);}
+.seller-profile-main{min-width:0;padding-bottom:3px;}
+.seller-profile-name{font-family:var(--font-body);font-size:1rem;font-weight:700;line-height:1.15;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.seller-profile-sub{font-size:.68rem;opacity:.65;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:290px;}
+.seller-profile-badge{font-size:.62rem;background:#1a4a3d;color:#65c7ae;padding:3px 7px;border-radius:20px;font-weight:700;}
+.seller-profile-details{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin:12px 0;}
+.seller-detail{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:8px 9px;min-width:0;}
+.seller-detail strong{display:block;font-size:.7rem;opacity:.55;margin-bottom:2px;font-weight:500;}
+.seller-detail span{font-size:.78rem;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.seller-about{font-size:.78rem;line-height:1.45;opacity:.78;background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px;margin:8px 0 12px;}
+.seller-stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:8px 0 14px;}
+.seller-stat{padding:8px 4px;text-align:center;border-right:1px solid var(--line);}
+.seller-stat:last-child{border-right:0;}
+.seller-stat strong{display:block;font-size:.86rem;color:var(--mango);}
+.seller-stat span{display:block;font-size:.61rem;opacity:.55;margin-top:2px;}
+.seller-rating-line{display:flex;align-items:center;gap:7px;font-size:.75rem;margin:0 0 12px;}
+.seller-products-title{font-size:.9rem;font-weight:700;margin:8px 0 9px;}
+.seller-products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
+.seller-product-mini{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;cursor:pointer;}
+.seller-product-mini img,.seller-product-mini .mini-placeholder{width:100%;aspect-ratio:1;display:block;object-fit:cover;background:#0f1830;}
+.seller-product-mini .mini-info{padding:6px 7px;}
+.seller-product-mini .mini-title{font-size:.66rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.seller-product-mini .mini-price{font-size:.7rem;color:var(--mango);font-weight:700;margin-top:2px;}
+.profile-compact-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;}
+.profile-topline{display:flex;align-items:center;gap:10px;}
+.profile-topline .avatar{width:58px;height:58px;}
+.profile-name-line{font-size:.95rem;font-weight:700;display:flex;align-items:center;gap:5px;}
+.profile-meta{font-size:.72rem;opacity:.62;margin-top:3px;line-height:1.4;}
+.profile-actions{display:flex;gap:7px;margin-top:11px;}
+.profile-actions .btn{flex:1;}
+.profile-cover{height:118px;border-radius:14px 14px 8px 8px;background:var(--surface);overflow:hidden;position:relative;margin-bottom:-25px;}
+.profile-cover img{width:100%;height:100%;object-fit:cover;display:block;}
+.profile-cover-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;opacity:.45;font-size:.85rem;}
+.profile-avatar-wrap{position:relative;width:72px;height:72px;flex:none;}
+.profile-avatar-large{width:72px;height:72px;border-radius:50%;object-fit:cover;background:var(--surface);border:3px solid var(--ink);display:block;}
+.profile-avatar-fallback{width:72px;height:72px;border-radius:50%;background:var(--surface);border:3px solid var(--ink);display:flex;align-items:center;justify-content:center;font-size:1.8rem;}
+.profile-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.profile-info-item{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:9px;}
+.profile-info-item strong{display:block;font-size:.68rem;opacity:.55;margin-bottom:3px;font-weight:500;}
+.profile-info-item span{font-size:.78rem;word-break:break-word;}
+.profile-bio{background:var(--surface);border:1px solid var(--line);border-radius:9px;padding:10px;margin-top:9px;font-size:.8rem;line-height:1.45;opacity:.82;}
+.verification-box{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px;margin-top:10px;}
+.verification-countdown{font-weight:700;color:var(--mango);margin-top:6px;}
+.photo-btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--verified);margin-right:4px;}
+
+
+</style>
+</head>
+<body>
+
+<div id="splash">
+  <div class="splash-logo">AIDABA</div>
+  <div class="splash-tag">Market · Guinée</div>
+  <div class="splash-ring"></div>
+</div>
+
+<header>
+  <div class="header-row">
+    <div class="logo">AIDABA<br><span style="font-size:0.6rem;font-family:var(--font-body);letter-spacing:1px;color:var(--cream);opacity:0.7;">MARKET · GUINÉE</span></div>
+    <div class="search-bar">
+      <span style="opacity:0.5;margin-right:6px;">🔍</span>
+      <input id="searchInput" placeholder="Chercher un produit, un vendeur...">
+    </div>
+    <button class="icon-btn" onclick="openNotifications()">🔔<span id="notifBadge" class="badge hidden">0</span></button><button class="icon-btn" onclick="openCart()">🛒<span id="cartBadge" class="badge hidden">0</span></button><button class="icon-btn" onclick="showView('account')" title="Mon profil">👤</button>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-mode="retail" onclick="setMode('retail')">Détail</div>
+    <div class="tab" data-mode="wholesale" onclick="setMode('wholesale')">Gros (B2B)</div>
+  </div>
+</header>
+
+<div class="cat-strip" id="catStrip"></div>
+
+<main>
+  <div id="recoRoot"></div>
+  <div class="section-title"><span id="gridTitle">Produits</span></div>
+  <div class="grid" id="productGrid"></div>
+  <div class="spacer-bottom"></div>
+</main>
+
+<footer class="tabbar">
+  <button class="active" data-view="home" onclick="showView('home')"><span class="ic">🏪</span>Marché</button>
+  <button data-view="orders" onclick="showView('orders')"><span class="ic">📦</span>Commandes</button>
+  <button data-view="sell" onclick="showView('sell')"><span class="ic">🏷️</span>Vendre</button>
+  <button data-view="account" onclick="showView('account')"><span class="ic">👤</span>Compte</button>
+</footer>
+
+<div id="modalRoot"></div>
+<div id="toastRoot"></div>
+
+<script>
+// ============================================================
+// CONFIG — remplace par ton URL/clé Supabase du projet AIDABA
+// ============================================================
+const SUPABASE_URL = "https://bdzdaceiettpiosstxkp.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_3_HoxsdOo_ndX8mNZDSEVQ_6cS7cRG7";
+let sb = null;
+function withTimeout(promise, ms, label){
+  return Promise.race([promise, new Promise((_, reject)=>setTimeout(()=>reject(new Error(label+' a dépassé le délai.')), ms))]);
+}
+async function getSupabase(){
+  if(window.supabase && typeof window.supabase.createClient === 'function'){
+    if(!sb) sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return sb;
+  }
+  throw new Error("La bibliothèque Supabase n’est pas disponible.");
+}
+
+let state = {
+  user: null, profile: null, seller: null, sellerApplication: null,
+  mode: 'retail', category: null, search: '',
+  categories: [], products: null, cart: [], // products: null = en cours de chargement
+  view: 'home', notifications: [], unreadNotifications: 0, sellerStats: null, selectedSeller: null, notificationChannel: null, marketplaceChannel: null
+};
+
+// ---------- UTIL ----------
+function fmtGNF(n){ return Number(n||0).toLocaleString('fr-FR') + ' GNF'; }
+function toast(msg){
+  const t = document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.getElementById('toastRoot').appendChild(t);
+  setTimeout(()=>t.remove(), 2200);
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+function openModal(html){ document.getElementById('modalRoot').innerHTML =
+  `<div class="overlay" onclick="if(event.target===this)closeModal()"><div class="sheet">${html}</div></div>`; }
+
+// ---------- AUTH ----------
+async function initAuth(){
+  const client = await getSupabase();
+  const { data: { session }, error } = await withTimeout(client.auth.getSession(),8000,'La vérification de session');
+  if(error) throw error;
+  if(session){ state.user = session.user; await loadProfile(); }
+  client.auth.onAuthStateChange(async (event, session)=>{
+    if(event === 'SIGNED_OUT'){ if(state.notificationChannel){ try{ await sb.removeChannel(state.notificationChannel); }catch(e){} state.notificationChannel=null; } if(state.marketplaceChannel){ try{ await sb.removeChannel(state.marketplaceChannel); }catch(e){} state.marketplaceChannel=null; } state.user=null; state.profile=null; state.seller=null; state.notifications=[]; state.unreadNotifications=0; updateNotificationBadge(); render(); return; }
+    if(session && (!state.user || state.user.id !== session.user.id)){ state.user = session.user; try{ await loadProfile(); subscribeToNotifications(); }catch(e){ console.error(e); } render(); }
+  });
+}
+
+async function loadProfile(){
+  if(!state.user) return;
+
+  // Une demande de vendeur devient automatiquement éligible après 24 h.
+  // La fonction SQL sécurisée ne peut agir que pour l'utilisateur connecté.
+  try{
+    await sb.rpc('activate_due_seller_application', { p_user_id: state.user.id });
+  }catch(e){
+    // Compatible avec une base qui n'a pas encore reçu la migration finale.
+    console.warn('Vérification vendeur 24h:', e.message);
+  }
+
+  let { data: profile, error: pe } = await sb.from('profiles').select('*').eq('id', state.user.id).maybeSingle();
+  if(pe) throw pe;
+
+  if(!profile){
+    const meta=state.user.user_metadata||{};
+    const {data:createdProfile,error:ce}=await sb.from('profiles').upsert({
+      id:state.user.id,
+      full_name:meta.full_name||'Utilisateur',
+      phone:meta.phone||'',
+      city:meta.city||'',
+      address:meta.address||'',
+      bio:meta.bio||'',
+      role:meta.role||'buyer'
+    },{onConflict:'id'}).select().single();
+    if(ce) throw ce;
+    profile=createdProfile;
+  }
+
+  state.profile = profile || null;
+  state.seller = null;
+  state.sellerApplication = null;
+
+  if(profile && profile.role === 'seller'){
+    const { data: seller } = await sb.from('sellers').select('*').eq('id', state.user.id).maybeSingle();
+    state.seller = seller || null;
+    if(state.seller) state.sellerStats = await getSellerStats(state.user.id);
+  }
+
+  const { data: app } = await sb.from('seller_applications')
+    .select('*').eq('user_id', state.user.id)
+    .order('created_at',{ascending:false}).limit(1).maybeSingle();
+  state.sellerApplication = app || null;
+
+  await loadNotifications();
+}
+
+// ---------- MARKETPLACE LIVE SYNC ----------
+function subscribeToMarketplaceRealtime(){
+  if(!sb) return;
+  if(state.marketplaceChannel){ try{ sb.removeChannel(state.marketplaceChannel); }catch(e){} }
+  state.marketplaceChannel = sb.channel('aidaba-marketplace-live')
+    .on('postgres_changes',{event:'*',schema:'public',table:'products'},payload=>{
+      if(state.view==='home') loadProducts().catch(()=>{});
+      if(state.view==='sell' && state.profile?.role==='seller') renderSellerDashboard().catch(()=>{});
+    })
+    .on('postgres_changes',{event:'*',schema:'public',table:'product_images'},payload=>{
+      if(state.view==='home') loadProducts().catch(()=>{});
+      if(state.view==='sell' && state.profile?.role==='seller') renderSellerDashboard().catch(()=>{});
+    })
+    .subscribe(status=>{
+      if(status==='CHANNEL_ERROR') console.warn('Marketplace realtime indisponible.');
+    });
+}
+
+// ---------- NOTIFICATIONS / SELLER STATS ----------
+async function loadNotifications(){
+  if(!state.user){ state.notifications=[]; state.unreadNotifications=0; updateNotificationBadge(); return; }
+  const {data,error}=await sb.from('notifications').select('*').eq('user_id',state.user.id).order('created_at',{ascending:false}).limit(30);
+  if(error){ console.warn('Notifications:',error.message); return; }
+  state.notifications=data||[];
+  state.unreadNotifications=state.notifications.filter(n=>!n.is_read).length;
+  updateNotificationBadge();
+}
+function subscribeToNotifications(){
+  if(!state.user || !sb) return;
+  if(state.notificationChannel){ try{ sb.removeChannel(state.notificationChannel); }catch(e){} }
+  state.notificationChannel = sb.channel('aidaba-notifications-'+state.user.id)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+state.user.id},payload=>{
+      const n=payload.new;
+      if(!n) return;
+      state.notifications=[n,...state.notifications].slice(0,30);
+      state.unreadNotifications=state.notifications.filter(x=>!x.is_read).length;
+      updateNotificationBadge();
+      if(n.type==='new_order') toast('🔔 Nouvelle commande reçue !');
+    })
+    .subscribe((status)=>{ if(status==='CHANNEL_ERROR') console.warn('Notifications realtime indisponibles.'); });
+}
+function updateNotificationBadge(){
+  const b=document.getElementById('notifBadge'); if(!b) return;
+  b.textContent=state.unreadNotifications; b.classList.toggle('hidden',!state.unreadNotifications);
+}
+async function markNotificationsRead(){
+  if(!state.user || !state.unreadNotifications) return;
+  await sb.from('notifications').update({is_read:true}).eq('user_id',state.user.id).eq('is_read',false);
+  state.notifications.forEach(n=>n.is_read=true); state.unreadNotifications=0; updateNotificationBadge();
+}
+function openNotifications(){
+  if(!state.user){ openModal(`<button class="sheet-close" onclick="closeModal()">✕</button><div class="empty-state">Connecte-toi pour recevoir les notifications de commandes.</div>`); return; }
+  const list=state.notifications.map(n=>`<div class="notification-item ${n.is_read?'':'unread'}"><div class="notif-dot"></div><div><div style="font-size:.84rem;font-weight:600">${n.title||'Notification'}</div><div style="font-size:.78rem;opacity:.72;margin-top:3px">${n.message||''}</div><div style="font-size:.65rem;opacity:.45;margin-top:4px">${new Date(n.created_at).toLocaleString('fr-FR')}</div></div></div>`).join('');
+  openModal(`<button class="sheet-close" onclick="closeModal()">✕</button><h2 style="margin-bottom:14px">Notifications</h2>${list||'<div class="empty-state">Aucune notification.</div>'}`);
+  markNotificationsRead();
+}
+async function getSellerStats(sellerId){
+  try{
+    const [{data:orders},{data:reviews}]=await Promise.all([
+      sb.from('orders').select('id,total_amount,status').eq('seller_id',sellerId),
+      sb.from('seller_reviews').select('rating').eq('seller_id',sellerId)
+    ]);
+    const delivered=(orders||[]).filter(o=>o.status==='delivered');
+    const sales=delivered.reduce((n,o)=>n+Number(o.total_amount||0),0);
+    const ratings=(reviews||[]).map(r=>Number(r.rating));
+    return {orders:(orders||[]).length,delivered:delivered.length,sales,rating:ratings.length?ratings.reduce((a,b)=>a+b,0)/ratings.length:0,reviews:ratings.length};
+  }catch(e){ return {orders:0,delivered:0,sales:0,rating:0,reviews:0}; }
+}
+async function openSellerProfile(sellerId){
+  if(!sellerId) return;
+  const [{data:seller,error:sellerError},{data:products}]=await Promise.all([
+    sb.from('sellers').select('*').eq('id',sellerId).maybeSingle(),
+    sb.from('products').select('*, sellers(business_name,avatar_url)').eq('seller_id',sellerId).eq('is_active',true).order('created_at',{ascending:false}).limit(12)
+  ]);
+  if(sellerError || !seller){ toast('Profil vendeur indisponible.'); return; }
+  await attachProductImages(products||[]);
+
+  const stats=await getSellerStats(sellerId);
+  const {data:reviews}=await sb.from('seller_reviews')
+    .select('rating,comment,created_at,profiles(full_name,avatar_url)')
+    .eq('seller_id',sellerId).order('created_at',{ascending:false}).limit(8);
+
+  const esc=v=>String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+  const name=esc(seller.business_name||'Vendeur');
+  const city=esc(seller.city||seller.location||'Guinée');
+  const type=esc(seller.business_type||seller.type||'Boutique');
+  const phone=esc(seller.phone||seller.contact_phone||'');
+  const description=esc(seller.description||seller.bio||seller.about||'');
+  const avatar=seller.avatar_url||'';
+  const verified=seller.is_verified!==false;
+  const rating=Math.round(stats.rating||0);
+  const stars='★'.repeat(rating)+'☆'.repeat(5-rating);
+
+  const productHtml=(products||[]).map(p=>{
+    const imgs=(p.product_images||[]).slice().sort((a,b)=>(a.position||0)-(b.position||0));
+    const first=imgs[0];
+    return `<div class="seller-product-mini" onclick="openProduct('${p.id}')">
+      ${first?`<img src="${esc(first.url)}" alt="">`:'<div class="mini-placeholder">📦</div>'}
+      <div class="mini-info"><div class="mini-title">${esc(p.title)}</div><div class="mini-price">${fmtGNF(p.price_retail||p.price_wholesale)}</div></div>
+    </div>`;
+  }).join('');
+
+  const reviewHtml=(reviews||[]).map(r=>{
+    const rr=Math.max(0,Math.min(5,Number(r.rating)||0));
+    return `<div class="order-card" style="padding:10px;margin-bottom:7px;">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;">
+        <strong style="font-size:.76rem;">${esc(r.profiles?.full_name||'Client')}</strong>
+        <span class="rating" style="font-size:.7rem;">${'★'.repeat(rr)}${'☆'.repeat(5-rr)}</span>
+      </div>
+      ${r.comment?`<div style="font-size:.72rem;opacity:.72;margin-top:5px;line-height:1.4;">${esc(r.comment)}</div>`:''}
+    </div>`;
+  }).join('');
+
+  openModal(`<div class="seller-profile">
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <div class="seller-cover"></div>
+    <div class="seller-profile-head">
+      <img class="seller-profile-avatar" src="${esc(avatar)}" onerror="this.src='';this.style.background='var(--surface)';" alt="">
+      <div class="seller-profile-main">
+        <div class="seller-profile-name">${name}${verified?'<span class="seller-profile-badge">✓ Vérifié</span>':''}</div>
+        <div class="seller-profile-sub">${city} · ${type}</div>
+      </div>
+    </div>
+
+    <div class="seller-stat-row">
+      <div class="seller-stat"><strong>${stats.delivered}</strong><span>Ventes</span></div>
+      <div class="seller-stat"><strong>${stats.rating?stats.rating.toFixed(1):'—'}</strong><span>Note / 5</span></div>
+      <div class="seller-stat"><strong>${stats.reviews}</strong><span>Avis</span></div>
+    </div>
+
+    <div class="seller-rating-line"><span class="rating">${stars}</span><span>${stats.reviews?stats.rating.toFixed(1)+' / 5':'Pas encore noté'}</span></div>
+
+    <div class="seller-profile-details">
+      <div class="seller-detail"><strong>📍 Localisation</strong><span>${city}</span></div>
+      <div class="seller-detail"><strong>🏪 Type</strong><span>${type}</span></div>
+      ${phone?`<div class="seller-detail"><strong>☎️ Contact</strong><span>${phone}</span></div>`:''}
+      ${seller.rccm_number?`<div class="seller-detail"><strong>📄 RCCM</strong><span>${esc(seller.rccm_number)}</span></div>`:''}
+    </div>
+
+    ${description?`<div class="seller-about"><strong style="font-size:.72rem;display:block;margin-bottom:4px;">À propos de cette boutique</strong>${description}</div>`:''}
+
+    <div class="seller-products-title">Produits de ${name}</div>
+    <div class="seller-products-grid">${productHtml||'<div class="empty-state" style="grid-column:1/-1;padding:20px 5px;">Aucun produit publié.</div>'}</div>
+
+    <div class="divider"></div>
+    <div class="seller-products-title">Avis clients</div>
+    ${reviewHtml||'<div class="empty-state" style="padding:18px 5px;">Aucun avis pour le moment.</div>'}
+  </div>`);
+}
+
+// ---------- AUTH SHEET (façon Alibaba : email + choix du rôle) ----------
+let selectedRole = 'buyer';
+
+function showAuthSheet(mode){
+  // mode: 'signup' (par défaut) ou 'login'
+  if(mode === 'login'){ showLoginSheet(); return; }
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:6px;">Créer un compte</h2>
+    <p style="font-size:0.8rem;opacity:0.65;margin-bottom:16px;">Choisis ton profil pour commencer.</p>
+    <div class="role-grid">
+      <div class="role-card selected" id="roleBuyerCard" onclick="pickRole('buyer')">
+        <span class="role-ic">🛍️</span>
+        <div class="role-label">Compte Client</div>
+        <div class="role-sub">J'achète des produits</div>
+      </div>
+      <div class="role-card" id="roleSellerCard" onclick="pickRole('seller')">
+        <span class="role-ic">🏷️</span>
+        <div class="role-label">Compte Vendeur</div>
+        <div class="role-sub">Je vends des produits</div>
+      </div>
+    </div>
+    <div class="field"><label>Nom complet</label><input id="authName" placeholder="Ex: Mamadou Diallo"></div>
+    <div class="field"><label>Adresse email</label><input id="authEmail" type="email" placeholder="Ex: mamadou@email.com"></div>
+    <div class="field"><label>Téléphone</label><input id="authPhone" placeholder="Ex: 622 00 00 00"></div>
+    <div class="field"><label>Ville</label><input id="authCity" placeholder="Ex: Conakry"></div>
+    <div class="field"><label>Adresse / quartier</label><input id="authAddress" placeholder="Ex: Kaloum, Almamya"></div>
+    <div class="field"><label>À propos de moi</label><textarea id="authBio" maxlength="1000" placeholder="Quelques mots sur toi..."></textarea></div>
+    <div class="field"><label>Mot de passe</label><input id="authPass" type="password" placeholder="6 caractères minimum"></div>
+    <button class="btn btn-primary btn-full" onclick="doSignup()">Créer mon compte</button>
+    <div style="text-align:center;margin-top:12px;font-size:0.82rem;opacity:0.7;">
+      Déjà inscrit ? <a href="#" onclick="showLoginSheet();return false;" style="color:var(--mango);">Se connecter</a>
+    </div>
+  `);
+}
+function pickRole(role){
+  selectedRole = role;
+  document.getElementById('roleBuyerCard').classList.toggle('selected', role==='buyer');
+  document.getElementById('roleSellerCard').classList.toggle('selected', role==='seller');
+}
+function showLoginSheet(){
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:16px;">Se connecter</h2>
+    <div class="field"><label>Adresse email</label><input id="loginEmail" type="email" placeholder="Ex: mamadou@email.com"></div>
+    <div class="field"><label>Mot de passe</label><input id="loginPass" type="password" placeholder="••••••••"></div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()">Se connecter</button>
+    <div style="text-align:center;margin-top:12px;font-size:0.82rem;opacity:0.7;">
+      Pas encore de compte ? <a href="#" onclick="showAuthSheet('signup');return false;" style="color:var(--mango);">S'inscrire</a>
+    </div>
+  `);
+}
+
+async function doSignup(){
+  const name = document.getElementById('authName').value.trim();
+  const email = document.getElementById('authEmail').value.trim();
+  const phone = document.getElementById('authPhone').value.trim();
+  const city = document.getElementById('authCity')?.value.trim() || '';
+  const address = document.getElementById('authAddress')?.value.trim() || '';
+  const bio = document.getElementById('authBio')?.value.trim() || '';
+  const pass = document.getElementById('authPass').value;
+  if(!name || !email || !phone || pass.length < 6){
+    toast('Remplis le nom, email, téléphone et un mot de passe de 6+ caractères');
+    return;
+  }
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: pass,
+    options: {
+      data: { full_name:name, phone, city, address, bio, role:selectedRole }
+    }
+  });
+  if(error){ toast(error.message); return; }
+
+  if(data.user){
+    const {error:profileError}=await sb.from('profiles').upsert({
+      id:data.user.id,
+      full_name:name,
+      phone,
+      city,
+      address,
+      bio,
+      role:selectedRole
+    },{onConflict:'id'});
+    if(profileError){
+      console.error('Création profil:',profileError);
+      toast('Compte créé mais le profil n’a pas pu être enregistré : '+profileError.message);
+      return;
+    }
+  }
+
+  if(!data.session){
+    toast('Compte créé. Vérifie ta boîte email puis connecte-toi.');
+    closeModal();
+    return;
+  }
+
+  state.user=data.user;
+  await loadProfile();
+  toast('Compte créé ! Ton profil est prêt.');
+  closeModal();
+  render();
+  renderRecommendations();
+}
+async function doLogin(){
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if(!email || !pass){ toast('Entre ton email et ton mot de passe'); return; }
+  const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+  if(error){ toast('Identifiants incorrects'); return; }
+  toast('Connecté !'); closeModal(); await loadProfile(); render(); renderRecommendations();
+}
+
+async function doLogout(){ await sb.auth.signOut(); toast('Déconnecté'); render(); }
+
+// ---------- DATA LOADING ----------
+async function loadCategories(){
+  const { data } = await sb.from('categories').select('*').order('name');
+  state.categories = data || [];
+  renderCategoryStrip();
+}
+
+function esc(v){
+  return String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;',"\"":'&quot;'}[m]));
+}
+
+async function loadProducts(){
+  // On charge d'abord les produits, puis les photos séparément.
+  // Cela évite qu'une relation PostgREST mal détectée entre products/product_images
+  // fasse disparaître les photos alors que les produits existent bien.
+  let query = sb.from('products').select('*, sellers(business_name, avatar_url, is_wholesale, is_retail)')
+    .eq('is_active', true).order('created_at', { ascending: false });
+  if(state.category) query = query.eq('category_id', state.category);
+  if(state.search) query = query.ilike('title', `%${state.search}%`);
+  const { data, error } = await query;
+  if(error){
+    console.error('Produits:', error.message);
+    state.products = [];
+    renderProductGrid();
+    return;
+  }
+  state.products = data || [];
+  await attachProductImages(state.products);
+  renderProductGrid();
+}
+
+async function attachProductImages(products){
+  if(!Array.isArray(products) || !products.length) return;
+  const ids = products.map(p=>p.id).filter(Boolean);
+  const {data, error} = await sb.from('product_images')
+    .select('product_id,url,position')
+    .in('product_id', ids)
+    .order('position', {ascending:true});
+  if(error){
+    console.error('Photos produits:', error.message);
+    products.forEach(p=>p.product_images=[]);
+    return;
+  }
+  const byProduct = {};
+  (data||[]).forEach(img=>{
+    if(!byProduct[img.product_id]) byProduct[img.product_id]=[];
+    byProduct[img.product_id].push(img);
+  });
+  products.forEach(p=>{
+    p.product_images = (byProduct[p.id]||[]).sort((a,b)=>(a.position??0)-(b.position??0));
+  });
+}
+
+function firstProductImage(p){
+  const imgs = Array.isArray(p?.product_images) ? p.product_images : [];
+  return imgs.find(x=>x?.url)?.url || '';
+}
+
+function imageHtml(url, alt=''){
+  if(!url) return '📦';
+  const cacheBusted = String(url).includes('?') ? String(url)+'&v='+Date.now() : String(url)+'?v='+Date.now();
+  const safeUrl=esc(cacheBusted);
+  return `<img src="${safeUrl}" alt="${esc(alt)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.parentElement.innerHTML='📦';">`;
+}
+
+// ---------- RENDER: CATEGORY STRIP ----------
+function renderCategoryStrip(){
+  const el = document.getElementById('catStrip');
+  el.innerHTML = `<div class="cat-chip ${!state.category?'active':''}" style="${!state.category?'background:var(--mango);color:var(--ink);font-weight:700;':''}" onclick="filterCategory(null)">Tout</div>` +
+    state.categories.map(c => `<div class="cat-chip ${state.category===c.id?'active':''}" style="${state.category===c.id?'background:var(--mango);color:var(--ink);font-weight:700;':''}" onclick="filterCategory('${c.id}')">${c.name}</div>`).join('');
+}
+function filterCategory(id){ state.category = id; renderCategoryStrip(); loadProducts(); }
+
+// ---------- RENDER: PRODUCT GRID ----------
+function renderProductGrid(){
+  const grid = document.getElementById('productGrid');
+  if(!grid) return;
+  document.getElementById('gridTitle').textContent = state.mode === 'wholesale' ? 'Offres en gros (B2B)' : 'Produits à l\'unité';
+
+  if(state.products === null){
+    grid.innerHTML = Array(6).fill('<div class="card"><div class="card-stripe"></div><div class="card-img" style="opacity:0.3;">⏳</div><div class="card-body"><div class="card-title" style="opacity:0.3;">Chargement...</div></div></div>').join('');
+    return;
+  }
+
+  const list = state.mode === 'wholesale'
+    ? state.products.filter(p => p.sellers?.is_wholesale && p.price_wholesale)
+    : state.products.filter(p => p.sellers?.is_retail !== false);
+
+  if(!list.length){
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1;">Aucun produit pour le moment ici.<br>Reviens bientôt, ou <a href="#" onclick="showView('sell');return false;" style="color:var(--mango);">deviens vendeur</a>.</div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => {
+    const img = firstProductImage(p);
+    const price = state.mode === 'wholesale' ? p.price_wholesale : p.price_retail;
+    return `
+    <div class="card" onclick="openProduct('${p.id}')">
+      <div class="card-stripe"></div>
+      <div class="card-img">${imageHtml(img,p.title)}</div>
+      <div class="card-body">
+        <div class="card-title">${p.title}</div>
+        <div class="card-price">${fmtGNF(price)}</div>
+        ${state.mode==='wholesale' ? `<div class="card-wholesale">Min. ${p.wholesale_min_qty} unités</div>` : ''}
+        <div class="card-seller" onclick="event.stopPropagation();openSellerProfile('${p.seller_id}')">
+  ${p.sellers?.avatar_url ? `<img src="${esc(p.sellers.avatar_url)}?v=${Date.now()}" style="width:18px;height:18px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'" alt="">` : ''}
+  <span class="verified-dot"></span>${esc(p.sellers?.business_name||'Vendeur')}
+</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setMode(m){
+  state.mode = m;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===m));
+  renderProductGrid();
+}
+
+// ---------- RECOMMANDATIONS ----------
+// Système simple à base de règles, pensé pour être fiable et compréhensible dès le lancement :
+// 1) "Vu récemment" — historique de navigation de l'utilisateur connecté
+// 2) "Populaire à [ville]" — produits les plus commandés dans la ville de l'utilisateur (ou Conakry par défaut)
+// 3) "Parce que tu as regardé X" — autres produits de la même catégorie que la dernière vue
+async function logProductView(productId){
+  if(!state.user) return; // pas de suivi pour les invités (pas de compte = pas de reco personnalisée)
+  try { await sb.from('product_views').insert({ user_id: state.user.id, product_id: productId }); }
+  catch(e){ console.error('View log error', e); }
+}
+
+async function getRecentlyViewed(){
+  if(!state.user) return [];
+  const { data } = await sb.from('product_views')
+    .select('product_id, viewed_at, products(*, sellers(business_name), product_images(url, position))')
+    .eq('user_id', state.user.id).order('viewed_at', { ascending: false }).limit(20);
+  if(!data) return [];
+  // dédoublonne par produit en gardant la vue la plus récente
+  const seen = new Set(); const out = [];
+  for(const row of data){
+    if(!row.products || seen.has(row.product_id)) continue;
+    seen.add(row.product_id); out.push(row.products);
+    if(out.length >= 8) break;
+  }
+  return out;
+}
+
+async function getPopularProducts(){
+  const city = state.profile?.city || 'Conakry';
+  const { data } = await sb.from('order_items')
+    .select('product_id, quantity, orders(delivery_city)')
+    .limit(300);
+  if(!data) return [];
+  const counts = {};
+  data.forEach(row => {
+    const inCity = row.orders?.delivery_city === city;
+    counts[row.product_id] = (counts[row.product_id] || 0) + row.quantity * (inCity ? 3 : 1); // priorité à la ville
+  });
+  const topIds = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,8).map(x=>x[0]);
+  if(!topIds.length) return [];
+  const { data: products } = await sb.from('products').select('*, sellers(business_name), product_images(url, position)').in('id', topIds).eq('is_active', true);
+  // remet dans l'ordre de popularité
+  return topIds.map(id => products?.find(p=>p.id===id)).filter(Boolean);
+}
+
+async function getSimilarProducts(){
+  if(!state.user) return { title: null, items: [] };
+  const { data: lastView } = await sb.from('product_views').select('product_id, products(category_id, title)').eq('user_id', state.user.id).order('viewed_at',{ascending:false}).limit(1).single();
+  if(!lastView?.products?.category_id) return { title: null, items: [] };
+  const { data } = await sb.from('products').select('*, sellers(business_name), product_images(url, position)')
+    .eq('category_id', lastView.products.category_id).eq('is_active', true).neq('id', lastView.product_id).limit(8);
+  return { title: lastView.products.title, items: data || [] };
+}
+
+function recoCardHtml(p){
+  const img = firstProductImage(p);
+  return `<div class="reco-card" onclick="openProduct('${p.id}')">
+    <div class="card-stripe"></div>
+    <div class="card-img">${imageHtml(img,p.title)}</div>
+    <div class="card-body">
+      <div class="card-title">${p.title}</div>
+      <div class="card-price">${fmtGNF(p.price_retail)}</div>
+    </div>
+  </div>`;
+}
+
+async function renderRecommendations(){
+  const root = document.getElementById('recoRoot');
+  if(!root) return;
+  root.innerHTML = ''; // vide pendant le chargement, pas de faux contenu
+
+  const [recent, popular, similar] = await Promise.all([
+    getRecentlyViewed().catch(()=>[]),
+    getPopularProducts().catch(()=>[]),
+    getSimilarProducts().catch(()=>({title:null, items:[]}))
+  ]);
+  await Promise.all([attachProductImages(recent), attachProductImages(popular), attachProductImages(similar.items||[])]);
+
+  let html = '';
+  if(recent.length){
+    html += `<div class="reco-rail"><div class="reco-rail-title">🕓 Vu récemment</div><div class="reco-scroll">${recent.map(recoCardHtml).join('')}</div></div>`;
+  }
+  if(similar.items.length){
+    html += `<div class="reco-rail"><div class="reco-rail-title">✨ Comme "${similar.title}"</div><div class="reco-scroll">${similar.items.map(recoCardHtml).join('')}</div></div>`;
+  }
+  if(popular.length){
+    const city = state.profile?.city || 'Conakry';
+    html += `<div class="reco-rail"><div class="reco-rail-title">🔥 Populaire à ${city}</div><div class="reco-scroll">${popular.map(recoCardHtml).join('')}</div></div>`;
+  }
+  root.innerHTML = html;
+}
+
+// ---------- PRODUCT DETAIL / ADD TO CART ----------
+async function openProduct(id){
+  let p = (state.products||[]).find(x=>x.id===id);
+  if(!p){
+    const {data}=await sb.from('products').select('*, sellers(business_name, avatar_url, is_wholesale, is_retail)').eq('id',id).maybeSingle();
+    p=data;
+    if(p) await attachProductImages([p]);
+  }else if(!Array.isArray(p.product_images)){
+    await attachProductImages([p]);
+  }
+  if(!p) return;
+  if(!state.products) state.products=[];
+  if(!state.products.some(x=>x.id===p.id)) state.products.push(p);
+  logProductView(id); // suivi silencieux pour alimenter les recommandations
+  const img = (p.product_images||[]).slice().sort((a,b)=>(a.position||0)-(b.position||0))[0];
+  const price = state.mode === 'wholesale' ? p.price_wholesale : p.price_retail;
+  const minQty = state.mode === 'wholesale' ? (p.wholesale_min_qty||1) : 1;
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <div class="card-img" style="border-radius:10px;margin-bottom:14px;">${img?imageHtml(img,p.title):'📦'}</div>
+    <h2 style="font-size:1.15rem;margin-bottom:6px;">${p.title}</h2>
+    <div class="card-seller" style="margin-bottom:10px;cursor:pointer" onclick="openSellerProfile('${p.seller_id}')"><span class="verified-dot"></span>${p.sellers?.business_name||'Vendeur'} · vendeur vérifié</div>
+    <div class="card-price" style="font-size:1.3rem;margin-bottom:10px;">${fmtGNF(price)} ${state.mode==='wholesale'?'/ unité (gros)':''}</div>
+    <p style="font-size:0.88rem;opacity:0.8;line-height:1.5;margin-bottom:14px;">${p.description||'Pas de description.'}</p>
+    <div class="field"><label>Quantité ${state.mode==='wholesale'?`(min. ${minQty})`:''}</label>
+      <div class="qty-picker">
+        <button onclick="stepQty(-1,${minQty})">−</button>
+        <span id="qtyVal">${minQty}</span>
+        <button onclick="stepQty(1,${minQty})">+</button>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="addToCart('${p.id}', ${minQty})">Ajouter au panier</button>
+  `);
+}
+function stepQty(delta, min){
+  const el = document.getElementById('qtyVal');
+  let v = parseInt(el.textContent) + delta;
+  if(v < min) v = min;
+  el.textContent = v;
+}
+function addToCart(productId, minQty){
+  const qty = parseInt(document.getElementById('qtyVal').textContent) || minQty;
+  const p = (state.products||[]).find(x=>x.id===productId);
+  if(!p){ toast('Produit indisponible. Réessaie.'); return; }
+  const existing = state.cart.find(l => l.product.id === productId && l.mode === state.mode);
+  if(existing){ existing.qty += qty; } else { state.cart.push({ product: p, qty, mode: state.mode }); }
+  updateCartBadge();
+  toast('Ajouté au panier');
+  closeModal();
+}
+function updateCartBadge(){
+  const n = state.cart.reduce((s,l)=>s+l.qty,0);
+  const badge = document.getElementById('cartBadge');
+  badge.textContent = n; badge.classList.toggle('hidden', n===0);
+}
+
+// ---------- CART / CHECKOUT ----------
+function cartTotal(){
+  return state.cart.reduce((sum,l)=>{
+    const price = l.mode==='wholesale' ? l.product.price_wholesale : l.product.price_retail;
+    return sum + price * l.qty;
+  },0);
+}
+function openCart(){
+  if(!state.cart.length){ openModal(`<button class="sheet-close" onclick="closeModal()">✕</button><div class="empty-state">Ton panier est vide.</div>`); return; }
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:14px;">Ton panier</h2>
+    ${state.cart.map((l,i)=>`
+      <div class="cart-line">
+        <div class="cart-line-img"></div>
+        <div style="flex:1;">
+          <div style="font-size:0.85rem;font-weight:500;">${l.product.title}</div>
+          <div style="font-size:0.75rem;opacity:0.7;">${l.qty} × ${fmtGNF(l.mode==='wholesale'?l.product.price_wholesale:l.product.price_retail)} ${l.mode==='wholesale'?'(gros)':''}</div>
+        </div>
+        <button class="btn btn-sm btn-secondary" onclick="removeFromCart(${i})">✕</button>
+      </div>`).join('')}
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:16px;">
+      <span>Total</span><span style="color:var(--mango);">${fmtGNF(cartTotal())}</span>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="startCheckout()">Passer la commande</button>
+  `);
+}
+function removeFromCart(i){ state.cart.splice(i,1); updateCartBadge(); openCart(); }
+
+// Pas besoin de compte pour commander : juste la position + le téléphone,
+// pour que le vendeur puisse appeler et organiser la livraison.
+let checkoutCoords = null;
+
+function startCheckout(){
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:6px;">Où te livrer ?</h2>
+    <p style="font-size:0.8rem;opacity:0.65;margin-bottom:14px;">Le vendeur t'appellera pour organiser la livraison.</p>
+    <div id="locStatus" class="loc-status">📍 Position non renseignée</div>
+    <button class="btn btn-secondary btn-full" onclick="captureLocation()" style="margin-bottom:14px;">Utiliser ma position actuelle</button>
+    ${!state.user ? `<div class="field"><label>Ton nom</label><input id="ckName" placeholder="Ex: Mamadou Diallo"></div>` : ''}
+    <div class="field"><label>Ville</label><input id="ckCity" placeholder="Ex: Conakry" value="${state.profile?.city||''}"></div>
+    <div class="field"><label>Adresse / repère</label><textarea id="ckAddress" placeholder="Quartier, point de repère..."></textarea></div>
+    <div class="field"><label>Numéro de téléphone (le vendeur t'appellera)</label><input id="ckPhone" placeholder="Ex: 622 00 00 00" value="${state.profile?.phone||''}"></div>
+    <div class="field"><label>Méthode de paiement</label>
+      <select id="ckMethod" onchange="onPaymentMethodChange()">
+        <option value="cash_on_delivery">Paiement à la livraison</option>
+        <option value="orange_money">Orange Money</option>
+        <option value="mtn_momo">MTN Mobile Money</option>
+      </select>
+    </div>
+    <div class="field hidden" id="ckRefField"><label>Référence de transaction Mobile Money</label><input id="ckRef" placeholder="Reçu par SMS après paiement"></div>
+    <div class="divider"></div>
+    <div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:16px;">
+      <span>Total</span><span style="color:var(--mango);">${fmtGNF(cartTotal())}</span>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="confirmOrder()">Confirmer la commande</button>
+  `);
+}
+function captureLocation(){
+  const statusEl = document.getElementById('locStatus');
+  if(!navigator.geolocation){ statusEl.textContent = '📍 Géolocalisation non disponible sur cet appareil'; return; }
+  statusEl.textContent = '📍 Récupération de ta position...';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      checkoutCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      statusEl.textContent = '✓ Position enregistrée';
+      statusEl.classList.add('ok');
+    },
+    err => { statusEl.textContent = '📍 Impossible de récupérer ta position — remplis l\'adresse manuellement'; },
+    { enableHighAccuracy: true, timeout: 8000 }
+  );
+}
+function onPaymentMethodChange(){
+  const isMoney = document.getElementById('ckMethod').value !== 'cash_on_delivery';
+  document.getElementById('ckRefField').classList.toggle('hidden', !isMoney);
+}
+async function confirmOrder(){
+  const name = document.getElementById('ckName')?.value.trim() || state.profile?.full_name;
+  const city = document.getElementById('ckCity').value.trim();
+  const address = document.getElementById('ckAddress').value.trim();
+  const phone = document.getElementById('ckPhone').value.trim();
+  const method = document.getElementById('ckMethod').value;
+  const ref = document.getElementById('ckRef')?.value.trim() || null;
+  if(!city || !address){ toast('Renseigne la ville et l\'adresse'); return; }
+  if(!phone){ toast('Ton numéro de téléphone est requis pour être contacté'); return; }
+  if(!state.user && !name){ toast('Renseigne ton nom'); return; }
+  if(method !== 'cash_on_delivery' && !ref){ toast('Ajoute la référence de la transaction'); return; }
+
+  // Grouper le panier par vendeur (une commande = un vendeur)
+  const bySeller = {};
+  state.cart.forEach(l => {
+    const sid = l.product.seller_id;
+    if(!bySeller[sid]) bySeller[sid] = [];
+    bySeller[sid].push(l);
+  });
+
+  for(const sellerId in bySeller){
+    const lines = bySeller[sellerId];
+
+    // Vérifie le stock réel juste avant la commande pour éviter les ventes de stock épuisé.
+    const productIds=lines.map(l=>l.product.id);
+    const {data:latestProducts,error:stockError}=await sb.from('products')
+      .select('id,title,stock,is_active').in('id',productIds);
+    if(stockError){toast('Impossible de vérifier le stock : '+stockError.message);return;}
+    for(const line of lines){
+      const latest=(latestProducts||[]).find(x=>x.id===line.product.id);
+      if(!latest || latest.is_active===false){toast(`${line.product.title} n'est plus disponible.`);return;}
+      if(Number(latest.stock)<Number(line.qty)){toast(`Stock insuffisant pour ${line.product.title}. Disponible : ${latest.stock}.`);return;}
+      line.product.stock=latest.stock;
+    }
+    const total = lines.reduce((s,l)=> s + (l.mode==='wholesale'?l.product.price_wholesale:l.product.price_retail) * l.qty, 0);
+    const orderType = lines[0].mode;
+    const { data: order, error } = await sb.from('orders').insert({
+      buyer_id: state.user ? state.user.id : null,
+      guest_phone: state.user ? null : phone,
+      guest_name: state.user ? null : name,
+      seller_id: sellerId, order_type: orderType,
+      total_amount: total, delivery_address: address, delivery_city: city,
+      latitude: checkoutCoords?.lat || null, longitude: checkoutCoords?.lng || null
+    }).select().single();
+    if(error){ toast('Erreur: ' + error.message); return; }
+
+    const items = lines.map(l => ({
+      order_id: order.id, product_id: l.product.id, quantity: l.qty,
+      unit_price: l.mode==='wholesale'?l.product.price_wholesale:l.product.price_retail
+    }));
+    const {error:itemsError}=await sb.from('order_items').insert(items);
+    if(itemsError){ toast('Commande créée mais les articles n’ont pas pu être enregistrés : '+itemsError.message); return; }
+    const {error:paymentError}=await sb.from('payments').insert({
+      order_id: order.id, method, amount: total, status: 'pending', transaction_ref: ref
+    });
+    if(paymentError){ toast('Commande créée, mais le paiement n’a pas été enregistré : '+paymentError.message); return; }
+  }
+
+  state.cart = []; updateCartBadge(); checkoutCoords = null;
+  closeModal();
+  toast('Commande confirmée ! Le vendeur va t\'appeler.');
+  if(state.user) showView('orders'); else showView('home');
+}
+
+async function openReview(orderId,sellerId){
+  const {data:existing}=await sb.from('seller_reviews').select('id').eq('order_id',orderId).eq('buyer_id',state.user.id).maybeSingle();
+  if(existing){toast('Tu as déjà évalué cette commande.');return;}
+  openModal(`<button class="sheet-close" onclick="closeModal()">✕</button><h2 style="margin-bottom:14px">Évaluer le vendeur</h2><div class="field"><label>Note</label><select id="reviewRating"><option value="5">★★★★★ — Excellent</option><option value="4">★★★★☆ — Très bien</option><option value="3">★★★☆☆ — Bien</option><option value="2">★★☆☆☆ — Moyen</option><option value="1">★☆☆☆☆ — Mauvais</option></select></div><div class="field"><label>Commentaire</label><textarea id="reviewComment" placeholder="Ton expérience avec ce vendeur..."></textarea></div><button class="btn btn-primary btn-full" onclick="submitReview('${orderId}','${sellerId}')">Publier mon avis</button>`);
+}
+async function submitReview(orderId,sellerId){
+  const rating=Number(document.getElementById('reviewRating').value); const comment=document.getElementById('reviewComment').value.trim();
+  const {error}=await sb.from('seller_reviews').insert({order_id:orderId,buyer_id:state.user.id,seller_id:sellerId,rating,comment:comment||null});
+  if(error){toast('Impossible d’enregistrer l’avis : '+error.message);return;} closeModal(); toast('Merci pour ton évaluation !');
+}
+
+// ---------- ORDERS VIEW ----------
+function orderStatusLabel(status){
+  if(status==='delivered') return 'Livré';
+  if(status==='cancelled') return 'Annulée';
+  return 'En attente';
+}
+function orderStatusClass(status){
+  if(status==='delivered') return 'approved';
+  if(status==='cancelled') return 'rejected';
+  return 'pending';
+}
+function formatOrderDate(value){
+  if(!value) return 'Date inconnue';
+  try{return new Date(value).toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});}catch(e){return value;}
+}
+
+async function updateOrderStatus(orderId,newStatus){
+  if(!state.user || state.profile?.role!=='seller' || !orderId) return;
+  if(!['pending','delivered'].includes(newStatus)) return;
+  const {error}=await sb.from('orders').update({status:newStatus})
+    .eq('id',orderId).eq('seller_id',state.user.id);
+  if(error){toast('Impossible de modifier la commande : '+error.message);return;}
+  toast(newStatus==='delivered'?'✅ Commande marquée comme livrée.':'⏳ Commande remise en attente.');
+  closeModal();
+  await renderOrdersView();
+}
+
+async function openOrderDetails(orderId){
+  if(!state.user || !orderId) return;
+
+  const {data:order,error}=await sb.from('orders')
+    .select('*, order_items(*, products(title))')
+    .eq('id',orderId).single();
+  if(error || !order){toast('Détails de la commande indisponibles.');return;}
+
+  const isSeller=state.profile?.role==='seller' && order.seller_id===state.user.id;
+  const isBuyer=order.buyer_id===state.user.id;
+  if(!isSeller && !isBuyer){toast('Cette commande ne t’appartient pas.');return;}
+
+  let buyer=null;
+  if(order.buyer_id){
+    const {data:p}=await sb.from('profiles')
+      .select('full_name,phone,avatar_url').eq('id',order.buyer_id).maybeSingle();
+    buyer=p||null;
+  }
+
+  const {data:payment}=await sb.from('payments')
+    .select('method,amount,status,transaction_ref,created_at')
+    .eq('order_id',order.id).order('created_at',{ascending:false})
+    .limit(1).maybeSingle();
+
+  const items=order.order_items||[];
+  const itemsHtml=items.length ? items.map(i=>`
+    <div class="order-detail-row">
+      <span>${esc(i.products?.title||'Produit')} × ${Number(i.quantity||0)}</span>
+      <strong>${fmtGNF(Number(i.unit_price||0)*Number(i.quantity||0))}</strong>
+    </div>`).join('') : `<div style="opacity:.65;padding:8px 0;">Aucun article enregistré.</div>`;
+
+  const clientName=esc(order.guest_name||buyer?.full_name||'Client');
+  const clientPhone=esc(order.guest_phone||buyer?.phone||'Non renseigné');
+  const deliveryAddress=esc(order.delivery_address||'Non renseignée');
+  const deliveryCity=esc(order.delivery_city||'Non renseignée');
+  const status=order.status||'pending';
+  const methods={cash_on_delivery:'Paiement à la livraison',orange_money:'Orange Money',mtn_momo:'MTN Mobile Money'};
+  const paymentMethod=payment?esc(methods[payment.method]||payment.method||'Non renseigné'):'Non enregistré';
+  const paymentStatus=payment?esc(payment.status||'pending'):'Non enregistré';
+  const ref=payment?.transaction_ref?esc(payment.transaction_ref):'—';
+
+  const sellerActions=isSeller?`
+    <div class="divider"></div>
+    <div style="font-weight:700;margin-bottom:10px;">État de la livraison</div>
+    <div class="row-split">
+      <button class="btn ${status==='pending'?'btn-primary':'btn-secondary'}" onclick="updateOrderStatus('${order.id}','pending')">⏳ En attente</button>
+      <button class="btn ${status==='delivered'?'btn-primary':'btn-secondary'}" onclick="updateOrderStatus('${order.id}','delivered')">✅ Livré</button>
+    </div>
+    <p style="font-size:.72rem;opacity:.6;margin-top:8px;">Si le produit n'est pas encore livré, laisse « En attente ». Quand tu l'as livré, sélectionne « Livré ».</p>`:'';
+
+  const reviewButton=!isSeller && status==='delivered' && order.seller_id
+    ? `<button class="btn btn-secondary btn-full" style="margin-top:10px" onclick="closeModal();openReview('${order.id}','${order.seller_id}')">⭐ Évaluer le vendeur</button>`:'';
+
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:5px;">Détails de la commande</h2>
+    <div style="font-size:.72rem;opacity:.6;margin-bottom:14px;">Commande du ${formatOrderDate(order.created_at)}</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <span class="status-pill status-${orderStatusClass(status)}">${orderStatusLabel(status)}</span>
+      <strong style="color:var(--mango);font-size:1.1rem;">${fmtGNF(order.total_amount)}</strong>
+    </div>
+    <div class="order-card" style="padding:10px;margin-bottom:10px;">
+      <div style="font-weight:700;margin-bottom:6px;">🛍️ Articles</div>${itemsHtml}
+    </div>
+    <div class="order-card" style="padding:10px;margin-bottom:10px;">
+      <div style="font-weight:700;margin-bottom:6px;">👤 Informations client</div>
+      <div class="order-detail-row"><span class="order-detail-label">Nom</span><span class="order-detail-value">${clientName}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Téléphone</span><span class="order-detail-value">${clientPhone}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Ville</span><span class="order-detail-value">${deliveryCity}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Adresse / repère</span><span class="order-detail-value">${deliveryAddress}</span></div>
+    </div>
+    <div class="order-card" style="padding:10px;">
+      <div style="font-weight:700;margin-bottom:6px;">💳 Paiement</div>
+      <div class="order-detail-row"><span class="order-detail-label">Méthode</span><span class="order-detail-value">${paymentMethod}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Statut</span><span class="order-detail-value">${paymentStatus}</span></div>
+      <div class="order-detail-row"><span class="order-detail-label">Référence</span><span class="order-detail-value">${ref}</span></div>
+    </div>
+    ${sellerActions}${reviewButton}
+  `);
+}
+
+async function renderOrdersView(){
+  const main=document.querySelector('main');
+  if(!state.user){
+    main.innerHTML=`<div class="empty-state">Connecte-toi pour voir tes commandes.<br><br><button class="btn btn-primary" onclick="showAuthSheet()">Se connecter</button></div><div class="spacer-bottom"></div>`;
+    return;
+  }
+
+  const isSeller=state.profile?.role==='seller' && state.seller;
+  let orders=[];
+  if(isSeller){
+    const {data,error}=await sb.from('orders').select('*, order_items(*, products(title))')
+      .eq('seller_id',state.user.id).order('created_at',{ascending:false});
+    if(error){main.innerHTML=`<div class="empty-state">Impossible de charger les commandes : ${esc(error.message)}</div>`;return;}
+    orders=data||[];
+  }else{
+    const {data,error}=await sb.from('orders').select('*, order_items(*, products(title))')
+      .eq('buyer_id',state.user.id).order('created_at',{ascending:false});
+    if(error){main.innerHTML=`<div class="empty-state">Impossible de charger les commandes : ${esc(error.message)}</div>`;return;}
+    orders=data||[];
+  }
+
+  if(!orders.length){
+    main.innerHTML=`<div class="empty-state">${isSeller?'Aucune commande reçue pour le moment.':'Aucune commande pour le moment.'}</div><div class="spacer-bottom"></div>`;
+    return;
+  }
+
+  const title=isSeller?'Commandes reçues':'Mes commandes';
+  const hint=isSeller?`<p style="font-size:.76rem;opacity:.6;margin:-8px 0 14px;">Appuie sur une commande pour voir les informations du client et gérer la livraison.</p>`:'';
+
+  main.innerHTML=`<h2 class="section-title">${title}</h2>${hint}`+orders.map(o=>{
+    const items=o.order_items||[];
+    const itemText=items.map(i=>`${esc(i.products?.title||'Produit')} ×${Number(i.quantity||0)}`).join(', ')||'Articles non disponibles';
+    const client=isSeller?esc(o.guest_name||'Client'):'';
+    const phone=isSeller?esc(o.guest_phone||''):'';
+    return `<div class="order-card clickable" onclick="openOrderDetails('${o.id}')">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;">
+        <span class="status-pill status-${orderStatusClass(o.status)}">${orderStatusLabel(o.status)}</span>
+        <span style="font-weight:700;color:var(--mango);">${fmtGNF(o.total_amount)}</span>
+      </div>
+      ${isSeller?`<div style="font-weight:700;font-size:.9rem;margin-bottom:4px;">👤 ${client}</div>${phone?`<div style="font-size:.75rem;opacity:.7;margin-bottom:5px;">☎️ ${phone}</div>`:''}`:''}
+      <div style="font-size:0.82rem;opacity:0.8;">${itemText}</div>
+      <div style="font-size:0.75rem;opacity:0.5;margin-top:4px;">📍 Livraison : ${esc(o.delivery_city||'Non renseignée')}</div>
+      <div style="font-size:.68rem;opacity:.42;margin-top:5px;">${formatOrderDate(o.created_at)} · Appuyer pour les détails</div>
+    </div>`;
+  }).join('')+`<div class="spacer-bottom"></div>`;
+}
+
+// ---------- SELL VIEW (application + dashboard) ----------
+function sellerVerificationRemaining(due){
+  if(!due) return '';
+  const ms=Math.max(0,new Date(due).getTime()-Date.now());
+  if(ms<=0) return 'Vérification des 24 h terminée — activation en cours…';
+  const h=Math.floor(ms/3600000), m=Math.floor((ms%3600000)/60000);
+  return `${h} h ${m} min restantes`;
+}
+
+async function renderSellView(){
+  const main=document.querySelector('main');
+  if(!state.user){
+    main.innerHTML=`<div class="empty-state">Connecte-toi pour vendre sur AIDABA Market.<br><br><button class="btn btn-primary" onclick="showAuthSheet()">Se connecter</button></div><div class="spacer-bottom"></div>`;
+    return;
+  }
+
+  // Re-vérifie l'échéance à chaque ouverture de l'onglet.
+  try{
+    await sb.rpc('activate_due_seller_application',{p_user_id:state.user.id});
+    await loadProfile();
+  }catch(e){}
+
+  if(state.profile?.role==='seller' && state.seller){
+    renderSellerDashboard(); return;
+  }
+
+  if(state.sellerApplication){
+    const st=state.sellerApplication.status||'pending';
+    const due=state.sellerApplication.verification_due_at;
+    main.innerHTML=`
+      <h2 class="section-title">Vérification vendeur</h2>
+      <div class="verification-box">
+        <span class="status-pill status-pending">⏳ ${st==='approved'?'Vérifiée':'En vérification'}</span>
+        <p style="margin-top:10px;font-size:.84rem;opacity:.8;">
+          Ta demande est enregistrée. Pour protéger les acheteurs, le profil passe par une période de vérification de <strong>24 heures</strong>.
+        </p>
+        <div class="verification-countdown">${sellerVerificationRemaining(due)}</div>
+        <div style="font-size:.7rem;opacity:.55;margin-top:7px;">Boutique : ${esc(state.sellerApplication.business_name||'—')} · ${esc(state.sellerApplication.city||'Guinée')}</div>
+      </div>
+      <div class="spacer-bottom"></div>`;
+    return;
+  }
+
+  main.innerHTML=`
+    <h2 class="section-title">Devenir vendeur vérifié</h2>
+    <p style="font-size:.85rem;opacity:.75;margin-bottom:16px;">Après l'envoi, ton dossier reste en vérification pendant 24 heures. Une fois l'échéance atteinte, ton compte peut être activé comme vendeur.</p>
+    <div class="field"><label>Nom de l'activité / boutique</label><input id="appName" placeholder="Ex: Diallo Textiles"></div>
+    <div class="field"><label>Type</label>
+      <select id="appType"><option value="particulier">Particulier</option><option value="grossiste">Grossiste (B2B)</option><option value="entreprise">Entreprise</option></select>
+    </div>
+    <div class="field"><label>Ville</label><input id="appCity" placeholder="Ex: Conakry"></div>
+    <div class="field"><label>Numéro RCCM (si disponible)</label><input id="appRccm" placeholder="Optionnel"></div>
+    <div class="field"><label>Description de la boutique</label><textarea id="appDesc" maxlength="1000" placeholder="Présente ton activité et tes produits..."></textarea></div>
+    <button class="btn btn-primary btn-full" onclick="submitSellerApplication()">Envoyer ma demande</button>
+    <div class="spacer-bottom"></div>`;
+}
+
+async function submitSellerApplication(){
+  if(!state.user){toast('Connecte-toi d’abord.');return;}
+  const business_name=document.getElementById('appName').value.trim();
+  const business_type=document.getElementById('appType').value;
+  const city=document.getElementById('appCity').value.trim();
+  const rccm_number=document.getElementById('appRccm').value.trim()||null;
+  const description=document.getElementById('appDesc').value.trim()||null;
+  if(!business_name||!city){toast('Remplis au moins le nom et la ville');return;}
+
+  const {error}=await sb.from('seller_applications').insert({
+    user_id:state.user.id,business_name,business_type,city,rccm_number,description
+  });
+  if(error){toast('Erreur: '+error.message);return;}
+  toast('Demande envoyée. Vérification de 24 h lancée.');
+  await loadProfile(); renderSellView();
+}
+
+async function renderSellerDashboard(){
+  const main = document.querySelector('main');
+  const { data: myProducts } = await sb.from('products').select('*').eq('seller_id', state.user.id).order('created_at',{ascending:false});
+  await attachProductImages(myProducts||[]);
+  const st=state.sellerStats || await getSellerStats(state.user.id); state.sellerStats=st;
+  main.innerHTML = `
+    <h2 class="section-title">Mon espace vendeur <button class="btn btn-sm btn-primary" onclick="openAddProduct()">+ Produit</button></h2>
+    <div style="display:flex;gap:8px;margin-bottom:16px;align-items:center;">
+      <span class="status-pill status-approved">✓ Vérifié</span>
+      <span style="font-size:0.8rem;opacity:0.7;cursor:pointer" onclick="openSellerProfile('${state.user.id}')">${state.seller.business_name}</span>
+    </div>
+    <div class="stats-grid"><div class="stat-box"><strong>${st.delivered}</strong><span>Ventes livrées</span></div><div class="stat-box"><strong>${fmtGNF(st.sales)}</strong><span>Ventes</span></div><div class="stat-box"><strong>${st.rating?st.rating.toFixed(1):'—'}/5</strong><span>Avis (${st.reviews})</span></div></div>
+    <div class="grid">
+      ${(myProducts||[]).map(p => `
+        <div class="card">
+          <div class="card-stripe"></div>
+          <div class="card-img">${firstProductImage(p)?imageHtml(firstProductImage(p),p.title):'📦'}</div>
+          <div class="card-body">
+            <div class="card-title">${p.title}</div>
+            <div class="card-price">${fmtGNF(p.price_retail)}</div>
+            <div style="font-size:0.72rem;opacity:0.6;">Stock: ${p.stock}</div>
+          </div>
+        </div>`).join('') || '<div class="empty-state" style="grid-column:1/-1;">Ajoute ton premier produit.</div>'}
+    </div>
+    <div class="spacer-bottom"></div>`;
+}
+function openAddProduct(){
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:14px;">Nouveau produit</h2>
+    <div class="field"><label>Titre</label><input id="pTitle" placeholder="Ex: Tissu wax 6 yards"></div>
+    <div class="field"><label>Catégorie</label>
+      <select id="pCategory">${state.categories.map(c=>`<option value="${c.id}">${c.name}</option>`).join('')}</select>
+    </div>
+    <div class="field"><label>Description</label><textarea id="pDesc" maxlength="3000" placeholder="Décris précisément le produit..."></textarea></div>
+    <div class="field"><label>État du produit</label><select id="pCondition"><option value="new">Neuf</option><option value="used">Occasion</option></select></div>
+    <div class="field"><label>Photos du produit (1 à 5)</label><input id="pImages" type="file" accept="image/*" multiple onchange="previewProductImages(this)"><div id="pImagesPreview" class="product-images-preview"></div></div>
+    <div class="row-split">
+      <div class="field"><label>Prix détail (GNF)</label><input id="pPriceRetail" type="number" placeholder="150000"></div>
+      <div class="field"><label>Prix gros (GNF)</label><input id="pPriceWholesale" type="number" placeholder="120000"></div>
+    </div>
+    <div class="row-split">
+      <div class="field"><label>Qté min. gros</label><input id="pMinQty" type="number" value="10"></div>
+      <div class="field"><label>Stock</label><input id="pStock" type="number" placeholder="50"></div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="submitProduct()">Publier le produit</button>
+  `);
+}
+function previewProductImages(input){
+  const files=[...input.files].slice(0,5); input.value='';
+  // rebuild DataTransfer so max 5 is enforced without losing selected files
+  const dt=new DataTransfer(); files.forEach(f=>dt.items.add(f)); input.files=dt.files;
+  document.getElementById('pImagesPreview').innerHTML=files.map(f=>`<img src="${URL.createObjectURL(f)}">`).join('');
+}
+async function submitProduct(){
+  if(!state.user || state.profile?.role!=='seller'){toast('Seul un vendeur vérifié peut publier.');return;}
+  const title=document.getElementById('pTitle').value.trim(); const category_id=document.getElementById('pCategory').value;
+  const description=document.getElementById('pDesc').value.trim(); const condition=document.getElementById('pCondition').value;
+  const price_retail=parseFloat(document.getElementById('pPriceRetail').value)||null; const price_wholesale=parseFloat(document.getElementById('pPriceWholesale').value)||null;
+  const wholesale_min_qty=parseInt(document.getElementById('pMinQty').value)||1; const stock=parseInt(document.getElementById('pStock').value)||0;
+  const files=[...(document.getElementById('pImages').files||[])];
+  if(!title || (!price_retail && !price_wholesale)){toast('Titre + au moins un prix requis');return;}
+  if(files.length<1 || files.length>5){toast('Choisis entre 1 et 5 photos.');return;}
+  if(files.some(f=>!f.type.startsWith('image/'))){toast('Seules les images sont autorisées.');return;}
+  const {data:product,error}=await sb.from('products').insert({seller_id:state.user.id,category_id,title,description,condition,price_retail,price_wholesale,wholesale_min_qty,stock}).select().single();
+  if(error){toast('Erreur produit: '+error.message);return;}
+  let uploaded=0;
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    const ext=(f.name.split('.').pop()||'jpg').toLowerCase();
+    const path=`${state.user.id}/${product.id}/${i+1}-${crypto.randomUUID()}.${ext}`;
+    const up=await sb.storage.from('product-images').upload(path,f,{contentType:f.type,upsert:false,cacheControl:'31536000'});
+    if(up.error){
+      console.error('Upload photo:',up.error.message);
+      continue;
+    }
+    const {data:urlData}=sb.storage.from('product-images').getPublicUrl(path);
+    const publicUrl=urlData?.publicUrl;
+    if(!publicUrl){ console.error('URL publique introuvable'); continue; }
+    const ins=await sb.from('product_images').insert({product_id:product.id,url:publicUrl,position:i});
+    if(ins.error){
+      console.error('Enregistrement photo:',ins.error.message);
+      // L'upload existe, mais sans ligne product_images l'image ne peut pas être affichée.
+      continue;
+    }
+    uploaded++;
+  }
+  if(uploaded===0){
+    toast('Produit créé, mais aucune photo n’a été enregistrée. Vérifie les droits de product_images et le bucket product-images.');
+  }else if(uploaded<files.length){
+    toast(`Produit publié avec ${uploaded}/${files.length} photo(s).`);
+  }else{
+    toast('Produit publié avec ses photos !');
+  }
+  closeModal();
+  await renderSellerDashboard();
+  await loadProducts();
+}
+
+// ---------- ACCOUNT VIEW ----------
+function profileImageSrc(url){
+  if(!url) return '';
+  return String(url).includes('?') ? String(url)+'&v='+Date.now() : String(url)+'?v='+Date.now();
+}
+
+function renderAccountView(){
+  const main=document.querySelector('main');
+  if(!state.user){
+    main.innerHTML=`<div class="empty-state">Tu n'es pas connecté.<br><br><button class="btn btn-primary" onclick="showAuthSheet()">Se connecter / S'inscrire</button></div><div class="spacer-bottom"></div>`;
+    return;
+  }
+
+  const p=state.profile||{};
+  const isSeller=p.role==='seller' && state.seller;
+  const name=esc(p.full_name||'Utilisateur');
+  const email=esc(state.user.email||'');
+  const phone=esc(p.phone||'Non renseigné');
+  const city=esc(p.city||'Non renseignée');
+  const address=esc(p.address||'Non renseignée');
+  const bio=esc(p.bio||'');
+  const avatar=p.avatar_url||'';
+  const cover=p.cover_url||'';
+
+  main.innerHTML=`
+    <h2 class="section-title" style="font-size:1rem;margin-top:4px;">👤 Mon profil</h2>
+    <p style="font-size:.74rem;opacity:.62;margin:-6px 0 10px;">Toutes les informations de ton compte, ta photo et ta couverture sont enregistrées dans Supabase.</p>
+
+    <div class="profile-compact-card" style="padding:0;overflow:hidden;">
+      <div class="profile-cover">
+        ${cover?`<img src="${esc(profileImageSrc(cover))}" onerror="this.style.display='none'" alt="Photo de couverture">`:`<div class="profile-cover-placeholder">Ajoute une photo de couverture</div>`}
+      </div>
+
+      <div style="padding:0 12px 13px;position:relative;">
+        <div style="display:flex;align-items:flex-end;gap:10px;margin-top:-25px;">
+          <div class="profile-avatar-wrap">
+            ${avatar
+              ? `<img class="profile-avatar-large" src="${esc(profileImageSrc(avatar))}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" alt="Photo de profil"><div class="profile-avatar-fallback" style="display:none;">👤</div>`
+              : `<div class="profile-avatar-fallback">👤</div>`}
+          </div>
+          <div style="padding-bottom:5px;min-width:0;">
+            <div class="profile-name-line">${name}${isSeller?'<span class="verified-dot"></span>':''}</div>
+            <div class="profile-meta">${city} · ${isSeller?'Vendeur vérifié':'Client'}</div>
+          </div>
+        </div>
+
+        <div class="profile-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openEditProfile()">✏️ Modifier le profil</button>
+          <label class="btn btn-primary btn-sm photo-btn">📷 Changer ma photo<input type="file" accept="image/*" onchange="updateProfilePhoto(this)" style="display:none"></label>
+        </div>
+        <div class="profile-actions">
+          <label class="btn btn-secondary btn-sm photo-btn">🖼️ Changer la couverture<input type="file" accept="image/*" onchange="updateProfileCover(this)" style="display:none"></label>
+          ${isSeller?`<button class="btn btn-secondary btn-sm" onclick="openSellerProfile('${state.user.id}')">🏪 Ma boutique</button>`:''}
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-info-grid">
+      <div class="profile-info-item"><strong>👤 Nom complet</strong><span>${name}</span></div>
+      <div class="profile-info-item"><strong>✉️ Email</strong><span>${email||'Non renseigné'}</span></div>
+      <div class="profile-info-item"><strong>☎️ Téléphone</strong><span>${phone}</span></div>
+      <div class="profile-info-item"><strong>📍 Ville</strong><span>${city}</span></div>
+      <div class="profile-info-item"><strong>🏠 Adresse</strong><span>${address}</span></div>
+      <div class="profile-info-item"><strong>🗓️ Membre depuis</strong><span>${new Date(state.user.created_at).toLocaleDateString('fr-FR')}</span></div>
+    </div>
+
+    ${bio?`<div class="profile-bio"><strong>À propos</strong><br>${bio}</div>`:''}
+
+    ${isSeller?`<div class="verification-box">
+      <div style="font-weight:700;">✓ Vendeur vérifié</div>
+      <div style="font-size:.75rem;opacity:.65;margin-top:4px;">${esc(state.seller.business_name||'Boutique')} · ${esc(state.seller.city||city)}</div>
+    </div>`:''}
+
+    <div style="margin-top:12px;"><button class="btn btn-secondary btn-full" onclick="doLogout()">Se déconnecter</button></div>
+    <div class="spacer-bottom"></div>`;
+}
+
+function openEditProfile(){
+  const p=state.profile||{};
+  openModal(`
+    <button class="sheet-close" onclick="closeModal()">✕</button>
+    <h2 style="margin-bottom:14px;">Modifier mon profil</h2>
+    <div class="field"><label>Nom complet</label><input id="epName" maxlength="100" value="${esc(p.full_name||'')}"></div>
+    <div class="field"><label>Téléphone</label><input id="epPhone" maxlength="30" value="${esc(p.phone||'')}"></div>
+    <div class="field"><label>Ville</label><input id="epCity" maxlength="100" value="${esc(p.city||'')}"></div>
+    <div class="field"><label>Adresse</label><textarea id="epAddress" maxlength="300">${esc(p.address||'')}</textarea></div>
+    <div class="field"><label>À propos de moi</label><textarea id="epBio" maxlength="1000" placeholder="Quelques mots sur toi...">${esc(p.bio||'')}</textarea></div>
+    <div class="field"><label>Email du compte</label><input value="${esc(state.user.email||'')}" disabled></div>
+    <button class="btn btn-primary btn-full" onclick="saveProfile()">Enregistrer les modifications</button>
+  `);
+}
+
+async function saveProfile(){
+  if(!state.user)return;
+  const full_name=document.getElementById('epName').value.trim();
+  const phone=document.getElementById('epPhone').value.trim();
+  const city=document.getElementById('epCity').value.trim();
+  const address=document.getElementById('epAddress').value.trim();
+  const bio=document.getElementById('epBio').value.trim();
+  if(!full_name){toast('Le nom complet est requis.');return;}
+
+  const {error}=await sb.from('profiles').update({full_name,phone,city,address,bio}).eq('id',state.user.id);
+  if(error){toast('Profil non enregistré : '+error.message);return;}
+  state.profile={...(state.profile||{}),full_name,phone,city,address,bio};
+  closeModal();
+  renderAccountView();
+  toast('Profil mis à jour !');
+}
+
+async function uploadProfileAsset(input,type){
+  const file=input.files?.[0];
+  if(!file||!state.user)return;
+  if(!file.type.startsWith('image/')){toast('Choisis une image.');return;}
+  if(file.size>6*1024*1024){toast('Image trop lourde (6 Mo maximum).');return;}
+
+  const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+  const path=`${state.user.id}/${type}-${Date.now()}.${ext}`;
+
+  const up=await sb.storage.from('profile-images').upload(path,file,{
+    contentType:file.type,upsert:false,cacheControl:'31536000'
+  });
+  if(up.error){toast('Photo impossible à envoyer : '+up.error.message);return;}
+
+  const {data:u}=sb.storage.from('profile-images').getPublicUrl(path);
+  const url=u?.publicUrl;
+  if(!url){toast('URL de la photo introuvable.');return;}
+
+  const column=type==='avatar'?'avatar_url':'cover_url';
+  const {error}=await sb.from('profiles').update({[column]:url}).eq('id',state.user.id);
+  if(error){toast('Photo envoyée mais profil non mis à jour : '+error.message);return;}
+
+  state.profile={...(state.profile||{}),[column]:url};
+
+  // Si l'utilisateur est vendeur, sa photo de profil est aussi visible sur sa boutique.
+  if(type==='avatar' && state.profile?.role==='seller'){
+    const {error:sellerPhotoError}=await sb.from('sellers').update({avatar_url:url}).eq('id',state.user.id);
+    if(sellerPhotoError) console.warn('Synchronisation photo vendeur:',sellerPhotoError.message);
+    if(state.seller) state.seller.avatar_url=url;
+  }
+
+  renderAccountView();
+  toast(type==='avatar'?'Photo de profil mise à jour !':'Photo de couverture mise à jour !');
+}
+
+async function updateProfilePhoto(input){ return uploadProfileAsset(input,'avatar'); }
+async function updateProfileCover(input){ return uploadProfileAsset(input,'cover'); }
+
+// ---------- VIEW ROUTING ----------
+function showView(v){
+  state.view = v;
+  document.querySelectorAll('.tabbar button').forEach(b=>b.classList.toggle('active', b.dataset.view===v));
+  const main = document.querySelector('main');
+  const catStrip = document.getElementById('catStrip');
+  if(v === 'home'){
+    catStrip.style.display = 'flex';
+    main.innerHTML = `<div id="recoRoot"></div><div class="section-title"><span id="gridTitle">Produits</span></div><div class="grid" id="productGrid"></div><div class="spacer-bottom"></div>`;
+    renderProductGrid();
+    renderRecommendations();
+  } else {
+    catStrip.style.display = 'none';
+    if(v === 'orders') renderOrdersView();
+    if(v === 'sell') renderSellView();
+    if(v === 'account') renderAccountView();
+  }
+}
+
+function render(){ showView(state.view); }
+
+// ---------- SEARCH ----------
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(()=>{ state.search = e.target.value.trim(); loadProducts(); }, 350);
+});
+
+// ---------- INIT ----------
+// L'écran de chargement disparaît après un délai FIXE de 2,5s, indépendamment
+// du réseau — l'appli ne reste jamais bloquée même si Supabase est lent ou injoignable.
+// Les données (produits, catégories) continuent de charger en parallèle et
+// s'affichent dès qu'elles arrivent, avec un état "chargement" dans la grille en attendant.
+function hideSplash(){
+  const splash = document.getElementById('splash');
+  if(!splash) return;
+  splash.classList.add('fade-out');
+  setTimeout(() => splash.remove(), 450);
+}
+(async function init(){
+  // Le splash ne dépend plus d'une requête réseau et ne peut donc pas rester bloqué.
+  const splashTimer = setTimeout(hideSplash, 3500);
+  try{
+    await getSupabase();
+  }catch(e){
+    console.error('Supabase:', e);
+    hideSplash();
+    toast('Impossible de charger Supabase. Vérifie ta connexion Internet.');
+    state.products = [];
+    renderProductGrid();
+    return;
+  }
+
+  try{ await initAuth(); subscribeToMarketplaceRealtime(); }
+  catch(e){ console.error('Auth error:', e); }
+
+  try{ await withTimeout(loadCategories(),8000,'Le chargement des catégories'); }
+  catch(e){ console.error('Categories error:',e); state.categories=[]; renderCategoryStrip(); }
+
+  try{ await withTimeout(loadProducts(),10000,'Le chargement des produits'); }
+  catch(e){ console.error('Products error:',e); state.products=[]; renderProductGrid(); toast('Impossible de charger les produits.'); }
+
+  try{ await withTimeout(renderRecommendations(),10000,'Les recommandations'); }
+  catch(e){ console.error('Recommendations error:',e); }
+
+  clearTimeout(splashTimer);
+  hideSplash();
+})();
+
+window.addEventListener('error', e => {
+  console.error('Erreur JavaScript:', e.error || e.message);
+  hideSplash();
+});
+window.addEventListener('unhandledrejection', e => console.error('Promesse non gérée:', e.reason));
+</script>
+</body>
+</html>
